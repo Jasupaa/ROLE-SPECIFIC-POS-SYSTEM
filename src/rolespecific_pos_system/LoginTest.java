@@ -7,38 +7,42 @@ package rolespecific_pos_system;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
  * @author Jasper
  */
-public class RoleSpecific_POS_System extends Application {
+
+
+public class LoginTest extends Application {
     
     @Override
-    public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
+        public void start(Stage stage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("wla.fxml"));
+        WlaController controller = new WlaController();
+        loader.setController(controller); 
+       
+       Parent root = loader.load();
+       
+        controller.setStage(stage);
         
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+       Scene scene = new Scene(root);
         
-        Scene scene = new Scene(root, 300, 250);
+        scene.setFill(Color.TRANSPARENT);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setScene(scene);
+        stage.show();
         
-        primaryStage.setTitle("Hello World!");
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
+    
 
     /**
      * @param args the command line arguments

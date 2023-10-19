@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="434.0" prefWidth="629.0" style="-fx-padding: 5; -fx-background-color: #d9d9d9; -fx-background-radius: 10; -fx-border-radius: 30 30 30 30; -fx-border-width: 2; -fx-border-color: #00000000;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label fx:id="CodeLabel" alignment="CENTER" contentDisplay="TOP" layoutX="194.0" layoutY="95.0" prefHeight="31.0" prefWidth="241.0" style="-fx-background-color: #c9c9c9;" text=" " />
+      <Button fx:id="Button1" layoutX="206.0" layoutY="140.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="1" textFill="WHITE" />
+      <Button fx:id="Button2" layoutX="283.0" layoutY="140.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="2" textFill="WHITE" />
+      <Button fx:id="Button3" layoutX="362.0" layoutY="140.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="3" textFill="WHITE" />
+      <Button fx:id="Button4" layoutX="206.0" layoutY="197.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="4" textFill="WHITE" />
+      <Button fx:id="Button5" layoutX="284.0" layoutY="197.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="5" textFill="WHITE" />
+      <Button fx:id="Button6" layoutX="362.0" layoutY="197.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="6" textFill="WHITE" />
+      <Button fx:id="Button7" layoutX="206.0" layoutY="254.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="7" textFill="WHITE" />
+      <Button fx:id="Button8" layoutX="284.0" layoutY="254.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="8" textFill="WHITE" />
+      <Button fx:id="Button9" layoutX="362.0" layoutY="254.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="9" textFill="WHITE" />
+      <Button fx:id="ButtonX" layoutX="206.0" layoutY="313.0" mnemonicParsing="false" onAction="#clearCodeLabel" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #000000;" text="X" textFill="WHITE" />
+      <Button fx:id="Button0" layoutX="284.0" layoutY="313.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="0" textFill="WHITE" />
+      <Button fx:id="ButtonEnter" layoutX="362.0" layoutY="313.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #7fb351;" text="E" textFill="WHITE" />
+      <ImageView fx:id="closebutton" fitHeight="22.0" fitWidth="22.0" layoutX="593.0" layoutY="16.0">
+   <image>
+      <Image url="@img/power-32.png" />
+   </image>
+</ImageView>
+      <Label layoutX="275.0" layoutY="73.0" prefHeight="22.0" prefWidth="80.0" text="Enter your PIN">
+         <font>
+            <Font name="Ebrima" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="DateLbl" layoutX="96.0" layoutY="16.0" prefHeight="22.0" prefWidth="89.0" text="Default Text" />
+      <Label fx:id="TimeLbl" layoutX="193.0" layoutY="18.0" prefHeight="16.0" prefWidth="89.0" text="Default Text" />
+      <Label layoutX="14.0" layoutY="13.0" prefHeight="29.0" prefWidth="80.0" text="Good day!">
+         <font>
+            <Font name="Dubai Medium" size="16.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>
