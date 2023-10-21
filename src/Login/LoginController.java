@@ -1,4 +1,4 @@
-package rolespecific_pos_system;
+package Login;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -21,7 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class WlaController {
+public class LoginController {
 
     double xOffset, yOffset;
     private volatile boolean stop = false;

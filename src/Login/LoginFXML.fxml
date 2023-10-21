@@ -5,7 +5,6 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="434.0" prefWidth="629.0" style="-fx-padding: 5; -fx-background-color: #d9d9d9; -fx-background-radius: 10; -fx-border-radius: 30 30 30 30; -fx-border-width: 2; -fx-border-color: #00000000;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
@@ -23,11 +22,6 @@
       <Button fx:id="ButtonX" layoutX="206.0" layoutY="313.0" mnemonicParsing="false" onAction="#clearCodeLabel" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #000000;" text="X" textFill="WHITE" />
       <Button fx:id="Button0" layoutX="284.0" layoutY="313.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="0" textFill="WHITE" />
       <Button fx:id="ButtonEnter" layoutX="362.0" layoutY="313.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #7fb351;" text="E" textFill="WHITE" />
-      <ImageView fx:id="closebutton" fitHeight="22.0" fitWidth="22.0" layoutX="593.0" layoutY="16.0">
-   <image>
-      <Image url="@img/power-32.png" />
-   </image>
-</ImageView>
       <Label layoutX="275.0" layoutY="73.0" prefHeight="22.0" prefWidth="80.0" text="Enter your PIN">
          <font>
             <Font name="Ebrima" size="12.0" />
@@ -40,5 +34,10 @@
             <Font name="Dubai Medium" size="16.0" />
          </font>
       </Label>
+      <ImageView fx:id="closebutton" fitHeight="29.0" fitWidth="25.0" layoutX="590.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/power-32.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

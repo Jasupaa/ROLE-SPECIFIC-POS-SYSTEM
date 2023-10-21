@@ -1,4 +1,4 @@
-package rolespecific_pos_system;
+package Login;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +14,7 @@ public class LoginTest extends Application {
     public void start(Stage stage) throws Exception {
         // Load the FXML file and set the controller
         FXMLLoader loader = new FXMLLoader(getClass().getResource("wla.fxml"));
-        WlaController controller = new WlaController();
+        LoginController controller = new LoginController();
         loader.setController(controller);
         Parent root = loader.load();
         
