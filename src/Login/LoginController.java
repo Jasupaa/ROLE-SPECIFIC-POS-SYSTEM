@@ -1,5 +1,6 @@
 package Login;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -21,7 +22,20 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+
 public class LoginController {
+    
+     private DbLoginAccess dbLoginAccess;
+    
 
     double xOffset, yOffset;
     private volatile boolean stop = false;
@@ -65,17 +79,18 @@ public class LoginController {
 
     @FXML
     public void initialize() {
-        // Initialize the controller
+        
         closebutton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                // Define the action when the ImageView is clicked (e.g., close the window)
+             
                 stage.close();
             }
         });
 
         DateLabel();
         Timenow();
+        dbLoginAccess = new DbLoginAccess();
     }
 
     @FXML
@@ -117,8 +132,87 @@ public class LoginController {
 
         thread.start();
     }
+    
+    @FXML
+   private void LoginHandler(ActionEvent event) {
+    String codeLabelText = CodeLabel.getText();
+    String numericPart = codeLabelText.replaceAll("[^0-9]", "");
+    int enteredCode = 0; // Initialize the enteredCode variable
+
+    if (!numericPart.isEmpty()) {
+        enteredCode = Integer.parseInt(numericPart);
+
+        DbLoginAccess databaseAccess = new DbLoginAccess();
+        String role = databaseAccess.checkAccessCode(enteredCode);
+
+        if (role != null) {
+            switch (role) {
+                case "cashier":
+                    CashierFrame();
+                    break;
+                case "kitchen":
+                    KitchenFrame();
+                    break;
+                case "admin":
+                    AdminFrame();
+                    break;
+                default:
+                   handleInvalidCode("Invalid Role", enteredCode);
+            }
+        } else {
+         handleInvalidCode("Invalid Code", enteredCode);
+        }
+    }
+    else {
+        
+        handleInvalidCode("Invalid Code", enteredCode);
+    }
 }
 
+    private void handleInvalidCode(String errorMessage, int enteredCode) {
+    CodeLabel.setText("Error Code: " + " (Code: " + enteredCode + ")");
+   
+}
+    
+    
+    private void CashierFrame(){
+        
+        System.out.println("Cashier");
+    
+    
+    }
+    
+    private void KitchenFrame(){
+    System.out.println("Kitchen");
+    
+    }
+    
+    private void AdminFrame(){
+     System.out.println("Admin");
+    
+    }
+
+    private void loadFXML(String fxmlPath) {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Parent pane = loader.load();
+
+   
+        Scene scene = CodeLabel.getScene();
+        scene.setRoot(pane);
+    } catch (IOException e) {
+        e.printStackTrace();
+        // Handle any exceptions
+    }
+
+}
+    
+    
+    
+  
+    
+    
+}
 
 
 //wala lng

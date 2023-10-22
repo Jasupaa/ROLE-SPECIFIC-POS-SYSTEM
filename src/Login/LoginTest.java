@@ -13,7 +13,7 @@ public class LoginTest extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // Load the FXML file and set the controller
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("wla.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("LoginFXML.fxml"));
         LoginController controller = new LoginController();
         loader.setController(controller);
         Parent root = loader.load();
