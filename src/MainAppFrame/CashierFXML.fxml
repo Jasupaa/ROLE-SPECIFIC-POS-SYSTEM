@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d9d9d9; -fx-background-radius: 30;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="MainAppFrame.CashierFXMLController">
+    <children>
+      <ImageView fx:id="CloseButton" fitHeight="36.0" fitWidth="24.0" layoutX="562.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/power-32.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

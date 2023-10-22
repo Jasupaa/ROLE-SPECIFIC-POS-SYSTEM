@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.StageStyle;
 
 public class LoginController {
     
@@ -59,6 +60,31 @@ public class LoginController {
     private Label TimeLbl;
 
     Stage stage;
+    
+     private void CashierFrame(){
+         
+        System.out.println("Cashier");
+        loadFXML("/MainAppFrame/CashierFXML.fxml");
+         
+    
+    
+    }
+    
+    private void KitchenFrame(){
+      
+    System.out.println("Kitchen");
+    loadFXML("/MainAppFrame/KitchenFXML.fxml");
+     
+    }
+    
+    private void AdminFrame(){
+           
+    System.out.println("Admin");
+    loadFXML("/MainAppFrame/AdminFXML.fxml");
+    
+   
+    }
+    
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -155,18 +181,22 @@ public class LoginController {
                     break;
                 case "admin":
                     AdminFrame();
+                    
                     break;
                 default:
                    handleInvalidCode("Invalid Role", enteredCode);
             }
-        } else {
+           
+        } 
+        
+        
+        else {
+            
+            
          handleInvalidCode("Invalid Code", enteredCode);
         }
     }
-    else {
-        
-        handleInvalidCode("Invalid Code", enteredCode);
-    }
+    
 }
 
     private void handleInvalidCode(String errorMessage, int enteredCode) {
@@ -175,35 +205,36 @@ public class LoginController {
 }
     
     
-    private void CashierFrame(){
-        
-        System.out.println("Cashier");
-    
-    
-    }
-    
-    private void KitchenFrame(){
-    System.out.println("Kitchen");
-    
-    }
-    
-    private void AdminFrame(){
-     System.out.println("Admin");
-    
-    }
-
+   
+ 
     private void loadFXML(String fxmlPath) {
     try {
+       
+        
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         Parent pane = loader.load();
-
+        
+        
+        ControllerInterface controller = loader.getController();
+        if (controller != null) {
+            controller.setStage(stage);
+        } 
+  
    
-        Scene scene = CodeLabel.getScene();
-        scene.setRoot(pane);
+         Scene scene = new Scene(pane);
+        
+         
+       
+       
+        stage.setScene(scene);
+        stage.show();
+         
     } catch (IOException e) {
         e.printStackTrace();
         // Handle any exceptions
     }
+    
+    
 
 }
     

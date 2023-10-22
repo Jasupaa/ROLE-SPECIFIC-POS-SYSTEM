@@ -6,9 +6,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="434.0" prefWidth="629.0" style="-fx-padding: 5; -fx-background-color: #d9d9d9; -fx-background-radius: 10; -fx-border-radius: 30 30 30 30; -fx-border-width: 2; -fx-border-color: #00000000;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="434.0" prefWidth="629.0" style="-fx-padding: 5; -fx-background-color: #d9d9d9; -fx-background-radius: 10; -fx-border-radius: 30 30 30 30; -fx-border-width: 2; -fx-border-color: #00000000;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="CodeLabel" alignment="CENTER" contentDisplay="TOP" layoutX="194.0" layoutY="95.0" prefHeight="31.0" prefWidth="241.0" style="-fx-background-color: #c9c9c9;" text="" />
       <Button fx:id="Button1" layoutX="206.0" layoutY="140.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="1" textFill="WHITE" />
@@ -41,4 +40,4 @@
          </image>
       </ImageView>
    </children>
-</Pane>
+</AnchorPane>
