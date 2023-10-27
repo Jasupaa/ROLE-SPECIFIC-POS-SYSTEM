@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.StageStyle;
 
 public class LoginController {
@@ -223,7 +224,8 @@ public class LoginController {
    
          Scene scene = new Scene(pane);
         
-         
+           scene.setFill(Color.TRANSPARENT);
+        
        
        
         stage.setScene(scene);

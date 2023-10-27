@@ -7,11 +7,14 @@ package MainAppFrame;
 import Login.ControllerInterface;
 import com.sun.jdi.connect.spi.Connection;
 import java.io.InputStream;
+import Login.LoginTest;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -44,6 +47,9 @@ double xOffset, yOffset;
     @FXML
     private ImageView profilePic;
       
+     @FXML
+     private Button Logout;
+     
       @FXML
     private void handleMousePressed(MouseEvent event) {
         xOffset = event.getSceneX();
@@ -58,6 +64,17 @@ double xOffset, yOffset;
         stage.setX(event.getScreenX() - xOffset);
         stage.setY(event.getScreenY() - yOffset);
     }
+    
+    @FXML
+      private void LogoutHandler(ActionEvent event) throws Exception {
+  // Close the current window.
+  Stage stage = (Stage) Logout.getScene().getWindow();
+  stage.close();
+
+  // Open the login window.
+  LoginTest loginTest = new LoginTest();
+  loginTest.start(new Stage());
+}
 
  
 public void setStage(Stage stage) {
