@@ -5,6 +5,8 @@
 package MainAppFrame;
 
 import Login.ControllerInterface;
+import com.sun.jdi.connect.spi.Connection;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.EventHandler;
@@ -15,6 +17,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 
 /**
  * FXML Controller class
@@ -29,6 +37,12 @@ double xOffset, yOffset;
      
     @FXML
       private Stage stage;
+    
+        @FXML
+    private Label profileName;
+
+    @FXML
+    private ImageView profilePic;
       
       @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -58,6 +72,10 @@ public void setStage(Stage stage) {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+
+
+
   CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
