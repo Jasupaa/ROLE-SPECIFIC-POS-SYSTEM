@@ -12,18 +12,23 @@ import java.sql.DriverManager;
  *
  * @author John Paul Uy
  */
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class database {
-    
-    public static Connection getConnection(){
-        Connection conn;
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/sample_database";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "";
+
+    public static Connection getConnection() throws SQLException {
         try {
-           Class.forName("com.mysql.cj.jdbc.Driver");
-           conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cj", "root", "");
-           return conn;
-        } catch (Exception e) {
-            
-            return null;
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to establish a database connection.");
         }
     }
-    
 }
+

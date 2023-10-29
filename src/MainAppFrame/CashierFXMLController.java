@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package MainAppFrame;
 
 import Login.ControllerInterface;
@@ -12,11 +8,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -40,6 +38,23 @@ public class CashierFXMLController implements Initializable, ControllerInterface
      private ImageView CloseButton;
      
      @FXML
+     private Button getMenu1;
+     
+     @FXML
+     private void getMenu1(ActionEvent event){
+        menus = getMenu1();
+        refreshMenuGrid();   
+     }
+
+     @FXML
+     private Button getMenu2;
+      @FXML
+     private void getMenu2(ActionEvent event){
+        menus = getMenu2();
+        refreshMenuGrid();
+     }
+     
+     @FXML
      private Stage stage;
      
     @FXML
@@ -47,7 +62,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
       
     private List<menu1> menus;
     
-    private List<menu1> getMenu(){
+    private List<menu1> getMenu1(){
         List<menu1> ls = new ArrayList<>();
         
         menu1 menu = new menu1();
@@ -62,6 +77,32 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         
         menu = new menu1();
         menu.setName("Almond Milktea");
+        menu.setImgSrc("/img/ClassicMT.jpg");
+        ls.add(menu);
+        
+        menu = new menu1();
+        menu.setName("Okinawa Milktea");
+        menu.setImgSrc("/img/ClassicMT.jpg");
+        ls.add(menu);
+        
+        return ls;
+    }
+    
+     private List<menu1> getMenu2(){
+        List<menu1> ls = new ArrayList<>();
+        
+        menu1 menu = new menu1();
+        menu.setName("Masarap na exit button");
+        menu.setImgSrc("/img/ClassicMT.jpg");
+        ls.add(menu);
+        
+        menu = new menu1();
+        menu.setName("Taro na kanin");
+        menu.setImgSrc("/img/ClassicMT.jpg");
+        ls.add(menu);
+        
+        menu = new menu1();
+        menu.setName("Almond kanin");
         menu.setImgSrc("/img/ClassicMT.jpg");
         ls.add(menu);
         
@@ -94,15 +135,32 @@ public void setStage(Stage stage) {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        menus = getMenu1();
+        refreshMenuGrid();
         
-          menus = new ArrayList<>(getMenu());
+         
+        
+          CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+             
+                stage.close();
+            }
+        });
+        
+        
+        
+       
+    }    
+    private void refreshMenuGrid() {
+    menuGrid.getChildren().clear();
           int column = 0;
           int row = 1;
           
           for(menu1 menu: menus) {
               try {
                   FXMLLoader fxmlloader = new FXMLLoader();
-                  fxmlloader.setLocation(getClass().getResource("Menu.fxml"));
+                  fxmlloader.setLocation(getClass().getResource("Milktea.fxml"));
                   
                   Pane pane = fxmlloader.load();
                   MenuController menucontroller = fxmlloader.getController();
@@ -122,18 +180,6 @@ public void setStage(Stage stage) {
                   Logger.getLogger(CashierFXMLController.class.getName()).log(Level.SEVERE, null, ex);
               }
           }
-        
-          CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-             
-                stage.close();
-            }
-        });
-        
-        
-        
-       
-    }    
+}
     
 }
