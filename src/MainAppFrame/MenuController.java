@@ -88,6 +88,41 @@ public class MenuController {
         foodLabel.setText(menu.getName());
     }
 
+private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity, String selectedSize, String selectedAddon, String selectedSugarLevel, boolean askmeRadioSelected) {
+    try (Connection conn = database.getConnection()) {
+        if (conn != null) {
+            String sql = "INSERT INTO milk_tea (customer_id, item_name, quantity, size, add_ons, sugar_level, ask_me, size_price, addons_price, final_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, customer_id);
+                stmt.setString(2, menuName);
+                stmt.setInt(3, selectedQuantity);
+                stmt.setString(4, selectedSize);
+                stmt.setString(5, selectedAddon);
+                stmt.setString(6, selectedSugarLevel);
+                stmt.setBoolean(7, askmeRadioSelected);
+
+                // Check if size and add-ons are selected and set the corresponding prices
+                int sizePrice = calculateSizePrice(selectedSize);
+                int addonsPrice = calculateAddonsPrice(selectedAddon);
+
+                stmt.setInt(8, sizePrice);
+                stmt.setInt(9, addonsPrice);
+
+                // Calculate the final price based on selected size and add-ons
+                int finalPrice = (sizePrice + addonsPrice) * selectedQuantity;
+                stmt.setInt(10, finalPrice);
+
+                stmt.executeUpdate();
+            }
+        } else {
+            System.out.println("Failed to establish a database connection.");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+
     public void confirmButton1(ActionEvent event) {
         if (menuData != null) {
             String menuName = menuData.getName();
@@ -127,10 +162,10 @@ public class MenuController {
     private void initializeAddonsComboBox() {
         // Populate the addonsComboBox with items
         ObservableList<String> addons = FXCollections.observableArrayList(
-                "None",
-                "Cream Cheese",
-                "Pearl",
-                "Oreo"
+            "None",
+            "Cream Cheese",
+            "Pearl",
+            "Oreo"
         );
         addonsComboBox.setItems(addons);
     }
@@ -138,10 +173,10 @@ public class MenuController {
     private void initializeSizeComboBox() {
         // Populate the sizeComboBox with items
         ObservableList<String> sizes = FXCollections.observableArrayList(
-                "None",
-                "Small",
-                "Medium",
-                "Large"
+            "None",
+            "Small",
+            "Medium",
+            "Large"
         );
         sizeComboBox.setItems(sizes);
     }
@@ -149,10 +184,10 @@ public class MenuController {
     private void initializeSugarlevelComboBox() {
         // Populate the sugarlevelComboBox with items
         ObservableList<String> sugarLevels = FXCollections.observableArrayList(
-                "None",
-                "Low",
-                "Medium",
-                "High"
+            "None",
+            "Low",
+            "Medium",
+            "High"
         );
         sugarlevelComboBox.setItems(sugarLevels);
     }
@@ -166,28 +201,23 @@ public class MenuController {
         return customerCounter;
     }
 
-    // Insert order details into the database
-    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity, String selectedSize, String selectedAddon, String selectedSugarLevel, boolean askmeRadioSelected) {
-        try (Connection conn = database.getConnection()) {
-            if (conn != null) {
-                String sql = "INSERT INTO milk_tea (customer_id, item_name, quantity, size, add_ons, sugar_level, ask_me) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setInt(1, customer_id);
-                    stmt.setString(2, menuName);
-                    stmt.setInt(3, selectedQuantity);
-                    stmt.setString(4, selectedSize);
-                    stmt.setString(5, selectedAddon);
-                    stmt.setString(6, selectedSugarLevel);
-                    stmt.setBoolean(7, askmeRadioSelected);
-                    stmt.executeUpdate();
-                }
-            } else {
-                System.out.println("Failed to establish a database connection.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    private int calculateSizePrice(String selectedSize) {
+        switch (selectedSize) {
+            case "Small":
+                return 39;
+            case "Medium":
+                return 69;
+            case "Large":
+                return 79; // Return 0 if "None" is selected
         }
+        return 0; // Return 0 if an unknown size is selected
     }
+
+    private int calculateAddonsPrice(String selectedAddon) {
+        switch (selectedAddon) {
+            case "Cream Cheese":
+                return 20;
+        }
+        return 0; // Return 0 if an unknown addon is selected
+    }   
 }
-
-

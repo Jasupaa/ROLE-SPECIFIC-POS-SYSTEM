@@ -11,14 +11,14 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="493.0" prefWidth="730.0" style="-fx-background-color: #d9d9d9; -fx-background-radius: 30;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
+<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="493.0" prefWidth="803.0" style="-fx-background-color: #d9d9d9; -fx-background-radius: 30;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
     <children>
-      <ImageView fx:id="CloseButton" fitHeight="36.0" fitWidth="24.0" layoutX="28.0" layoutY="435.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="25.0" layoutY="440.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/power-32.png" />
          </image>
       </ImageView>
-      <ScrollPane layoutX="87.0" layoutY="105.0" prefHeight="354.0" prefWidth="323.0" style="-fx-background-color: transparent;" styleClass="scrollPane" stylesheets="@../CSS/CashierCSS.css">  
+      <ScrollPane layoutX="87.0" layoutY="77.0" prefHeight="382.0" prefWidth="349.0" style="-fx-background-color: transparent;" styleClass="scrollPane" stylesheets="@../CSS/CashierCSS.css">  
           <content>
             <GridPane fx:id="menuGrid" prefHeight="0.0" prefWidth="0.0">
               <columnConstraints>
@@ -27,17 +27,18 @@
             </GridPane>
          </content>
       </ScrollPane>
-      <Button fx:id="getMenu1" layoutX="94.0" layoutY="38.0" mnemonicParsing="false" onAction="#getMenu1" text="Menu 1" />
-      <Button fx:id="getMenu2" layoutX="171.0" layoutY="38.0" mnemonicParsing="false" onAction="#getMenu2" text="Menu2" />
-      <Pane layoutX="452.0" layoutY="4.0" prefHeight="486.0" prefWidth="264.0">
+      <Button fx:id="getMenu1" layoutX="87.0" layoutY="38.0" mnemonicParsing="false" onAction="#getMenu1" text="Menu 1" />
+      <Button fx:id="getMenu2" layoutX="150.0" layoutY="38.0" mnemonicParsing="false" onAction="#getMenu2" text="Menu2" />
+      <Pane layoutX="458.0" layoutY="4.0" prefHeight="486.0" prefWidth="331.0">
          <children>
-            <TableView layoutX="20.0" layoutY="26.0" prefHeight="290.0" prefWidth="232.0">
+            <Button fx:id="takeOrderButton" layoutX="217.0" layoutY="431.0" mnemonicParsing="false" text="Take Order" />
+            <TableView fx:id="receiptTable" layoutX="40.0" layoutY="30.0" prefHeight="308.0" prefWidth="252.0">
               <columns>
-                <TableColumn prefWidth="118.0" text="C1" />
-                <TableColumn prefWidth="113.0" text="C2" />
+                <TableColumn fx:id="columnItemName" prefWidth="85.0" resizable="false" text="Item" />
+                <TableColumn fx:id="columnItemQuantity" resizable="false" text="Quantity" />
+                  <TableColumn fx:id="columnItemPrice" prefWidth="86.0" resizable="false" text="Price" />
               </columns>
             </TableView>
-            <Button fx:id="takeOrderButton" layoutX="175.0" layoutY="408.0" mnemonicParsing="false" text="Take Order" />
          </children>
       </Pane>
    </children>

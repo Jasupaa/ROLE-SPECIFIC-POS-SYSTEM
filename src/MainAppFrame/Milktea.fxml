@@ -9,21 +9,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane id="AnchorPane" prefHeight="506.0" prefWidth="287.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.MenuController">
+<AnchorPane id="AnchorPane" prefHeight="506.0" prefWidth="277.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.MenuController">
    <children>
-      <Pane prefHeight="506.0" prefWidth="287.0" styleClass="containerColor" stylesheets="@../CSS/CashierCSS.css" />
-      <ImageView fx:id="foodImg" fitHeight="119.0" fitWidth="130.0" layoutX="78.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="foodLabel" layoutX="126.0" layoutY="163.0" text="Label" wrapText="true" />
+      <Pane prefHeight="506.0" prefWidth="281.0" styleClass="containerColor" stylesheets="@../CSS/CashierCSS.css">
+         <children>
+            <Spinner fx:id="spinnerQuantity" layoutX="95.0" layoutY="198.0" prefHeight="18.0" prefWidth="98.0" />
+            <Label fx:id="foodLabel" layoutX="127.0" layoutY="169.0" text="Label" wrapText="true" />
+            <ImageView fx:id="foodImg" fitHeight="119.0" fitWidth="130.0" layoutX="79.0" layoutY="39.0" pickOnBounds="true" preserveRatio="true" />
+         </children></Pane>
       <Button fx:id="confirmButton1" layoutX="182.0" layoutY="444.0" mnemonicParsing="false" onAction="#confirmButton1" text="Confirm" />
-      <Spinner fx:id="spinnerQuantity" layoutX="94.0" layoutY="201.0" prefHeight="18.0" prefWidth="98.0" />
-      <Label layoutX="39.0" layoutY="253.0" text="Size" />
+      <Label layoutX="35.0" layoutY="253.0" text="Size" />
       <ComboBox fx:id="sizeComboBox" layoutX="133.0" layoutY="249.0" prefHeight="26.0" prefWidth="111.0" />
-      <Label layoutX="39.0" layoutY="289.0" text="Add-ons" />
+      <Label layoutX="35.0" layoutY="289.0" text="Add-ons" />
       <ComboBox fx:id="addonsComboBox" layoutX="133.0" layoutY="284.0" prefHeight="26.0" prefWidth="111.0" />
-      <Label layoutX="39.0" layoutY="360.0" text="Sugar Level" />
-      <Label layoutX="39.0" layoutY="324.0" text="Customization" />
+      <Label layoutX="35.0" layoutY="360.0" text="Sugar Level" />
+      <Label layoutX="35.0" layoutY="324.0" text="Customization" />
       <ComboBox fx:id="sugarlevelComboBox" layoutX="134.0" layoutY="355.0" prefHeight="26.0" prefWidth="111.0" />
-      <Label layoutX="39.0" layoutY="397.0" text="Ask Me" />
+      <Label layoutX="35.0" layoutY="397.0" text="Ask Me" />
       <RadioButton fx:id="askmeRadioHead" layoutX="219.0" layoutY="396.0" mnemonicParsing="false" onAction="#askmeRadioHeadSelected" prefHeight="18.0" prefWidth="19.0" />
    </children>
 </AnchorPane>
