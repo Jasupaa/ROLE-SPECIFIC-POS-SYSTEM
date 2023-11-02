@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,7 +20,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
@@ -23,7 +27,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+
+
+import other.ItemData;
 import other.menu1;
 
 public class CashierFXMLController implements Initializable, ControllerInterface {
@@ -31,19 +41,22 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     double xOffset, yOffset;
 
     @FXML
-    private TableColumn<?, ?> columnItemName;
-
+    private TableColumn<ItemData, String> columnItemName;
+    
     @FXML
-    private TableColumn<?, ?> columnItemPrice;
-
+    private TableColumn<ItemData, Double> columnItemPrice;
+    
     @FXML
-    private TableColumn<?, ?> columnItemQuantity;
-
+    private TableColumn<ItemData, Integer> columnItemQuantity;
+    
     @FXML
-    private TableView<?> receiptTable;
+    private TableView<ItemData> receiptTable;
 
     @FXML
     private ImageView CloseButton;
+    
+    @FXML
+    private Button takeOrderButton;
 
     @FXML
     private Button getMenu1;
@@ -146,7 +159,88 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 stage.close();
             }
         });
+        
+        // Set up the columns in the TableView
+    columnItemName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItemName()));
+    columnItemPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getItemPrice()).asObject());
+    columnItemQuantity.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getItemQuantity()).asObject());
+    
+    // Create an ObservableList to store your data
+    ObservableList<ItemData> data = FXCollections.observableArrayList();
+    receiptTable.setItems(data);
+    
+    // Fetch data from the database and populate the ObservableList
+    loadDataFromDatabase(data);
+    
     }
+    
+    private void loadDataFromDatabase(ObservableList<ItemData> data) {
+        try (Connection conn = database.getConnection()) {
+        if (conn == null) {
+            System.err.println("Database connection is null.");
+            return;
+        }
+
+        String query = "SELECT size, item_name, final_price, quantity FROM milk_tea";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String itemName = rs.getString("size") + " " + rs.getString("item_name");
+                double itemPrice = rs.getDouble("final_price");
+                int itemQuantity = rs.getInt("quantity");
+                ItemData item = new ItemData(itemName, itemPrice, itemQuantity);
+                data.add(item);
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+    @FXML
+    private void takeOrderButtonClicked(ActionEvent event) {
+        incrementCustomerId(); // Increment the customer_id
+        clearTableData(); // Clear the data in the table
+}
+
+    private void incrementCustomerId() {
+        try (Connection conn = database.getConnection()) {
+        if (conn == null) {
+            System.err.println("Database connection is null.");
+            return;
+        }
+
+        // Query to find the maximum current customer_id
+        String maxIdQuery = "SELECT MAX(customer_id) FROM milk_tea";
+        int currentMaxId = 0;
+
+        try (PreparedStatement maxIdStmt = conn.prepareStatement(maxIdQuery);
+             ResultSet maxIdResultSet = maxIdStmt.executeQuery()) {
+            if (maxIdResultSet.next()) {
+                currentMaxId = maxIdResultSet.getInt(1);
+            }
+        }
+
+        // Increment the customer_id
+        int newCustomerId = currentMaxId + 1;
+
+        String insertQuery = "INSERT INTO milk_tea (customer_id) VALUES (?)";
+        try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+            insertStmt.setInt(1, newCustomerId);
+            insertStmt.executeUpdate();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+
+// Method to clear data in the table
+    private void clearTableData() {
+        receiptTable.getItems().clear();
+}
 
     private void refreshMenuGrid() {
         menuGrid.getChildren().clear();

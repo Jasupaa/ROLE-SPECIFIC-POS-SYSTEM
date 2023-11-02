@@ -31,7 +31,7 @@
       <Button fx:id="getMenu2" layoutX="150.0" layoutY="38.0" mnemonicParsing="false" onAction="#getMenu2" text="Menu2" />
       <Pane layoutX="458.0" layoutY="4.0" prefHeight="486.0" prefWidth="331.0">
          <children>
-            <Button fx:id="takeOrderButton" layoutX="217.0" layoutY="431.0" mnemonicParsing="false" text="Take Order" />
+            <Button fx:id="takeOrderButton" layoutX="217.0" layoutY="431.0" mnemonicParsing="false" onAction="#takeOrderButtonClicked" text="Take Order" />
             <TableView fx:id="receiptTable" layoutX="40.0" layoutY="30.0" prefHeight="308.0" prefWidth="252.0">
               <columns>
                 <TableColumn fx:id="columnItemName" prefWidth="85.0" resizable="false" text="Item" />
