@@ -52,7 +52,7 @@
             <Image url="@../img/icons8-log-out-96.png" />
          </image>
       </ImageView>
-      <VBox layoutX="67.0" layoutY="201.0" prefHeight="251.0" prefWidth="136.0">
+      <VBox layoutX="67.0" layoutY="222.0" prefHeight="251.0" prefWidth="136.0">
          <children>
             <Button fx:id="getMenu1" alignment="BASELINE_LEFT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#getMenu1" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Milk Tea" textFill="WHITE">
                <font>
@@ -103,5 +103,10 @@
       </ImageView>
       <Label fx:id="dateLbl" layoutX="237.0" layoutY="99.0" text="Label" textFill="WHITE" />
       <Label fx:id="timeLbl" layoutX="335.0" layoutY="99.0" text="Label" textFill="WHITE" />
+      <Label layoutX="75.0" layoutY="201.0" text="FOOD CATEGORY" textFill="#404040">
+         <font>
+            <Font size="9.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

@@ -1,0 +1,12 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Nov 6, 2023, 10:44:02 PM
+    Author     : John Paul Uy
+*/
+.anchorPaneBG {
+    -fx-background-color:  #111315;
+    -fx-background-radius: 5px;
+}
