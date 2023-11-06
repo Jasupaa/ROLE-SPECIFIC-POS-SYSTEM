@@ -5,8 +5,6 @@
 package MainAppFrame;
 
 import Login.ControllerInterface;
-import com.sun.jdi.connect.spi.Connection;
-import java.io.InputStream;
 import Login.LoginTest;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,12 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 
 /**
  * FXML Controller class
@@ -41,7 +34,7 @@ double xOffset, yOffset;
     @FXML
       private Stage stage;
     
-        @FXML
+    @FXML
     private Label profileName;
 
     @FXML

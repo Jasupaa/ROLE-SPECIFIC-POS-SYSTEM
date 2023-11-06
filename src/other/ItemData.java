@@ -2,6 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+
 package other;
 
 /**
@@ -13,12 +14,6 @@ public class ItemData {
     private double itemPrice;
     private int itemQuantity;
 
-    /**
-     *
-     * @param itemName
-     * @param itemPrice
-     * @param itemQuantity
-     */
     public ItemData(String itemName, double itemPrice, int itemQuantity) {
         this.itemName = itemName;
         this.itemPrice = itemPrice;
@@ -29,23 +24,24 @@ public class ItemData {
         return itemName;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setItemName(String name) {
+        this.itemName = name;
     }
 
     public double getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(double itemPrice) {
-        this.itemPrice = itemPrice;
+    public void setItemPrice(double price) {
+        this.itemPrice = price;
     }
 
     public int getItemQuantity() {
         return itemQuantity;
     }
 
-    public void setItemQuantity(int itemQuantity) {
-        this.itemQuantity = itemQuantity;
+    public void setItemQuantity(int quantity) {
+        this.itemQuantity = quantity;
     }
 }
+

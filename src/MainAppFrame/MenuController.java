@@ -19,6 +19,7 @@ import javafx.scene.image.Image;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import other.menu1;
+import other.menu2;
 
 public class MenuController {
 
@@ -40,8 +41,6 @@ public class MenuController {
     @FXML
     private Button confirmButton1;
 
-    @FXML
-    private Button takeOrderButton;
 
     @FXML
     private ImageView foodImg;
@@ -49,12 +48,13 @@ public class MenuController {
     @FXML
     private Label foodLabel;
 
-    private menu1 menuData;
+    private menu1 menuData;   
 
     private boolean askmeRadioSelected = false;
 
     private static int customerCounter = 0;
     private boolean orderTaken = false;
+   
 
     public void initialize() {
         // Initialize your combo boxes with data
@@ -74,6 +74,7 @@ public class MenuController {
         // Set a StringConverter to display the Spinner values as whole numbers
         StringConverter<Integer> converter = new IntegerStringConverter();
         spinnerQuantity.getValueFactory().setConverter(converter);
+        
     }
 
     @FXML
@@ -88,7 +89,7 @@ public class MenuController {
         foodLabel.setText(menu.getName());
     }
 
-private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity, String selectedSize, String selectedAddon, String selectedSugarLevel, boolean askmeRadioSelected) {
+    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity, String selectedSize, String selectedAddon, String selectedSugarLevel, boolean askmeRadioSelected) {
     try (Connection conn = database.getConnection()) {
         if (conn != null) {
             String sql = "INSERT INTO milk_tea (customer_id, item_name, quantity, size, add_ons, sugar_level, ask_me, size_price, addons_price, final_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -123,38 +124,39 @@ private void insertOrderToDatabase(int customer_id, String menuName, int selecte
 }
 
 
-    public void confirmButton1(ActionEvent event) {
-        if (menuData != null) {
-            String menuName = menuData.getName();
-            String selectedAddon = addonsComboBox.getValue();
-            String selectedSize = sizeComboBox.getValue();
-            String selectedSugarLevel = sugarlevelComboBox.getValue();
-            Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
-
-            // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
-            if ("None".equals(selectedAddon) || "None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
-                System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
-            } else {
-                int customer_id = generateCustomerId(); // Generate customer_id based on new or existing customer
-                insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedAddon, selectedSugarLevel, askmeRadioSelected);
-                System.out.println("Data inserted into the database.");
-            }
-
-            // Reset the ComboBoxes to "None"
-            addonsComboBox.setValue("None");
-            sizeComboBox.setValue("None");
-            sugarlevelComboBox.setValue("None");
-
-            // Reset the Spinner to the default value (e.g., 0)
-            spinnerQuantity.getValueFactory().setValue(0);
-
-            // Reset the radio button
-            askmeRadioHead.setSelected(false);
-            askmeRadioSelected = false;
-        }
-    }
-
     @FXML
+    public void confirmButton1(ActionEvent event) {
+    if (menuData != null) {
+        String menuName = menuData.getName();
+        String selectedAddon = addonsComboBox.getValue();
+        String selectedSize = sizeComboBox.getValue();
+        String selectedSugarLevel = sugarlevelComboBox.getValue();
+        Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
+
+        // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
+        if ("None".equals(selectedAddon) || "None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
+            System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
+        } else {
+            int customer_id = generateCustomerId(); // Generate customer_id based on new or existing customer
+            insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedAddon, selectedSugarLevel, askmeRadioSelected);
+            System.out.println("Data inserted into the database.");
+        }
+
+        // Reset the ComboBoxes to "None"
+        addonsComboBox.setValue("None");
+        sizeComboBox.setValue("None");
+        sugarlevelComboBox.setValue("None");
+
+        // Reset the Spinner to the default value (e.g., 0)
+        spinnerQuantity.getValueFactory().setValue(0);
+
+        // Reset the radio button
+        askmeRadioHead.setSelected(false);
+        askmeRadioSelected = false;
+        
+    }
+  }
+
     public void takeOrderButtonClicked(ActionEvent event) {
         orderTaken = true;
     }

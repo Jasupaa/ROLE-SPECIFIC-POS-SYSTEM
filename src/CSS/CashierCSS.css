@@ -1,13 +1,11 @@
 /* Apply custom styles to the buttonMenu class */
 .buttonMenu {
-    -fx-background-color: transparent;
-    -fx-border-color: #8E8E8E;
+    -fx-background-color: #111315;
 }
 
 /* Apply custom styles for the hover state using the myButton ID */
-#myButton:hover {
-    -fx-background-color: #8E8E8E;
-    -fx-border-color: #8E8E8E;
+.buttonMenu:hover {
+    -fx-background-color: #292C2D;
 }
 
 .imageviewShadow {
@@ -15,12 +13,51 @@
 }
 
 .containerColor {
-    -fx-background-color: #A58867;
+    -fx-background-color: #99C8E2;
     -fx-background-radius: 10px;
 }
 
-.scrollPane {
-    -fx-background-color: transparent;
+.containerColorFD {
+    -fx-background-color: #B6B7F1;
+    -fx-background-radius: 10px;
 }
 
+.containerColorRM {
+    -fx-background-color: #DFC3CD;
+    -fx-background-radius: 10px;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #111315;
+    -fx-border-color: #111315;
+}
+
+.scroll-pane {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane:focused {
+    -fx-background-insets: 0;
+}
+
+.scroll-pane .corner {
+    -fx-background-insets: 0;
+}
+
+.receiptButton {
+    -fx-background-color: #111315;
+    -fx-border-color: white;
+    -fx-text-fill: white;
+}
+
+.receiptButton:hover {
+    -fx-background-color: white;
+    -fx-border-color: white;
+    -fx-text-fill: #111315;
+}
+
+.boldText {
+    -fx-font-weight: bold;
+}
 
