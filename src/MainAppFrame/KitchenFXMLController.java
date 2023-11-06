@@ -8,7 +8,8 @@ import Login.ControllerInterface;
 import Login.LoginTest;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,7 +18,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.scene.control.Label;
 
 /**
@@ -28,11 +28,11 @@ import javafx.scene.control.Label;
 public class KitchenFXMLController implements Initializable, ControllerInterface {
 double xOffset, yOffset;
     
-     @FXML
-     private ImageView CloseButton;
+    @FXML
+    private ImageView CloseButton;
      
     @FXML
-      private Stage stage;
+    private Stage stage;
     
     @FXML
     private Label profileName;
@@ -40,16 +40,14 @@ double xOffset, yOffset;
     @FXML
     private ImageView profilePic;
       
-     @FXML
-     private Button Logout;
+    @FXML
+    private Button Logout;
      
-      @FXML
+    @FXML
     private void handleMousePressed(MouseEvent event) {
         xOffset = event.getSceneX();
         yOffset = event.getSceneY();
     }
-    
-    
 
     @FXML
     private void handleMouseDragged(MouseEvent event) {
@@ -58,46 +56,30 @@ double xOffset, yOffset;
         stage.setY(event.getScreenY() - yOffset);
     }
     
-    @FXML
-      private void LogoutHandler(ActionEvent event) throws Exception {
-  // Close the current window.
-  Stage stage = (Stage) Logout.getScene().getWindow();
-  stage.close();
-
-  // Open the login window.
-  LoginTest loginTest = new LoginTest();
-  loginTest.start(new Stage());
-}
-
- 
-public void setStage(Stage stage) {
-    this.stage = stage;
-    
-    
-}
-      
-    
-    
-    
+    public void setStage(Stage stage) {
+    this.stage = stage;   
+}  
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-
-
-
-  CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-             
-                stage.close();
+
+                try {
+                    Stage stage = (Stage) CloseButton.getScene().getWindow();
+                    stage.close();
+
+                    // Open the login window.
+                    LoginTest loginTest = new LoginTest();
+                    loginTest.start(new Stage());
+                } catch (Exception ex) {
+                    Logger.getLogger(AdminFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
-  
-     if (stage != null) {
-            stage.initStyle(StageStyle.TRANSPARENT);
-        }
-  
-    }    
+          
     
+}
 }

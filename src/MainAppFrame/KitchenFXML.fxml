@@ -18,12 +18,12 @@
       </ImageView>
       <VBox layoutX="77.0" layoutY="255.0" prefHeight="251.0" prefWidth="136.0">
          <children>
-            <Button fx:id="getMenu1" alignment="BASELINE_LEFT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#getMenu1" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Orders Tab" textFill="WHITE">
+            <Button fx:id="getMenu1" alignment="BASELINE_LEFT" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Orders Tab" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="getMenu2" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#getMenu2" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Archives" textFill="WHITE">
+            <Button fx:id="getMenu2" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Archives" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
@@ -35,7 +35,7 @@
             <Font size="9.0" />
          </font>
       </Label>
-      <ImageView fx:id="CloseButton1" fitHeight="25.0" fitWidth="19.0" layoutX="58.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="58.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/icons8-log-out-96.png" />
          </image>
