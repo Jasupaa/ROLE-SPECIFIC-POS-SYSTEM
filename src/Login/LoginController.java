@@ -22,11 +22,8 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 
 public class LoginController {
-    
     private DbLoginAccess dbLoginAccess;
-    
-
-    double xOffset, yOffset;
+    private Stage stage;
     private volatile boolean stop = false;
 
     @FXML
@@ -47,30 +44,21 @@ public class LoginController {
     @FXML
     private Label TimeLbl;
 
-    Stage stage;
-    
-     private void CashierFrame(){
-         
-        System.out.println("Cashier");
-        loadFXML("/MainAppFrame/CashierFXML.fxml");
-    
+    double xOffset, yOffset;
+
+    @FXML
+    public void initialize() {
+        closebutton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.exit(0);
+            }
+        });
+
+        DateLabel();
+        Timenow();
+        dbLoginAccess = new DbLoginAccess();
     }
-    
-    private void KitchenFrame(){
-      
-    System.out.println("Kitchen");
-    loadFXML("/MainAppFrame/KitchenFXML.fxml");
-     
-    }
-    
-    private void AdminFrame(){
-           
-    System.out.println("Admin");
-    loadFXML("/MainAppFrame/AdminFXML.fxml");
-    
-   
-    }
-    
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -87,36 +75,6 @@ public class LoginController {
 
     public void setStage(Stage stage) {
         this.stage = stage;
-    }
-
-    @FXML
-    public void initialize() {
-        
-        closebutton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-             
-                stage.close();
-            }
-        });
-
-        DateLabel();
-        Timenow();
-        dbLoginAccess = new DbLoginAccess();
-    }
-
-    @FXML
-    private void showNumber(ActionEvent event) {
-        Button clickedButton = (Button) event.getSource();
-        String buttonText = clickedButton.getText();
-        if (CodeLabel.getText().length() < 6) {
-            CodeLabel.setText(CodeLabel.getText() + buttonText);
-        }
-    }
-
-    @FXML
-    private void clearCodeLabel() {
-        CodeLabel.setText("");
     }
 
     private void DateLabel() {
@@ -137,100 +95,92 @@ public class LoginController {
                 }
                 final String timenow = sdf.format(new Date());
                 Platform.runLater(() -> {
-                    TimeLbl.setText(timenow); // This is the label
+                    TimeLbl.setText(timenow);
                 });
             }
         });
 
         thread.start();
     }
-    
+
     @FXML
-   private void LoginHandler(ActionEvent event) {
-    String codeLabelText = CodeLabel.getText();
-    String numericPart = codeLabelText.replaceAll("[^0-9]", "");
-    int enteredCode = 0; // Initialize the enteredCode variable
-
-    if (!numericPart.isEmpty()) {
-        enteredCode = Integer.parseInt(numericPart);
-
-        DbLoginAccess databaseAccess = new DbLoginAccess();
-        String role = databaseAccess.checkAccessCode(enteredCode);
-
-        if (role != null) {
-            switch (role) {
-                case "cashier":
-                    CashierFrame();
-                    break;
-                case "kitchen":
-                    KitchenFrame();
-                    break;
-                case "admin":
-                    AdminFrame();
-                    
-                    break;
-                default:
-                   handleInvalidCode("Invalid Role", enteredCode);
-            }
-           
-        } 
-        
-        
-        else {
-            
-            
-         handleInvalidCode("Invalid Code", enteredCode);
+    private void showNumber(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+        String buttonText = clickedButton.getText();
+        if (CodeLabel.getText().length() < 6) {
+            CodeLabel.setText(CodeLabel.getText() + buttonText);
         }
     }
-    
-}
+
+    @FXML
+    private void clearCodeLabel() {
+        CodeLabel.setText("");
+    }
+
+    private void CashierFrame() {
+        System.out.println("Cashier");
+        loadFXML("/MainAppFrame/CashierFXML.fxml");
+    }
+
+    private void KitchenFrame() {
+        System.out.println("Kitchen");
+        loadFXML("/MainAppFrame/KitchenFXML.fxml");
+    }
+
+    private void AdminFrame() {
+        System.out.println("Admin");
+        loadFXML("/MainAppFrame/AdminFXML.fxml");
+    }
+
+    @FXML
+    private void LoginHandler(ActionEvent event) {
+        String codeLabelText = CodeLabel.getText();
+        String numericPart = codeLabelText.replaceAll("[^0-9]", "");
+        int enteredCode = 0;
+
+        if (!numericPart.isEmpty()) {
+            enteredCode = Integer.parseInt(numericPart);
+            DbLoginAccess databaseAccess = new DbLoginAccess();
+            String role = databaseAccess.checkAccessCode(enteredCode);
+
+            if (role != null) {
+                switch (role) {
+                    case "cashier":
+                        CashierFrame();
+                        break;
+                    case "kitchen":
+                        KitchenFrame();
+                        break;
+                    case "admin":
+                        AdminFrame();
+                        break;
+                    default:
+                        handleInvalidCode("Invalid Role", enteredCode);
+                }
+            } else {
+                handleInvalidCode("Invalid Code", enteredCode);
+            }
+        }
+    }
 
     private void handleInvalidCode(String errorMessage, int enteredCode) {
-    CodeLabel.setText("Error Code: " + " (Code: " + enteredCode + ")");
-   
-}
-    
-    
-   
- 
-    private void loadFXML(String fxmlPath) {
-    try {
-       
-        
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Parent pane = loader.load();
-        
-        
-        ControllerInterface controller = loader.getController();
-        if (controller != null) {
-            controller.setStage(stage);
-        } 
-  
-   
-         Scene scene = new Scene(pane);
-        
-           scene.setFill(Color.TRANSPARENT);
-        
-       
-       
-        stage.setScene(scene);
-        stage.show();
-         
-    } catch (IOException e) {
-        e.printStackTrace();
-        // Handle any exceptions
+        CodeLabel.setText("Error Code: " + " (Code: " + enteredCode + ")");
     }
-    
-    
 
+    private void loadFXML(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent pane = loader.load();
+            ControllerInterface controller = loader.getController();
+            if (controller != null) {
+                controller.setStage(stage);
+            }
+            Scene scene = new Scene(pane);
+            scene.setFill(Color.TRANSPARENT);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
-    
-    
-    
-  
-    
-    
-}
-
-
-//wala lng
