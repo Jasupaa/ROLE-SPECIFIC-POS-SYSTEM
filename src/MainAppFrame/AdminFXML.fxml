@@ -8,53 +8,62 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AdminFXMLController">
+<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AdminFXMLController">
    <children>
-      <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="93.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../img/Group%201%20(1).png" />
-         </image>
-      </ImageView>
-      <VBox layoutX="77.0" layoutY="245.0" prefHeight="251.0" prefWidth="173.0">
+      <AnchorPane prefHeight="652.0" prefWidth="1136.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button fx:id="getMenu1" alignment="BASELINE_LEFT" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="36.0" prefWidth="204.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Sales Report" textFill="WHITE">
+            <AnchorPane fx:id="viewPane" layoutX="247.0" layoutY="147.0" prefHeight="450.0" prefWidth="800.0" />
+            <Label fx:id="dateLbl" layoutX="247.0" layoutY="109.0" text="Label" textFill="WHITE" />
+            <Label fx:id="timeLbl" layoutX="345.0" layoutY="109.0" text="Label" textFill="WHITE" />
+            <Label fx:id="dashboard_note" layoutX="85.0" layoutY="234.0" text="DASHBOARD" textFill="#404040">
                <font>
-                  <Font size="14.0" />
+                  <Font size="9.0" />
                </font>
-            </Button>
-            <Button fx:id="getMenu2" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="176.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Inventory Management" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="getMenu3" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="215.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Employee Details" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="getMenu4" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="214.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Discount Coupon" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
+            </Label>
+            <ImageView fitHeight="59.0" fitWidth="455.0" layoutX="247.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/Group%205.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="83.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/Group%201%20(1).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="58.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/icons8-log-out-96.png" />
+               </image>
+            </ImageView>
+            <AnchorPane layoutX="77.0" layoutY="255.0" prefHeight="219.0" prefWidth="178.0">
+               <children>
+                  <VBox prefHeight="251.2" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Button fx:id="salesRepBTN" alignment="BASELINE_LEFT" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="36.0" prefWidth="204.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Sales Report" textFill="WHITE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="getMenu2" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="176.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Inventory Management" textFill="WHITE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="getMenu3" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="215.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Employee Details" textFill="WHITE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="getMenu4" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="214.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Discount Coupon" textFill="WHITE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
          </children>
-      </VBox>
-      <Label layoutX="85.0" layoutY="224.0" text="DASHBOARD" textFill="#404040">
-         <font>
-            <Font size="9.0" />
-         </font>
-      </Label>
-      <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="58.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../img/icons8-log-out-96.png" />
-         </image>
-      </ImageView>
-      <Label fx:id="dateLbl" layoutX="257.0" layoutY="119.0" text="Label" textFill="WHITE" />
-      <Label fx:id="timeLbl" layoutX="355.0" layoutY="119.0" text="Label" textFill="WHITE" />
-      <ImageView fitHeight="59.0" fitWidth="455.0" layoutX="247.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../img/Group%205.png" />
-         </image>
-      </ImageView>
+      </AnchorPane>
    </children>
 </AnchorPane>

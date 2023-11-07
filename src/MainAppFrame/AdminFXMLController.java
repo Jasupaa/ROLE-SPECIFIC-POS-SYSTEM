@@ -1,29 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package MainAppFrame;
 
 import Login.ControllerInterface;
 import Login.LoginTest;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author Jasper
- */
+
 public class AdminFXMLController implements Initializable, ControllerInterface  {
     
     double xOffset, yOffset;
@@ -33,9 +30,24 @@ public class AdminFXMLController implements Initializable, ControllerInterface  
      
     @FXML
     private Stage stage;
-     
+    
     @FXML
     private Button Logout;
+    
+    @FXML
+    private Button salesRepBTN;
+    
+    @FXML
+    private AnchorPane viewPane;
+
+    @FXML
+    private Button getMenu2;
+
+    @FXML
+    private Button getMenu3;
+
+    @FXML
+    private Button getMenu4;
       
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -50,10 +62,10 @@ public class AdminFXMLController implements Initializable, ControllerInterface  
         stage.setY(event.getScreenY() - yOffset);
     }
 
+    @Override
     public void setStage(Stage stage) {
     this.stage = stage;    
-}
-    
+} 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
             CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -63,16 +75,25 @@ public class AdminFXMLController implements Initializable, ControllerInterface  
                 try {
                     Stage stage = (Stage) CloseButton.getScene().getWindow();
                     stage.close();
-
+                    
                     // Open the login window.
                     LoginTest loginTest = new LoginTest();
                     loginTest.start(new Stage());
                 } catch (Exception ex) {
                     Logger.getLogger(AdminFXMLController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+            } 
+            
         });
-
+            
+            
     }    
+    
+    void getMenuBTN(ActionEvent event) throws IOException {
+        Pane anchorPane = FXMLLoader.load(getClass().getResource("Sales_Report.fxml"));
+        viewPane.getChildren().removeAll();
+        viewPane.getChildren().setAll(anchorPane);
+        
+    }
     
 }
