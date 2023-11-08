@@ -21,14 +21,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class LoginController {
     
-    private database dbLoginAccess;
+    private DbLoginAccess dbLoginAccess;
     
 
     double xOffset, yOffset;
@@ -107,7 +102,7 @@ public class LoginController {
 
         DateLabel();
         Timenow();
-        dbLoginAccess = new database();
+        dbLoginAccess = new DbLoginAccess();
     }
 
     @FXML
@@ -149,55 +144,52 @@ public class LoginController {
 
         thread.start();
     }
-
+    
     @FXML
    private void LoginHandler(ActionEvent event) {
-       String enteredCode = CodeLabel.getText();
-       String role = authenticateUser(enteredCode);
-       
-       if (role != null){
-       switch (role) {
-           case "cashier":
-               CashierFrame();
-               break;
-           case "kitcher":   
-            KitchenFrame();
-                break;
-            case "admin":
-                AdminFrame();
-                break;
-            default:
-                // Handle unexpected role
-                break;
-        }
-    } else {
-        handleInvalidCode("Invalid code entered", enteredCode);
-    }    
-       }
-       
-       
-   
+    String codeLabelText = CodeLabel.getText();
+    String numericPart = codeLabelText.replaceAll("[^0-9]", "");
+    int enteredCode = 0; // Initialize the enteredCode variable
 
-    private void handleInvalidCode(String errorMessage, String enteredCode) {
+    if (!numericPart.isEmpty()) {
+        enteredCode = Integer.parseInt(numericPart);
+
+        DbLoginAccess databaseAccess = new DbLoginAccess();
+        String role = databaseAccess.checkAccessCode(enteredCode);
+
+        if (role != null) {
+            switch (role) {
+                case "cashier":
+                    CashierFrame();
+                    break;
+                case "kitchen":
+                    KitchenFrame();
+                    break;
+                case "admin":
+                    AdminFrame();
+                    
+                    break;
+                default:
+                   handleInvalidCode("Invalid Role", enteredCode);
+            }
+           
+        } 
+        
+        
+        else {
+            
+            
+         handleInvalidCode("Invalid Code", enteredCode);
+        }
+    }
+    
+}
+
+    private void handleInvalidCode(String errorMessage, int enteredCode) {
     CodeLabel.setText("Error Code: " + " (Code: " + enteredCode + ")");
    
 }
     
-private String authenticateUser(String enteredCode) {
-    try (Connection connection = database.getConnection();
-         PreparedStatement statement = connection.prepareStatement("SELECT Role FROM employees WHERE Code = ?")) {
-        statement.setString(1, enteredCode);
-        ResultSet resultSet = statement.executeQuery();
-
-        if (resultSet.next()) {
-            return resultSet.getString("Role");
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return null; // Authentication failed
-}
     
    
  
