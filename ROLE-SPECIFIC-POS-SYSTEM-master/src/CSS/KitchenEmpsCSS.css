@@ -1,0 +1,32 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Nov 6, 2023, 10:35:56 PM
+    Author     : John Paul Uy
+*/
+
+.anchorPaneBG {
+    -fx-background-color:  #111315;
+    -fx-background-radius: 5px;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #111315;
+    -fx-border-color: #111315;
+}
+
+.scroll-pane {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane:focused {
+    -fx-background-insets: 0;
+}
+
+.scroll-pane .corner {
+    -fx-background-insets: 0;
+}
+

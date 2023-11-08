@@ -1,0 +1,81 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Nov 4, 2023, 10:57:29 PM
+    Author     : John Paul Uy
+*/
+
+/* Apply custom styles to the buttonMenu class */
+.buttonMenu {
+    -fx-background-color: #111315;
+}
+
+/* Apply custom styles for the hover state using the myButton ID */
+.buttonMenu:hover {
+    -fx-background-color: #292C2D;
+}
+
+.imageviewShadow {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0.5, 2, 2);
+}
+
+.containerColor {
+    -fx-background-color: #99C8E2;
+    -fx-background-radius: 10px;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #111315;
+    -fx-border-color: #111315;
+}
+
+.scroll-pane {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane:focused {
+    -fx-background-insets: 0;
+}
+
+.scroll-pane .corner {
+    -fx-background-insets: 0;
+}
+
+.pinButton {
+    -fx-background-color: #111315;
+    -fx-border-color: white;
+    -fx-text-fill: white;
+}
+
+.pinButton:hover {
+    -fx-background-color: white;
+    -fx-border-color: white;
+    -fx-text-fill: #111315;
+}
+
+.deleteButton {
+    -fx-background-color: #292C2D;
+    -fx-border-color: #292C2D;
+    -fx-text-fill: white;
+}
+
+.deleteButton:hover {
+    -fx-background-color: #EB8AB3;
+    -fx-border-color: #EB8AB3;
+    -fx-text-fill: #111315;
+}
+
+.enterButton {
+    -fx-background-color: #292C2D;
+    -fx-border-color: #292C2D;
+    -fx-text-fill: white;
+}
+
+.enterButton:hover {
+    -fx-background-color: #44AF3C;
+    -fx-border-color: #44AF3C;
+    -fx-text-fill: #111315;
+}
