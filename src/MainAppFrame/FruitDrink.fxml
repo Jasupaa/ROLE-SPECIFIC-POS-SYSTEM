@@ -19,10 +19,10 @@
             <Label layoutX="91.0" layoutY="242.0" text="Size" textFill="#111315" />
             <ComboBox fx:id="sizeComboBox" layoutX="189.0" layoutY="238.0" prefHeight="26.0" prefWidth="111.0" />
             <Label layoutX="91.0" layoutY="278.0" text="Fruit Flavor" textFill="#111315" />
-            <ComboBox fx:id="addonsComboBox" layoutX="189.0" layoutY="273.0" prefHeight="26.0" prefWidth="111.0" />
+            <ComboBox fx:id="fruitfComboBox" layoutX="189.0" layoutY="273.0" prefHeight="26.0" prefWidth="111.0" />
             <Label layoutX="90.0" layoutY="315.0" text="Sinkers" textFill="#111315" />
             <Label layoutX="92.0" layoutY="352.0" styleClass="boldText" stylesheets="@../CSS/CashierCSS.css" text="Customization" textFill="#111315" />
-            <ComboBox fx:id="sugarlevelComboBox" layoutX="189.0" layoutY="310.0" prefHeight="26.0" prefWidth="111.0" />
+            <ComboBox fx:id="sinkersComboBox" layoutX="189.0" layoutY="310.0" prefHeight="26.0" prefWidth="111.0" />
             <Label layoutX="91.0" layoutY="381.0" text="Ask Me" textFill="#111315" />
             <RadioButton fx:id="askmeRadioHead" layoutX="286.0" layoutY="379.0" mnemonicParsing="false" onAction="#askmeRadioHeadSelected" prefHeight="18.0" prefWidth="19.0" />
             <VBox alignment="CENTER" layoutX="41.0" layoutY="39.0" prefHeight="147.0" prefWidth="313.0">

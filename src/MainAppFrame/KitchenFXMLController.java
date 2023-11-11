@@ -25,6 +25,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -55,6 +57,19 @@ double xOffset, yOffset;
     
     @FXML
     private Stage stage;
+    
+    @FXML
+    private TableColumn<?, ?> sampleName;
+
+    @FXML
+    private TableColumn<?, ?> samplePrice;
+
+    @FXML
+    private TableColumn<?, ?> sampleQuantity;
+
+    @FXML
+    private TableView<?> sampleTableView;
+
     
     private volatile boolean stop = false;
     

@@ -19,7 +19,8 @@ import javafx.scene.image.Image;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import other.menu1;
-import other.menu2;
+import other.ItemData;
+import other.ControllerManager;
 
 public class MenuController {
 
@@ -54,8 +55,9 @@ public class MenuController {
 
     private static int customerCounter = 0;
     private boolean orderTaken = false;
+    
+    private ObservableList<ItemData> menuMilkteaListData;
    
-
     public void initialize() {
         // Initialize your combo boxes with data
         initializeAddonsComboBox();
@@ -154,8 +156,17 @@ public class MenuController {
         askmeRadioHead.setSelected(false);
         askmeRadioSelected = false;
         
+        CashierFXMLController cashierController = ControllerManager.getCashierController();
+
+        if (cashierController != null) {
+            // Call the setupTableView method from CashierFXMLController
+            cashierController.setupTableView();
+        } else {
+            System.out.println("Cashier controller not available.");
+        }
     }
-  }
+        
+    }
 
     public void takeOrderButtonClicked(ActionEvent event) {
         orderTaken = true;
