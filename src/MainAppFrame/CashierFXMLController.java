@@ -473,7 +473,13 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         // For frappe
         String frappeSql = "SELECT order_id, size, item_name, final_price, quantity FROM frappe";
 
-        try (Connection connect = database.getConnection(); PreparedStatement milkTeaPrepare = connect.prepareStatement(milkTeaSql); PreparedStatement frappePrepare = connect.prepareStatement(frappeSql)) {
+        // For Fruit Drink
+        String FruitSql = "SELECT order_id, size, item_name, final_price, quantity FROM fruit_drink";
+        
+        try (Connection connect = database.getConnection(); 
+                PreparedStatement milkTeaPrepare = connect.prepareStatement(milkTeaSql); 
+                PreparedStatement frappePrepare = connect.prepareStatement(frappeSql);
+                PreparedStatement fruitPrepare = connect.prepareStatement(FruitSql)) {
 
             ResultSet milkTeaResult = milkTeaPrepare.executeQuery();
             while (milkTeaResult.next()) {
@@ -496,6 +502,18 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
                 listData.add(item);
             }
+            
+            ResultSet fruitResult = fruitPrepare.executeQuery();
+            while (frappeResult.next()) {
+                int orderID = fruitResult.getInt("order_id");
+                String itemName = fruitResult.getString("size") + " " + fruitResult.getString("item_name");
+                double itemPrice = fruitResult.getDouble("final_price");
+                int itemQuantity = fruitResult.getInt("quantity");
+
+                ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
+                listData.add(item);
+            }
+            
 
         } catch (Exception e) {
             e.printStackTrace();
