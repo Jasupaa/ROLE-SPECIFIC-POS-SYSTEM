@@ -504,7 +504,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             }
             
             ResultSet fruitResult = fruitPrepare.executeQuery();
-            while (frappeResult.next()) {
+            while (fruitResult.next()) {
                 int orderID = fruitResult.getInt("order_id");
                 String itemName = fruitResult.getString("size") + " " + fruitResult.getString("item_name");
                 double itemPrice = fruitResult.getDouble("final_price");
