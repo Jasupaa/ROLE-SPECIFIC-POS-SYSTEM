@@ -93,38 +93,28 @@ public class CoffeeController {
         foodLabel.setText(menu.getName());
     }
 
-    private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedAddon, boolean askmeRadioSelected) {
-    try (Connection conn = database.getConnection()) {
-        if (conn != null) {
-            String sql = "INSERT INTO frappe (customer_id, item_name, quantity, size, add_ons, sugar_level, ask_me, size_price, addons_price, final_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, customer_id);
-                stmt.setString(2, menuName);
-                stmt.setInt(3, selectedQuantity);
-                stmt.setString(4, selectedSize);
-                stmt.setString(6, selectedSugarLevel);
-                stmt.setBoolean(7, askmeRadioSelected);
+    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity, String selectedSize, String selectedType, boolean askmeRadioSelected) {
 
-                // Check if size and add-ons are selected and set the corresponding prices
-                int sizePrice = calculateSizePrice(selectedSize);
-                int addonsPrice = calculateAddonsPrice(selectedAddon);
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                String sql = "INSERT INTO coffee (customer_id, date_time, item_name, quantity, size, type, ask_me) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setInt(1, customer_id);
+                    stmt.setString(2, menuName);
+                    stmt.setInt(3, selectedQuantity);
+                    stmt.setString(4, selectedSize);
+                    stmt.setString(5, selectedType);
+                    stmt.setBoolean(7, askmeRadioSelected);
 
-                stmt.setInt(8, sizePrice);
-                stmt.setInt(9, addonsPrice);
-
-                // Calculate the final price based on selected size and add-ons
-                int finalPrice = (sizePrice + addonsPrice) * selectedQuantity;
-                stmt.setInt(10, finalPrice);
-
-                stmt.executeUpdate();
+                    stmt.executeUpdate();
+                }
+            } else {
+                System.out.println("Failed to establish a database connection.");
             }
-        } else {
-            System.out.println("Failed to establish a database connection.");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
-}
 
 
  
