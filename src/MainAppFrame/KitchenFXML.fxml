@@ -42,7 +42,7 @@
       </ImageView>
       <Label fx:id="dateLbl" layoutX="247.0" layoutY="109.0" text="Label" textFill="WHITE" />
       <Label fx:id="timeLbl" layoutX="345.0" layoutY="109.0" text="Label" textFill="WHITE" />
-      <ScrollPane layoutX="247.0" layoutY="147.0" prefHeight="443.0" prefWidth="797.0" />
+      <ScrollPane layoutX="247.0" layoutY="147.0" prefHeight="443.0" prefWidth="445.0" />
       <ImageView fitHeight="59.0" fitWidth="455.0" layoutX="247.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/Group%204.png" />

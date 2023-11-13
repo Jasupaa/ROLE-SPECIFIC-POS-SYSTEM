@@ -61,3 +61,7 @@
     -fx-font-weight: bold;
 }
 
+.selected-button {
+    -fx-background-color: #292C2D;
+}
+

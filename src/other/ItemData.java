@@ -9,39 +9,65 @@ package other;
  *
  * @author John Paul Uy
  */
-public class ItemData {
-    private String itemName;
-    private double itemPrice;
-    private int itemQuantity;
+import javafx.beans.property.*;
 
-    public ItemData(String itemName, double itemPrice, int itemQuantity) {
-        this.itemName = itemName;
-        this.itemPrice = itemPrice;
-        this.itemQuantity = itemQuantity;
+public class ItemData {
+    private final IntegerProperty orderID;
+    private final StringProperty itemName;
+    private final DoubleProperty itemPrice;
+    private final IntegerProperty itemQuantity;
+
+    public ItemData(int orderID, String itemName, double itemPrice, int itemQuantity) {
+        this.orderID = new SimpleIntegerProperty(orderID);
+        this.itemName = new SimpleStringProperty(itemName);
+        this.itemPrice = new SimpleDoubleProperty(itemPrice);
+        this.itemQuantity = new SimpleIntegerProperty(itemQuantity);
     }
 
+    public Integer getorderID() {
+        return orderID.get();
+    }
+
+    public void setorderID(int orderid) {
+        orderID.set(orderid);
+    }    
+    
     public String getItemName() {
-        return itemName;
+        return itemName.get();
     }
 
     public void setItemName(String name) {
-        this.itemName = name;
+        itemName.set(name);
     }
 
-    public double getItemPrice() {
-        return itemPrice;
+    public Double getItemPrice() {
+        return itemPrice.get();
     }
 
     public void setItemPrice(double price) {
-        this.itemPrice = price;
+        itemPrice.set(price);
     }
 
-    public int getItemQuantity() {
-        return itemQuantity;
+    public Integer getItemQuantity() {
+        return itemQuantity.get();
     }
 
     public void setItemQuantity(int quantity) {
-        this.itemQuantity = quantity;
+        itemQuantity.set(quantity);
     }
+
+    public StringProperty itemNameProperty() {
+        return itemName;
+    }
+
+    public DoubleProperty itemPriceProperty() {
+        return itemPrice;
+    }
+
+    public IntegerProperty itemQuantityProperty() {
+        return itemQuantity;
+    }
+
 }
+
 
