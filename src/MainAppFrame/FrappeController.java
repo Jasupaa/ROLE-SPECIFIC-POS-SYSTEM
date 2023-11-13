@@ -17,8 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import other.menu1;
-import other.menu2;
+import other.ControllerManager;
 import other.menu3;
 
 /**
@@ -51,8 +50,8 @@ public class FrappeController {
 
     private boolean askmeRadioSelected = false;
 
-    private static int customerCounter = 0;
-    private boolean orderTaken = false;
+    private CashierFXMLController existingCashierController;
+
     private String selectedSugarLevel;
 
     public void initialize() {
@@ -80,6 +79,10 @@ public class FrappeController {
         askmeRadioSelected = askmeRadioHead.isSelected();
     }
 
+    public void setExistingCashierController(CashierFXMLController cashierController) {
+        this.existingCashierController = cashierController;
+    }
+
     public void setData(menu3 menu) {
         menuData = menu;
         Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
@@ -87,28 +90,26 @@ public class FrappeController {
         foodLabel.setText(menu.getName());
     }
 
-    private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedAddon, boolean askmeRadioSelected) {
+    private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedSugarLevel, boolean askmeRadioSelected) {
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO frappe (customer_id, item_name, quantity, size, add_ons, sugar_level, ask_me, size_price, addons_price, final_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO frappe (customer_id, date_time, item_name, quantity, size, sugar_level, ask_me, size_price, final_price) VALUES (?, NOW(),?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
                     stmt.setInt(3, selectedQuantity);
                     stmt.setString(4, selectedSize);
-                    stmt.setString(6, selectedSugarLevel);
-                    stmt.setBoolean(7, askmeRadioSelected);
+                    stmt.setString(5, selectedSugarLevel);
+                    stmt.setBoolean(6, askmeRadioSelected);
 
                     // Check if size and add-ons are selected and set the corresponding prices
                     int sizePrice = calculateSizePrice(selectedSize);
-                    int addonsPrice = calculateAddonsPrice(selectedAddon);
 
-                    stmt.setInt(8, sizePrice);
-                    stmt.setInt(9, addonsPrice);
+                    stmt.setInt(7, sizePrice);
 
                     // Calculate the final price based on selected size and add-ons
-                    int finalPrice = (sizePrice + addonsPrice) * selectedQuantity;
-                    stmt.setInt(10, finalPrice);
+                    int finalPrice = sizePrice * selectedQuantity;
+                    stmt.setInt(8, finalPrice);
 
                     stmt.executeUpdate();
                 }
@@ -122,6 +123,13 @@ public class FrappeController {
 
     @FXML
     public void confirmButton1(ActionEvent event) {
+
+        CashierFXMLController cashierController = ControllerManager.getCashierController();
+
+        if (existingCashierController == null && cashierController != null) {
+            existingCashierController = cashierController;
+        }
+
         if (menuData != null) {
             String menuName = menuData.getName();
             String selectedSize = sizeComboBox.getValue();
@@ -132,7 +140,15 @@ public class FrappeController {
             if ("None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
                 System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
             } else {
-                int customer_id = generateCustomerId(); // Generate customer_id based on new or existing customer
+                int customer_id = 0; // Initialize customer_id
+
+                if (existingCashierController != null) {
+                    // Now, you can use the existing instance of CashierFXMLController
+                    customer_id = existingCashierController.getCurrentCustomerID();
+                } else {
+                    System.out.println("Cashier controller not available.");
+                }
+
                 insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedSugarLevel, askmeRadioSelected);
                 System.out.println("Data inserted into the database.");
             }
@@ -147,11 +163,14 @@ public class FrappeController {
             // Reset the radio button
             askmeRadioHead.setSelected(false);
             askmeRadioSelected = false;
+            
+            if (cashierController != null) {
+                // Call the setupTableView method from CashierFXMLController
+                cashierController.setupTableView();
+            } else {
+                System.out.println("Cashier controller not available.");
+            }
         }
-    }
-
-    public void takeOrderButtonClicked(ActionEvent event) {
-        orderTaken = true;
     }
 
     private void initializeSizeComboBox() {
@@ -174,15 +193,6 @@ public class FrappeController {
                 "High"
         );
         sugarlevelComboBox.setItems(sugarLevels);
-    }
-
-    // Generate a customer_id based on whether the customer is new or existing
-    private int generateCustomerId() {
-        // If the order has not been taken yet, do not increment the customer ID
-        if (orderTaken) {
-            customerCounter++;
-        }
-        return customerCounter;
     }
 
     private int calculateSizePrice(String selectedSize) {

@@ -53,8 +53,6 @@ public class MenuController {
 
     private boolean askmeRadioSelected = false;
 
-    private boolean orderTaken = false;
-
     private CashierFXMLController existingCashierController;
 
     private ObservableList<ItemData> menuMilkteaListData;
@@ -185,10 +183,6 @@ public class MenuController {
             }
         }
 
-    }
-
-    public void takeOrderButtonClicked(ActionEvent event) {
-        orderTaken = true;
     }
 
     private void initializeAddonsComboBox() {

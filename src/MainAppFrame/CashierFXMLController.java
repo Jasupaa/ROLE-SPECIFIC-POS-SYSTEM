@@ -472,17 +472,17 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         // For milk_tea
         String milkTeaSql = "SELECT order_id, size, item_name, final_price, quantity FROM milk_tea WHERE customer_id = ?";
 
-        // For frappe
-        String frappeSql = "SELECT order_id, size, item_name, final_price, quantity FROM frappe WHERE customer_id = ?";
-
         // For Fruit Drink
         String fruitSql = "SELECT order_id, size, item_name, final_price, quantity FROM fruit_drink WHERE customer_id = ?";
+
+        // For frappe
+        String frappeSql = "SELECT order_id, size, item_name, final_price, quantity FROM frappe WHERE customer_id = ?";
 
         try (Connection connect = database.getConnection(); PreparedStatement milkTeaPrepare = connect.prepareStatement(milkTeaSql); PreparedStatement frappePrepare = connect.prepareStatement(frappeSql); PreparedStatement fruitPrepare = connect.prepareStatement(fruitSql)) {
 
             milkTeaPrepare.setInt(1, customerID);
-            frappePrepare.setInt(1, customerID);
             fruitPrepare.setInt(1, customerID);
+            frappePrepare.setInt(1, customerID);
 
             ResultSet milkTeaResult = milkTeaPrepare.executeQuery();
             while (milkTeaResult.next()) {
@@ -495,23 +495,23 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 listData.add(item);
             }
 
-            ResultSet frappeResult = frappePrepare.executeQuery();
-            while (frappeResult.next()) {
-                int orderID = frappeResult.getInt("order_id");
-                String itemName = frappeResult.getString("size") + " " + frappeResult.getString("item_name");
-                double itemPrice = frappeResult.getDouble("final_price");
-                int itemQuantity = frappeResult.getInt("quantity");
-
-                ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
-                listData.add(item);
-            }
-
             ResultSet fruitResult = fruitPrepare.executeQuery();
             while (fruitResult.next()) {
                 int orderID = fruitResult.getInt("order_id");
                 String itemName = fruitResult.getString("size") + " " + fruitResult.getString("item_name");
                 double itemPrice = fruitResult.getDouble("final_price");
                 int itemQuantity = fruitResult.getInt("quantity");
+
+                ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
+                listData.add(item);
+            }
+
+            ResultSet frappeResult = frappePrepare.executeQuery();
+            while (frappeResult.next()) {
+                int orderID = frappeResult.getInt("order_id");
+                String itemName = frappeResult.getString("size") + " " + frappeResult.getString("item_name");
+                double itemPrice = frappeResult.getDouble("final_price");
+                int itemQuantity = frappeResult.getInt("quantity");
 
                 ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
                 listData.add(item);
@@ -604,7 +604,8 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 GridPane.setMargin(pane, new Insets(20));
 
             } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CashierFXMLController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -630,8 +631,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 menuGrid.add(pane, column++, row);
                 GridPane.setMargin(pane, new Insets(20));
+
             } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CashierFXMLController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -657,8 +660,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 menuGrid.add(pane, column++, row);
                 GridPane.setMargin(pane, new Insets(20));
+
             } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CashierFXMLController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -684,8 +689,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 menuGrid.add(pane, column++, row);
                 GridPane.setMargin(pane, new Insets(20));
+
             } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CashierFXMLController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -711,8 +718,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 menuGrid.add(pane, column++, row);
                 GridPane.setMargin(pane, new Insets(20));
+
             } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CashierFXMLController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -738,8 +747,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 menuGrid.add(pane, column++, row);
                 GridPane.setMargin(pane, new Insets(20));
+
             } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CashierFXMLController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -765,8 +776,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 menuGrid.add(pane, column++, row);
                 GridPane.setMargin(pane, new Insets(20));
+
             } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CashierFXMLController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -876,8 +889,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                     // Open the login window.
                     LoginTest loginTest = new LoginTest();
                     loginTest.start(new Stage());
+
                 } catch (Exception ex) {
-                    Logger.getLogger(AdminFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AdminFXMLController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
