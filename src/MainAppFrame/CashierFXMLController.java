@@ -118,8 +118,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @FXML
     private Button Logout;
-    
-    
 
     private List<menu1> menus;
     private List<menu2> menuss;
@@ -167,7 +165,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         incrementCustomerID();
         menuGetMilkteaAndFrappe();
         setupTableView();
-        
+
         System.out.println(currentCustomerID);
     }
 

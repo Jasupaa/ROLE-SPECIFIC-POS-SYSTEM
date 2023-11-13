@@ -18,9 +18,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import other.menu1;
-import other.ItemData;
 import other.ControllerManager;
+import other.ItemData;
+import other.menu1;
+import other.menu2;
 
 public class MenuController {
 

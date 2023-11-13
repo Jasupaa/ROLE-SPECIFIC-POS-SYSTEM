@@ -136,8 +136,6 @@ public class FruitDrinkController {
                 stmt.setString(2, menuName);
                 stmt.setInt(3, selectedQuantity);
                 stmt.setString(4, selectedSize);
-                stmt.setString(5, selectedAddon);
-                stmt.setString(6, selectedSugarLevel);
                 stmt.setBoolean(7, askmeRadioSelected);
 
     
@@ -151,19 +149,32 @@ public class FruitDrinkController {
         String selectedSugarLevel = sugarlevelComboBox.getValue();
         Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
 
-        // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
-        if ("None".equals(selectedAddon) || "None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
-            System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
+
+                stmt.setInt(8, sizePrice);
+
+
+             
+
+                stmt.executeUpdate();
+            }
         } else {
-            int customer_id = generateCustomerId(); // Generate customer_id based on new or existing customer
-            insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedAddon, selectedSugarLevel, askmeRadioSelected);
-            System.out.println("Data inserted into the database.");
+            System.out.println("Failed to establish a database connection.");
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+
+    @FXML
+public void confirmButton1(ActionEvent event) {
+    if (menuData != null) {
+        
 
         // Reset the ComboBoxes to "None"
-        addonsComboBox.setValue("None");
         sizeComboBox.setValue("None");
-        sugarlevelComboBox.setValue("None");
+        fruitfComboBox.setValue("None");
+        sinkersComboBox.setValue("None");
 
         // Reset the Spinner to the default value (e.g., 0)
         spinnerQuantity.getValueFactory().setValue(0);
@@ -171,15 +182,6 @@ public class FruitDrinkController {
         // Reset the radio button
         askmeRadioHead.setSelected(false);
         askmeRadioSelected = false;
-        
-        CashierFXMLController cashierController = ControllerManager.getCashierController();
-
-        if (cashierController != null) {
-            // Call the setupTableView method from CashierFXMLController
-            cashierController.setupTableView();
-        } else {
-            System.out.println("Cashier controller not available.");
-        }
     }
         
     }
@@ -298,53 +300,3 @@ public class FruitDrinkController {
     }
 
 }
-
-
-/*
- @FXML
-    public void confirmButton1(ActionEvent event) {
-    if (menuData != null) {
-        String menuName = menuData.getName();
-        String selectedAddon = addonsComboBox.getValue();
-        String selectedSize = sizeComboBox.getValue();
-        String selectedSugarLevel = sugarlevelComboBox.getValue();
-        Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
-
-        // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
-        if ("None".equals(selectedAddon) || "None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
-            System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
-        } else {
-            int customer_id = generateCustomerId(); // Generate customer_id based on new or existing customer
-            insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedAddon, selectedSugarLevel, askmeRadioSelected);
-            System.out.println("Data inserted into the database.");
-        }
-
-        // Reset the ComboBoxes to "None"
-        addonsComboBox.setValue("None");
-        sizeComboBox.setValue("None");
-        sugarlevelComboBox.setValue("None");
-
-        // Reset the Spinner to the default value (e.g., 0)
-        spinnerQuantity.getValueFactory().setValue(0);
-
-        // Reset the radio button
-        askmeRadioHead.setSelected(false);
-        askmeRadioSelected = false;
-        
-        CashierFXMLController cashierController = ControllerManager.getCashierController();
-
-        if (cashierController != null) {
-            // Call the setupTableView method from CashierFXMLController
-            cashierController.setupTableView();
-        } else {
-            System.out.println("Cashier controller not available.");
-        }
-    }
-        
-    }
-
-
-
-
-
-*/
