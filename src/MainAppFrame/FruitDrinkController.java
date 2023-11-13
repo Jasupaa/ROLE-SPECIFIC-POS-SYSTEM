@@ -40,7 +40,7 @@ public class FruitDrinkController {
 
     @FXML
     private ComboBox<String> fruitfComboBox;
-    
+
     @FXML
     private ComboBox<String> sinkersComboBox;
 
@@ -55,12 +55,13 @@ public class FruitDrinkController {
 
     @FXML
     private Label foodLabel;
+
+    @FXML
     private menu2 menuData;
 
     private boolean askmeRadioSelected = false;
 
-    private static int customerCounter = 0;
-    private boolean orderTaken = false;
+    private CashierFXMLController existingCashierController;
 
     public void initialize() {
         // Initialize your combo boxes with data
@@ -89,6 +90,10 @@ public class FruitDrinkController {
         askmeRadioSelected = askmeRadioHead.isSelected();
     }
 
+    public void setExistingCashierController(CashierFXMLController cashierController) {
+        this.existingCashierController = cashierController;
+    }
+
     public void setData(menu2 menu) {
         menuData = menu;
         Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
@@ -106,18 +111,15 @@ public class FruitDrinkController {
                     stmt.setInt(3, selectedQuantity);
                     stmt.setString(4, selectedSize);
                     stmt.setString(5, selectedfruit);
-                     stmt.setString(6, selectedsinker);
+                    stmt.setString(6, selectedsinker);
                     stmt.setBoolean(7, askmeRadioSelected);
 
                     // Check if size and add-ons are selected and set the corresponding prices
                     int sizePrice = calculateSizePrice(selectedSize);
 
                     stmt.setInt(8, sizePrice);
-                 int finalPrice = sizePrice * selectedQuantity;
-                stmt.setInt(9, finalPrice);
-                
-           
-
+                    int finalPrice = sizePrice * selectedQuantity;
+                    stmt.setInt(9, finalPrice);
 
                     stmt.executeUpdate();
                 }
@@ -128,6 +130,7 @@ public class FruitDrinkController {
             e.printStackTrace();
         }
     }
+
     /*
     stmt.setInt(1, customer_id);
                 stmt.setString(2, menuName);
@@ -139,8 +142,8 @@ public class FruitDrinkController {
 
     
     
-    */
-/*  public void confirmButton1(ActionEvent event) {
+     */
+ /*  public void confirmButton1(ActionEvent event) {
     if (menuData != null) {
         String menuName = menuData.getName();
         String selectedAddon = addonsComboBox.getValue();
@@ -180,28 +183,39 @@ public class FruitDrinkController {
     }
         
     }
-*/
+     */
     @FXML
     public void confirmButton1(ActionEvent event) {
+
+        CashierFXMLController cashierController = ControllerManager.getCashierController();
+
+        if (existingCashierController == null && cashierController != null) {
+            existingCashierController = cashierController;
+        }
+
         if (menuData != null) {
 
-        String menuName = menuData.getName();
-        String selectedfruit = fruitfComboBox.getValue();
-        String selectedSize = sizeComboBox.getValue();
-        String selectedsinker = sinkersComboBox.getValue();
-        Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
+            String menuName = menuData.getName();
+            String selectedfruit = fruitfComboBox.getValue();
+            String selectedSize = sizeComboBox.getValue();
+            String selectedsinker = sinkersComboBox.getValue();
+            Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
 
-        // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
-        if ("None".equals(selectedfruit) || "None".equals(selectedSize) || "None".equals(selectedsinker) || selectedQuantity == 0) {
-            System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
-        } else {
-            int customer_id = generateCustomerId(); // Generate customer_id based on new or existing customer
-            insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedfruit, selectedsinker, askmeRadioSelected);
-            System.out.println("Data inserted into the database.");
-        }
-            
-            
-            
+            // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
+            if ("None".equals(selectedfruit) || "None".equals(selectedSize) || "None".equals(selectedsinker) || selectedQuantity == 0) {
+                System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
+            } else {
+                int customer_id = 0; // Initialize customer_id
+
+                if (existingCashierController != null) {
+                    // Now, you can use the existing instance of CashierFXMLController
+                    customer_id = existingCashierController.getCurrentCustomerID();
+                } else {
+                    System.out.println("Cashier controller not available.");
+                }
+                insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedfruit, selectedsinker, askmeRadioSelected);
+                System.out.println("Data inserted into the database.");
+            }
 
             // Reset the ComboBoxes to "None"
             sizeComboBox.setValue("None");
@@ -214,20 +228,14 @@ public class FruitDrinkController {
             // Reset the radio button
             askmeRadioHead.setSelected(false);
             askmeRadioSelected = false;
-            
-             CashierFXMLController cashierController = ControllerManager.getCashierController();
 
-        if (cashierController != null) {
-            // Call the setupTableView method from CashierFXMLController
-            cashierController.setupTableView();
-        } else {
-            System.out.println("Cashier controller not available.");
+            if (cashierController != null) {
+                // Call the setupTableView method from CashierFXMLController
+                cashierController.setupTableView();
+            } else {
+                System.out.println("Cashier controller not available.");
+            }
         }
-        }
-    }
-
-    public void takeOrderButtonClicked(ActionEvent event) {
-        orderTaken = true;
     }
 
     private void initializeSizeComboBox() {
@@ -267,15 +275,6 @@ public class FruitDrinkController {
                 "Yogurt Popping Bobba"
         );
         sinkersComboBox.setItems(sinkerList);
-    }
-
-    // Generate a customer_id based on whether the customer is new or existing
-    private int generateCustomerId() {
-        // If the order has not been taken yet, do not increment the customer ID
-        if (orderTaken) {
-            customerCounter++;
-        }
-        return customerCounter;
     }
 
     private int calculateSizePrice(String selectedSize) {

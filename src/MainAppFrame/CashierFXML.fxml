@@ -27,13 +27,14 @@
       </ScrollPane>
       <Pane layoutX="713.0" prefHeight="652.0" prefWidth="424.0">
          <children>
-            <Button fx:id="takeOrderButton" layoutX="221.0" layoutY="561.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" text="Dine In" textFill="WHITE" />
+            <Button fx:id="takeOrderButton" layoutX="221.0" layoutY="561.0" mnemonicParsing="false" onAction="#takeOrder" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" text="Dine In" textFill="WHITE" />
             <TableView fx:id="receiptTable" layoutX="44.0" layoutY="150.0" prefHeight="337.0" prefWidth="337.0">
               <columns>
                   <TableColumn fx:id="columnOrderID" prefWidth="68.0" text="Order ID" />
                 <TableColumn fx:id="columnItemName" prefWidth="151.0" resizable="false" text="Item" />
                 <TableColumn fx:id="columnItemQuantity" prefWidth="46.0" resizable="false" text="Quant" />
                   <TableColumn fx:id="columnItemPrice" prefWidth="71.0" resizable="false" text="Price" />
+                  <TableColumn prefWidth="75.0" text="Column X" />
               </columns>
             </TableView>
             <ImageView fitHeight="58.0" fitWidth="56.0" layoutX="184.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true">
