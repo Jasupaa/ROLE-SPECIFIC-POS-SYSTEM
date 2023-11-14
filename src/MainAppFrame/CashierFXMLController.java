@@ -116,9 +116,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     private GridPane menuGrid;
 
     @FXML
-    private Label customerID;
-
-    @FXML
     private Button Logout;
 
     private List<menu1> menus;
@@ -130,7 +127,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     private List<menu7> menusssssss;
 
     private volatile boolean stop = false;
-    private int currentCustomerID = 0;
     private LocalDate currentDate = LocalDate.now();
 
     public void setTableViewAndList(TableView<ItemData> tableView, ObservableList<ItemData> dataList) {
@@ -138,42 +134,38 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         this.menuMilkteaAndFrappeListData = dataList;
     }
 
-    private int getCurrentCustomerID() {
-        // Check if it's a new day, then reset the customer ID
-        if (!LocalDate.now().isEqual(currentDate)) {
-            currentDate = LocalDate.now();
-            currentCustomerID = 1; // Reset to 1 for a new day
+    private int customerID = 0;
+    private int currentCustomerID = 0; // Initialize currentCustomerID
+
+    private boolean initialDisplayDone = false;
+
+    private void displayCustomerID() {
+        customerLabel.setText(Integer.toString(customerID));
+        currentCustomerID = customerID; // Set currentCustomerID to the current value of customerID
+        initialDisplayDone = true;
+    }
+
+    private void incrementCustomerID() {
+        if (!initialDisplayDone) {
+            displayCustomerID(); // Display the initial customerID = 0
+        } else {
+            customerID++; // Increment the customerID
+            customerLabel.setText(Integer.toString(customerID));
+            currentCustomerID = customerID; // Update the currentCustomerID with the incremented customerID
         }
+    }
+
+    public int getCurrentCustomerID() {
         return currentCustomerID;
     }
 
-    private void updateCustomerLabel() {
-        int highestCustomerID = 0;
+    @FXML
+    void takeOrder(ActionEvent event) {
+        incrementCustomerID();
+        menuGetMilkteaAndFrappe();
+        setupTableView();
 
-        // List of databases
-        String[] databases = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
-
-        // Iterate through each database
-        for (String database1 : databases) {
-            String sql = "SELECT MAX(customer_id) AS max_customer_id FROM " + database1;
-
-            try (Connection connect = database.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
-
-                if (result.next()) {
-                    int maxCustomerID = result.getInt("max_customer_id");
-                    highestCustomerID = Math.max(highestCustomerID, maxCustomerID);
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Update the customerLabel with the highest customer ID
-        customerLabel.setText(String.valueOf(highestCustomerID));
-
-        // Set the current customer ID to the highest customer ID
-        currentCustomerID = highestCustomerID;
+        System.out.println(currentCustomerID);
     }
 
     private void DateLabel() {
@@ -466,19 +458,30 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     public ObservableList<ItemData> menuGetMilkteaAndFrappe() {
         ObservableList<ItemData> listData = FXCollections.observableArrayList();
 
+        String customerIDText = customerLabel.getText();
+
+        if (customerIDText.matches("\\d+")) {
+            customerID = Integer.parseInt(customerIDText);
+        } else {
+            // Handle the case where customerIDText is not a valid number
+            // You can display an error message or set a default value
+            // Example: customerID = -1; // Default value for an invalid ID
+        }
+
         // For milk_tea
-        String milkTeaSql = "SELECT order_id, size, item_name, final_price, quantity FROM milk_tea";
+        String milkTeaSql = "SELECT order_id, size, item_name, final_price, quantity FROM milk_tea WHERE customer_id = ?";
 
         // For frappe
-        String frappeSql = "SELECT order_id, size, item_name, final_price, quantity FROM frappe";
+        String frappeSql = "SELECT order_id, size, item_name, final_price, quantity FROM frappe WHERE customer_id = ?";
 
         // For Fruit Drink
-        String FruitSql = "SELECT order_id, size, item_name, final_price, quantity FROM fruit_drink";
-        
-        try (Connection connect = database.getConnection(); 
-                PreparedStatement milkTeaPrepare = connect.prepareStatement(milkTeaSql); 
-                PreparedStatement frappePrepare = connect.prepareStatement(frappeSql);
-                PreparedStatement fruitPrepare = connect.prepareStatement(FruitSql)) {
+        String fruitSql = "SELECT order_id, size, item_name, final_price, quantity FROM fruit_drink WHERE customer_id = ?";
+
+        try (Connection connect = database.getConnection(); PreparedStatement milkTeaPrepare = connect.prepareStatement(milkTeaSql); PreparedStatement frappePrepare = connect.prepareStatement(frappeSql); PreparedStatement fruitPrepare = connect.prepareStatement(fruitSql)) {
+
+            milkTeaPrepare.setInt(1, customerID);
+            frappePrepare.setInt(1, customerID);
+            fruitPrepare.setInt(1, customerID);
 
             ResultSet milkTeaResult = milkTeaPrepare.executeQuery();
             while (milkTeaResult.next()) {
@@ -501,7 +504,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
                 listData.add(item);
             }
-            
+
             ResultSet fruitResult = fruitPrepare.executeQuery();
             while (fruitResult.next()) {
                 int orderID = fruitResult.getInt("order_id");
@@ -512,7 +515,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
                 listData.add(item);
             }
-            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -904,9 +906,9 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             DateLabel();
             Timenow();
             setupTableView();
-
+            displayCustomerID();
             // Update the customerLabel with the highest customer ID across databases
-            updateCustomerLabel();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

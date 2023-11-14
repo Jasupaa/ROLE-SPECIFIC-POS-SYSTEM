@@ -1,15 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package MainAppFrame;
 
-import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,9 +25,7 @@ import other.menu3;
  *
  * @author John Paul Uy
  */
-
 public class FrappeController {
-    
 
     @FXML
     private Spinner spinnerQuantity;
@@ -51,21 +42,18 @@ public class FrappeController {
     @FXML
     private Button confirmButton1;
 
-
     @FXML
     private ImageView foodImg;
 
     @FXML
     private Label foodLabel;
-
-    private menu3 menuData;   
+    private menu3 menuData;
 
     private boolean askmeRadioSelected = false;
 
     private static int customerCounter = 0;
     private boolean orderTaken = false;
     private String selectedSugarLevel;
-   
 
     public void initialize() {
         // Initialize your combo boxes with data
@@ -74,7 +62,6 @@ public class FrappeController {
         initializeSugarlevelComboBox();
 
         // Set the default value to "None" for all ComboBoxes
-
         sizeComboBox.setValue("None");
         sugarlevelComboBox.setValue("None");
 
@@ -85,7 +72,7 @@ public class FrappeController {
         // Set a StringConverter to display the Spinner values as whole numbers
         StringConverter<Integer> converter = new IntegerStringConverter();
         spinnerQuantity.getValueFactory().setConverter(converter);
-        
+
     }
 
     @FXML
@@ -100,89 +87,80 @@ public class FrappeController {
         foodLabel.setText(menu.getName());
     }
 
-
     private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedAddon, boolean askmeRadioSelected) {
-    try (Connection conn = database.getConnection()) {
-        if (conn != null) {
-            String sql = "INSERT INTO frappe (customer_id, date_time, item_name, quantity, size, sugar_level, ask_me, size_price, final_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, customer_id);
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                String sql = "INSERT INTO frappe (customer_id, item_name, quantity, size, add_ons, sugar_level, ask_me, size_price, addons_price, final_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setInt(1, customer_id);
+                    stmt.setString(2, menuName);
+                    stmt.setInt(3, selectedQuantity);
+                    stmt.setString(4, selectedSize);
+                    stmt.setString(6, selectedSugarLevel);
+                    stmt.setBoolean(7, askmeRadioSelected);
 
-                // Set the date_time column to the current date and time
-                LocalDateTime currentDateTime = LocalDateTime.now();
-                stmt.setObject(2, currentDateTime);
+                    // Check if size and add-ons are selected and set the corresponding prices
+                    int sizePrice = calculateSizePrice(selectedSize);
+                    int addonsPrice = calculateAddonsPrice(selectedAddon);
 
-                stmt.setString(3, menuName);
-                stmt.setInt(4, selectedQuantity);
-                stmt.setString(5, selectedSize);
-                stmt.setString(6, selectedSugarLevel);
-                stmt.setBoolean(7, askmeRadioSelected);
+                    stmt.setInt(8, sizePrice);
+                    stmt.setInt(9, addonsPrice);
 
-                // Check if size and add-ons are selected and set the corresponding prices
-                int sizePrice = calculateSizePrice(selectedSize);
-                int addonsPrice = calculateAddonsPrice(selectedAddon);
+                    // Calculate the final price based on selected size and add-ons
+                    int finalPrice = (sizePrice + addonsPrice) * selectedQuantity;
+                    stmt.setInt(10, finalPrice);
 
-                stmt.setInt(8, sizePrice);
-
-                // Calculate the final price based on selected size and add-ons
-                int finalPrice = (sizePrice + addonsPrice) * selectedQuantity;
-                stmt.setInt(9, finalPrice);
-
-                stmt.executeUpdate();
+                    stmt.executeUpdate();
+                }
+            } else {
+                System.out.println("Failed to establish a database connection.");
             }
-        } else {
-            System.out.println("Failed to establish a database connection.");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
-}
-
 
     @FXML
     public void confirmButton1(ActionEvent event) {
-    if (menuData != null) {
-        String menuName = menuData.getName();
-        String selectedSize = sizeComboBox.getValue();
-        selectedSugarLevel = sugarlevelComboBox.getValue(); // Update the class-level variable
-        Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
+        if (menuData != null) {
+            String menuName = menuData.getName();
+            String selectedSize = sizeComboBox.getValue();
+            selectedSugarLevel = sugarlevelComboBox.getValue(); // Update the class-level variable
+            Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
 
-        // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
-        if ("None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
-            System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
-        } else {
-            int customer_id = generateCustomerId(); // Generate customer_id based on new or existing customer
-            insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedSugarLevel, askmeRadioSelected);
-            System.out.println("Data inserted into the database.");
+            // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
+            if ("None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
+                System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
+            } else {
+                int customer_id = generateCustomerId(); // Generate customer_id based on new or existing customer
+                insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedSugarLevel, askmeRadioSelected);
+                System.out.println("Data inserted into the database.");
+            }
+
+            // Reset the ComboBoxes to "None"
+            sizeComboBox.setValue("None");
+            sugarlevelComboBox.setValue("None");
+
+            // Reset the Spinner to the default value (e.g., 0)
+            spinnerQuantity.getValueFactory().setValue(0);
+
+            // Reset the radio button
+            askmeRadioHead.setSelected(false);
+            askmeRadioSelected = false;
         }
-
-        // Reset the ComboBoxes to "None"
-        sizeComboBox.setValue("None");
-        sugarlevelComboBox.setValue("None");
-
-        // Reset the Spinner to the default value (e.g., 0)
-        spinnerQuantity.getValueFactory().setValue(0);
-
-        // Reset the radio button
-        askmeRadioHead.setSelected(false);
-        askmeRadioSelected = false;
     }
-}
-
 
     public void takeOrderButtonClicked(ActionEvent event) {
         orderTaken = true;
     }
 
-
-
     private void initializeSizeComboBox() {
         // Populate the sizeComboBox with items
         ObservableList<String> sizes = FXCollections.observableArrayList(
-            "None",
-            "Small",
-            "Medium",
-            "Large"
+                "None",
+                "Small",
+                "Medium",
+                "Large"
         );
         sizeComboBox.setItems(sizes);
     }
@@ -190,10 +168,10 @@ public class FrappeController {
     private void initializeSugarlevelComboBox() {
         // Populate the sugarlevelComboBox with items
         ObservableList<String> sugarLevels = FXCollections.observableArrayList(
-            "None",
-            "Low",
-            "Medium",
-            "High"
+                "None",
+                "Low",
+                "Medium",
+                "High"
         );
         sugarlevelComboBox.setItems(sugarLevels);
     }
@@ -225,6 +203,6 @@ public class FrappeController {
                 return 20;
         }
         return 0; // Return 0 if an unknown addon is selected
-    }   
-    
+    }
+
 }

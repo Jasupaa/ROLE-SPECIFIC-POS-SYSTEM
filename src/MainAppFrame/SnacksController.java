@@ -1,5 +1,12 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package MainAppFrame;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,12 +18,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
+
 import other.menu6;
 
+/**
+ *
+ * @author John Paul Uy
+ */
 public class SnacksController {
-
-    @FXML
-    private Spinner spinnerQuantity;
 
     @FXML
     private RadioButton askmeRadioHead;
@@ -29,14 +38,28 @@ public class SnacksController {
 
     @FXML
     private Label foodLabel;
-    private menu6 menuData;
+
+    @FXML
+    private Spinner spinnerQuantity;
 
     private boolean askmeRadioSelected = false;
 
-    private static int customerCounter = 0;
-    private boolean orderTaken = false;
+    private menu6 menuData;
+
+    public void setData(menu6 menu) {
+        menuData = menu;
+        Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
+        foodImg.setImage(image);
+        foodLabel.setText(menu.getName());
+    }
+
+    @FXML
+    public void askmeRadioHeadSelected(ActionEvent event) {
+        askmeRadioSelected = askmeRadioHead.isSelected();
+    }
 
     public void initialize() {
+        // Initialize your combo boxes with data
 
         // Set the Spinner to allow only whole number values and set the default value to 0
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0);
@@ -48,16 +71,26 @@ public class SnacksController {
 
     }
 
-    @FXML
-    public void askmeRadioHeadSelected(ActionEvent event) {
-        askmeRadioSelected = askmeRadioHead.isSelected();
-    }
+    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity,  boolean askmeRadioSelected) {
 
-    public void setData(menu6 menu) {
-        menuData = menu;
-        Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
-        foodImg.setImage(image);
-        foodLabel.setText(menu.getName());
-    }
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                String sql = "INSERT INTO snacks (customer_id, date_time, item_name, quantity, ask_me) VALUES (?, NOW(), ?, ?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setInt(1, customer_id);
+                    stmt.setString(2, menuName);
+                    stmt.setInt(3, selectedQuantity);
+                    stmt.setBoolean(7, askmeRadioSelected);
 
+                    stmt.executeUpdate();
+                }
+            } else {
+                System.out.println("Failed to establish a database connection.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+   
 }

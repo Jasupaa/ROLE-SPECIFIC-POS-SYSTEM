@@ -1,5 +1,13 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package MainAppFrame;
 
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -63,5 +71,37 @@ public class RiceMealController {
         spinnerQuantity.getValueFactory().setConverter(converter);
 
     }
+    
+    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity,  boolean askmeRadioSelected) {
+
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                String sql = "INSERT INTO rice_meal (customer_id, date_time, item_name, quantity, size, add_ons, sugar_level,ask_me) VALUES (?, NOW(), ?, ?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setInt(1, customer_id);
+                    stmt.setString(2, menuName);
+                    stmt.setInt(3, selectedQuantity);
+                    stmt.setBoolean(7, askmeRadioSelected);
+
+                    stmt.executeUpdate();
+                }
+            } else {
+                System.out.println("Failed to establish a database connection.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
+
+
+
+  
+
+    
+  
+
+   
+    
+
