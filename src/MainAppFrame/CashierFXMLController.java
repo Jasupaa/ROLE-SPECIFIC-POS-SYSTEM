@@ -592,7 +592,13 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             FDprepare.setInt(4, item.getItemQuantity());
             
             int rowsAffected = prepare.executeUpdate();
+            int rowsAffectedFrappe = frapprepare.executeUpdate();
+            int rowsAffectedFD = FDprepare.executeUpdate();
+            
             System.out.println("Rows affected: " + rowsAffected);
+            System.out.println("Rows affected (frappe): " + rowsAffectedFrappe);
+            System.out.println("Rows affected (fruit_drink): " + rowsAffectedFD);
+
 
             System.out.println("SQL Parameters: " + item.getItemName() + ", "
                     + item.getItemPrice() + ", " + item.getItemQuantity()); // Add this line
