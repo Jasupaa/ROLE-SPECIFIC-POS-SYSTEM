@@ -32,6 +32,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
@@ -39,9 +40,13 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.stage.StageStyle;
 
 import other.ItemData;
 import other.menu1;
@@ -55,6 +60,9 @@ import other.menu7;
 public class CashierFXMLController implements Initializable, ControllerInterface {
 
     double xOffset, yOffset;
+
+    @FXML
+    private Pane blurPane;
 
     @FXML
     private Label dateLbl;
@@ -119,6 +127,11 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     @FXML
     private Button Logout;
 
+    @FXML
+    private Button takeOutOrderButton;
+
+    private Stage settlePaymentStage;
+
     private List<menu1> menus;
     private List<menu2> menuss;
     private List<menu3> menusss;
@@ -140,26 +153,78 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private boolean initialDisplayDone = false;
 
-    private void displayCustomerID() {
+    public void updateCustomerID() {
+        // List of table names
+        List<String> tableNames = Arrays.asList("milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras");
+
+        // List to store maximum customer IDs
+        List<Integer> maxCustomerIDs = new ArrayList<>();
+
+        // Fetch maximum customer ID from each table
+        for (String tableName : tableNames) {
+            int maxCustomerID = getMaxCustomerID(tableName);
+            maxCustomerIDs.add(maxCustomerID);
+        }
+
+        // Find the maximum customer ID across all tables
+        int maxOverallCustomerID = maxCustomerIDs.stream().max(Integer::compare).orElse(0);
+
+        // If the maximum customer ID is 0, set customerID to 0 and increment normally
+        if (maxOverallCustomerID == 0) {
+            customerID = 0;
+        } else {
+            // Increment the maximum customer ID to get the current customer ID
+            customerID = maxOverallCustomerID + 1;
+        }
+
+        // Update the customer label
         customerLabel.setText(Integer.toString(customerID));
-        currentCustomerID = customerID; // Set currentCustomerID to the current value of customerID
+
+        // Update the currentCustomerID
+        currentCustomerID = customerID;
         initialDisplayDone = true;
     }
 
-    private void incrementCustomerID() {
-        if (!initialDisplayDone) {
-            displayCustomerID(); // Display the initial customerID = 0
-        } else {
-            customerID++; // Increment the customerID
-            customerLabel.setText(Integer.toString(customerID));
-            currentCustomerID = customerID; // Update the currentCustomerID with the incremented customerID
+    // Method to fetch the maximum customer ID from the UNION of all tables
+    private int getMaxCustomerID(String tableName) {
+        int maxCustomerID = 0;
+
+        // Use your database connection and SQL query to fetch the maximum customer ID
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT MAX(customer_id) FROM " + tableName); ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                maxCustomerID = resultSet.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
         }
+
+        return maxCustomerID;
     }
+    
+    public void incrementCurrentCustomerID() {
+    // Increment the customer ID
+    customerID++;
+    
+    // Update the customer label
+    customerLabel.setText(Integer.toString(customerID));
+
+    // Update the currentCustomerID
+    currentCustomerID = customerID;
+    initialDisplayDone = true;
+}
 
     public int getCurrentCustomerID() {
         return currentCustomerID;
     }
 
+    public Pane getMyPane() {
+        return blurPane;
+    }
+
+    /*
     @FXML
     void takeOrder(ActionEvent event) {
         incrementCustomerID();
@@ -167,6 +232,39 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         setupTableView();
 
         System.out.println(currentCustomerID);
+    } */
+    @FXML
+    void takeOutOrder(ActionEvent event) {
+        try {
+            // Load the SettlePaymentFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SettlePaymentFXML.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the SettlePaymentFXML
+            settlePaymentStage = new Stage();
+
+            // Set stage properties to make it transparent and non-resizable
+            settlePaymentStage.initStyle(StageStyle.TRANSPARENT);
+            settlePaymentStage.initStyle(StageStyle.UNDECORATED); // Removes the title bar
+            settlePaymentStage.setResizable(false);
+
+            // Set the scene fill to transparent
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+
+            // Set the scene to the stage
+            settlePaymentStage.setScene(scene);
+
+            settlePaymentStage.show();
+            blurPane.setVisible(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exceptions accordingly
+        }
+    }
+
+    public Stage getSettlePaymentStage() {
+        return settlePaymentStage;
     }
 
     private void DateLabel() {
@@ -881,7 +979,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-
                 try {
                     Stage stage = (Stage) CloseButton.getScene().getWindow();
                     stage.close();
@@ -898,16 +995,17 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         });
 
         try {
+            // Update the customerLabel with the highest customer ID across databases
+            updateCustomerID();
+
+            // Other initialization code...
             setupMenusAndRefreshMenuGrid();
             DateLabel();
             Timenow();
             setupTableView();
-            displayCustomerID();
-            // Update the customerLabel with the highest customer ID across databases
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }
