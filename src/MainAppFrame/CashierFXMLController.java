@@ -74,8 +74,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     @FXML
     private TableColumn<ItemData, Integer> columnItemQuantity;
 
-    @FXML
-    private TableColumn<ItemData, Integer> columnOrderID;
+ 
 
     @FXML
     private TableView<ItemData> receiptTable;
@@ -533,7 +532,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     public void setupTableView() {
         menuMilkteaAndFrappeListData = menuGetMilkteaAndFrappe();
         
-        columnOrderID.setCellValueFactory(f -> new SimpleIntegerProperty(f.getValue().getorderID()).asObject());
+      
         columnItemName.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getItemName()));
         columnItemPrice.setCellValueFactory(f -> new SimpleDoubleProperty(f.getValue().getItemPrice()).asObject());
         columnItemQuantity.setCellValueFactory(f -> new SimpleIntegerProperty(f.getValue().getItemQuantity()).asObject());
@@ -555,7 +554,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 deleteItem(selectedItem); // Delete the selected item from the database
-                menuMilkteaAndFrappeListData.remove(selectedItem); // Remove the item from the TableView
+                Platform.runLater(() -> menuMilkteaAndFrappeListData.remove(selectedItem)); // Remove the item from the TableView
             }
         }
     }
@@ -563,13 +562,33 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     private void deleteItem(ItemData item) throws SQLException {
         System.out.println("Deleting item: " + item.getItemName());
 
-        String sql = "DELETE FROM milk_tea WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ? AND final_price = ? AND quantity = ?";
-        try (Connection connect = database.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql)) {
+        String dltMTsql = "DELETE FROM milk_tea WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ? AND final_price = ? AND quantity = ?";
+        String dltfrappesql = "DELETE FROM frappe WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ? AND final_price = ? AND quantity = ?";
+        String dltFDsql = "DELETE FROM fruit_drink WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ? AND final_price = ? AND quantity = ?";
+        try (Connection connect = database.getConnection(); 
+                PreparedStatement prepare = connect.prepareStatement(dltMTsql); 
+   
+                PreparedStatement frapprepare = connect.prepareStatement(dltfrappesql);
+                PreparedStatement FDprepare = connect.prepareStatement(dltFDsql)){
+                
 
             prepare.setInt(1, item.getorderID());
             prepare.setString(2, item.getItemName());
             prepare.setDouble(3, item.getItemPrice());
             prepare.setInt(4, item.getItemQuantity());
+            
+           
+            
+            frapprepare.setInt(1, item.getorderID());
+            frapprepare.setString(2, item.getItemName());
+            frapprepare.setDouble(3, item.getItemPrice());
+            frapprepare.setInt(4, item.getItemQuantity());
+            
+            FDprepare.setInt(1, item.getorderID());
+            FDprepare.setString(2, item.getItemName());
+            FDprepare.setDouble(3, item.getItemPrice());
+            FDprepare.setInt(4, item.getItemQuantity());
+            
             int rowsAffected = prepare.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
 
