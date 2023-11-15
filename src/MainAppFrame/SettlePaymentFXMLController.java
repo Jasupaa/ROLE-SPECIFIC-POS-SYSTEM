@@ -165,5 +165,6 @@ public class SettlePaymentFXMLController implements Initializable {
                 event.consume();
             }
         });
+
     }
 }
