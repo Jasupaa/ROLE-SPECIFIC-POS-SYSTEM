@@ -657,32 +657,37 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private void deleteItem(ItemData item) throws SQLException {
         System.out.println("Deleting item: " + item.getItemName());
+        String dltMTsql = "DELETE FROM milk_tea WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ? AND final_price = ? AND quantity = ?";
+        String dltfrappesql = "DELETE FROM frappe WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ? AND final_price = ? AND quantity = ?";
+        String dltFDsql = "DELETE FROM fruit_drink WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ? AND final_price = ? AND quantity = ?";
+        try (Connection connect = database.getConnection(); PreparedStatement prepare = connect.prepareStatement(dltMTsql); PreparedStatement frapprepare = connect.prepareStatement(dltfrappesql); PreparedStatement FDprepare = connect.prepareStatement(dltFDsql)) {
 
-        String dltMTsql = "DELETE FROM milk_tea WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ?";
-        String dltFrappeSql = "DELETE FROM frappe WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ?";
-        String dltFruitDrinkSql = "DELETE FROM fruit_drink WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ?";
+            prepare.setInt(1, item.getorderID());
+            prepare.setString(2, item.getItemName());
+            prepare.setDouble(3, item.getItemPrice());
+            prepare.setInt(4, item.getItemQuantity());
 
-        try (Connection connect = database.getConnection(); PreparedStatement prepareMT = connect.prepareStatement(dltMTsql); PreparedStatement prepareFrappe = connect.prepareStatement(dltFrappeSql); PreparedStatement prepareFruitDrink = connect.prepareStatement(dltFruitDrinkSql)) {
+            frapprepare.setInt(1, item.getorderID());
+            frapprepare.setString(2, item.getItemName());
+            frapprepare.setDouble(3, item.getItemPrice());
+            frapprepare.setInt(4, item.getItemQuantity());
 
-            prepareMT.setInt(1, item.getorderID());
-            prepareMT.setString(2, item.getItemName());
+            FDprepare.setInt(1, item.getorderID());
+            FDprepare.setString(2, item.getItemName());
+            FDprepare.setDouble(3, item.getItemPrice());
+            FDprepare.setInt(4, item.getItemQuantity());
 
-            prepareFrappe.setInt(1, item.getorderID());
-            prepareFrappe.setString(2, item.getItemName());
+            int rowsAffected = prepare.executeUpdate();
+            int rowsAffectedFrappe = frapprepare.executeUpdate();
+            int rowsAffectedFD = FDprepare.executeUpdate();
 
-            prepareFruitDrink.setInt(1, item.getorderID());
-            prepareFruitDrink.setString(2, item.getItemName());
+            System.out.println("Rows affected: " + rowsAffected);
+            System.out.println("Rows affected (frappe): " + rowsAffectedFrappe);
+            System.out.println("Rows affected (fruit_drink): " + rowsAffectedFD);
 
-            int rowsAffectedMT = prepareMT.executeUpdate();
-            System.out.println("Rows affected (MT): " + rowsAffectedMT);
-
-            int rowsAffectedFrappe = prepareFrappe.executeUpdate();
-            System.out.println("Rows affected (Frappe): " + rowsAffectedFrappe);
-
-            int rowsAffectedFruitDrink = prepareFruitDrink.executeUpdate();
-            System.out.println("Rows affected (Fruit Drink): " + rowsAffectedFruitDrink);
+            System.out.println("SQL Parameters: " + item.getItemName() + ", "
+                    + item.getItemPrice() + ", " + item.getItemQuantity()); // Add this line
         }
-
     }
 
     private void refreshMenuGrid() {
