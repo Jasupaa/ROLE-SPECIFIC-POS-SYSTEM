@@ -197,12 +197,12 @@ public class LoginController {
     }
 
     private String authenticateUser(String enteredCode) {
-        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT Role FROM employees WHERE Code = ?")) {
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT emp_role FROM employees WHERE pin_code = ?")) {
             statement.setString(1, enteredCode);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                return resultSet.getString("Role");
+                return resultSet.getString("emp_role");
             }
         } catch (SQLException e) {
             e.printStackTrace();

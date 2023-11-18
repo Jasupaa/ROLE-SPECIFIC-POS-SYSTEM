@@ -252,6 +252,12 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             // Set the scene to the stage
             settlePaymentStage.setScene(scene);
 
+            // Get the controller for SettlePaymentFXML
+            SettlePaymentFXMLController settlePaymentController = loader.getController();
+
+            // Set the order type
+            settlePaymentController.setOrderType("Take Out");
+
             settlePaymentStage.show();
             blurPane.setVisible(true);
         } catch (IOException e) {
