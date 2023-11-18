@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
+<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
     <children>
       <ScrollPane layoutX="237.0" layoutY="133.0" prefHeight="467.0" prefWidth="465.0" styleClass="scrollPane" stylesheets="@../CSS/CashierCSS.css">
          <content>
@@ -43,7 +43,7 @@
             </ImageView>
             <Button fx:id="takeOutOrderButton" layoutX="50.0" layoutY="561.0" mnemonicParsing="false" onAction="#takeOutOrder" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" text="Take Out" textFill="WHITE" />
             <Button fx:id="deleteItemButton" layoutX="50.0" layoutY="516.0" mnemonicParsing="false" onAction="#onDeleteItemButtonClicked" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" text="Delete Item" textFill="WHITE" />
-            <Button layoutX="221.0" layoutY="516.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" text="Delete Order" textFill="WHITE" />
+            <Button fx:id="deleteAllitemsButton" layoutX="221.0" layoutY="516.0" mnemonicParsing="false" onAction="#onDeleteAllitemsButtonClicked" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" text="Delete Order" textFill="WHITE" />
             <Label layoutX="44.0" layoutY="116.0" text="For Customer Number:" textFill="WHITE" />
             <VBox alignment="CENTER_RIGHT" layoutX="281.0" layoutY="107.0" prefHeight="36.0" prefWidth="100.0">
                <children>
