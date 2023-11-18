@@ -55,7 +55,7 @@ public class LoginController {
 
     Stage stage;
 
-    private void CashierFrame() {
+    private void CashierFrame(String employeeName) {
         System.out.println("Cashier");
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainAppFrame/CashierFXML.fxml"));
@@ -64,7 +64,7 @@ public class LoginController {
 
             // Obtain the controller instance
             CashierFXMLController cashierController = loader.getController();
-
+            cashierController.setEmployeeName(employeeName);
             // Set the reference in the ControllerManager
             ControllerManager.setCashierController(cashierController);
 
@@ -172,9 +172,12 @@ public class LoginController {
         String role = authenticateUser(enteredCode);
 
         if (role != null) {
+            
+            String employeeName = getEmployeeName(enteredCode);
+            
             switch (role) {
                 case "cashier":
-                    CashierFrame();
+                    CashierFrame(employeeName);
                     break;
                 case "kitchen":
                     KitchenFrame();
@@ -235,5 +238,19 @@ public class LoginController {
         }
 
     }
+    private String getEmployeeName(String enteredCode) {
+    try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT name FROM employees WHERE pin_code = ?")) {
+        statement.setString(1, enteredCode);
+        ResultSet resultSet = statement.executeQuery();
+
+        if (resultSet.next()) {
+            return resultSet.getString("name");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return null; // Unable to retrieve employee name
+}
 
 }

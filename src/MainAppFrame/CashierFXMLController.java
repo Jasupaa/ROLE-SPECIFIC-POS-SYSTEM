@@ -131,6 +131,9 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @FXML
     private Button takeOutOrderButton;
+    
+     @FXML
+    private Label empName;
 
     private Stage settlePaymentStage;
 
@@ -145,11 +148,22 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     private volatile boolean stop = false;
     private LocalDate currentDate = LocalDate.now();
 
+    
     public void setTableViewAndList(TableView<ItemData> tableView, ObservableList<ItemData> dataList) {
         this.receiptTable = tableView;
         this.menuMilkteaAndFrappeListData = dataList;
     }
 
+    
+    
+     private String employeeName;
+    
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+        
+        empName.setText(employeeName);
+    }
+    
     private int customerID = 0;
     private int currentCustomerID = 0; // Initialize currentCustomerID
 
@@ -576,7 +590,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         }
 
         // For milk_tea
-  String combinedSql = "SELECT order_id, size, item_name, final_price, quantity, date_time FROM milk_tea WHERE customer_id = ? " +
+        String combinedSql = "SELECT order_id, size, item_name, final_price, quantity, date_time FROM milk_tea WHERE customer_id = ? " +
         "UNION " +
         "SELECT order_id, size, item_name, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? " +
         "UNION " +
@@ -611,6 +625,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
         return listData;
     }
+
 
     private void setupMenusAndRefreshMenuGrid() {
         menus = getMenu1();
