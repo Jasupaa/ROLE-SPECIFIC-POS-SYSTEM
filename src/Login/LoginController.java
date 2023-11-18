@@ -1,43 +1,36 @@
 package Login;
 
+import MainAppFrame.CashierFXMLController;
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
-import javafx.util.Duration;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
-import javafx.stage.StageStyle;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import other.ControllerManager;
 
 public class LoginController {
-    
-     private DbLoginAccess dbLoginAccess;
-    
+
+    private database dbLoginAccess;
 
     double xOffset, yOffset;
     private volatile boolean stop = false;
@@ -61,31 +54,45 @@ public class LoginController {
     private Label TimeLbl;
 
     Stage stage;
-    
-     private void CashierFrame(){
-         
+
+    private void CashierFrame() {
         System.out.println("Cashier");
-        loadFXML("/MainAppFrame/CashierFXML.fxml");
-         
-    
-    
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainAppFrame/CashierFXML.fxml"));
+        try {
+            Parent cashierRoot = loader.load();
+
+            // Obtain the controller instance
+            CashierFXMLController cashierController = loader.getController();
+
+            // Set the reference in the ControllerManager
+            ControllerManager.setCashierController(cashierController);
+
+            // Continue with your existing code...
+            Scene scene = new Scene(cashierRoot);
+            scene.setFill(Color.TRANSPARENT);
+
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle any exceptions
+        }
     }
-    
-    private void KitchenFrame(){
-      
-    System.out.println("Kitchen");
-    loadFXML("/MainAppFrame/KitchenFXML.fxml");
-     
+
+    private void KitchenFrame() {
+
+        System.out.println("Kitchen");
+        loadFXML("/MainAppFrame/KitchenFXML.fxml");
+
     }
-    
-    private void AdminFrame(){
-           
-    System.out.println("Admin");
-    loadFXML("/MainAppFrame/AdminFXML.fxml");
-    
-   
+
+    private void AdminFrame() {
+
+        System.out.println("Admin");
+        loadFXML("/MainAppFrame/AdminFXML.fxml");
+
     }
-    
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -106,18 +113,17 @@ public class LoginController {
 
     @FXML
     public void initialize() {
-        
+
         closebutton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-             
-                stage.close();
+                System.exit(0);
             }
         });
 
         DateLabel();
         Timenow();
-        dbLoginAccess = new DbLoginAccess();
+        dbLoginAccess = new database();
     }
 
     @FXML
@@ -159,18 +165,11 @@ public class LoginController {
 
         thread.start();
     }
-    
+
     @FXML
-   private void LoginHandler(ActionEvent event) {
-    String codeLabelText = CodeLabel.getText();
-    String numericPart = codeLabelText.replaceAll("[^0-9]", "");
-    int enteredCode = 0; // Initialize the enteredCode variable
-
-    if (!numericPart.isEmpty()) {
-        enteredCode = Integer.parseInt(numericPart);
-
-        DbLoginAccess databaseAccess = new DbLoginAccess();
-        String role = databaseAccess.checkAccessCode(enteredCode);
+    private void LoginHandler(ActionEvent event) {
+        String enteredCode = CodeLabel.getText();
+        String role = authenticateUser(enteredCode);
 
         if (role != null) {
             switch (role) {
@@ -182,70 +181,59 @@ public class LoginController {
                     break;
                 case "admin":
                     AdminFrame();
-                    
                     break;
                 default:
-                   handleInvalidCode("Invalid Role", enteredCode);
+                    // Handle unexpected role
+                    break;
             }
-           
-        } 
-        
-        
-        else {
-            
-            
-         handleInvalidCode("Invalid Code", enteredCode);
+        } else {
+            handleInvalidCode("Invalid code entered", enteredCode);
         }
     }
-    
-}
 
-    private void handleInvalidCode(String errorMessage, int enteredCode) {
-    CodeLabel.setText("Error Code: " + " (Code: " + enteredCode + ")");
-   
-}
-    
-    
-   
- 
-    private void loadFXML(String fxmlPath) {
-    try {
-       
-        
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Parent pane = loader.load();
-        
-        
-        ControllerInterface controller = loader.getController();
-        if (controller != null) {
-            controller.setStage(stage);
-        } 
-  
-   
-         Scene scene = new Scene(pane);
-        
-           scene.setFill(Color.TRANSPARENT);
-        
-       
-       
-        stage.setScene(scene);
-        stage.show();
-         
-    } catch (IOException e) {
-        e.printStackTrace();
-        // Handle any exceptions
+    private void handleInvalidCode(String errorMessage, String enteredCode) {
+        CodeLabel.setText("Error Code: " + " (Code: " + enteredCode + ")");
+
     }
-    
-    
+
+    private String authenticateUser(String enteredCode) {
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT Role FROM employees WHERE Code = ?")) {
+            statement.setString(1, enteredCode);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString("Role");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // Authentication failed
+    }
+
+    private void loadFXML(String fxmlPath) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent pane = loader.load();
+
+            ControllerInterface controller = loader.getController();
+            if (controller != null) {
+                controller.setStage(stage);
+            }
+
+            Scene scene = new Scene(pane);
+
+            scene.setFill(Color.TRANSPARENT);
+
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle any exceptions
+        }
+
+    }
 
 }
-    
-    
-    
-  
-    
-    
-}
-
-
-//wala lng
