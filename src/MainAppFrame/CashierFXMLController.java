@@ -565,52 +565,34 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         }
 
         // For milk_tea
-        String milkTeaSql = "SELECT order_id, size, item_name, final_price, quantity FROM milk_tea WHERE customer_id = ?";
+  String combinedSql = "SELECT order_id, size, item_name, final_price, quantity, date_time FROM milk_tea WHERE customer_id = ? " +
+        "UNION " +
+        "SELECT order_id, size, item_name, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? " +
+        "UNION " +
+        "SELECT order_id, size, item_name, final_price, quantity, date_time FROM frappe WHERE customer_id = ? " +
+        "ORDER BY date_time Asc";
 
-        // For Fruit Drink
-        String fruitSql = "SELECT order_id, size, item_name, final_price, quantity FROM fruit_drink WHERE customer_id = ?";
 
-        // For frappe
-        String frappeSql = "SELECT order_id, size, item_name, final_price, quantity FROM frappe WHERE customer_id = ?";
+        try (Connection connect = database.getConnection(); PreparedStatement combinedPrepare = connect.prepareStatement(combinedSql)
+             ) {
 
-        try (Connection connect = database.getConnection(); PreparedStatement milkTeaPrepare = connect.prepareStatement(milkTeaSql); PreparedStatement frappePrepare = connect.prepareStatement(frappeSql); PreparedStatement fruitPrepare = connect.prepareStatement(fruitSql)) {
+           combinedPrepare.setInt(1, customerID);
+           combinedPrepare.setInt(2, customerID);
+            combinedPrepare.setInt(3, customerID);
 
-            milkTeaPrepare.setInt(1, customerID);
-            fruitPrepare.setInt(1, customerID);
-            frappePrepare.setInt(1, customerID);
+           
+    ResultSet combinedResult = combinedPrepare.executeQuery();
+    while (combinedResult.next()) {
+        int orderID = combinedResult.getInt("order_id");
+        String itemName = combinedResult.getString("size") + " " + combinedResult.getString("item_name");
+        double itemPrice = combinedResult.getDouble("final_price");
+        int itemQuantity = combinedResult.getInt("quantity");
 
-            ResultSet milkTeaResult = milkTeaPrepare.executeQuery();
-            while (milkTeaResult.next()) {
-                int orderID = milkTeaResult.getInt("order_id");
-                String itemName = milkTeaResult.getString("size") + " " + milkTeaResult.getString("item_name");
-                double itemPrice = milkTeaResult.getDouble("final_price");
-                int itemQuantity = milkTeaResult.getInt("quantity");
+        ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
+        listData.add(item);}
+           
 
-                ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
-                listData.add(item);
-            }
-
-            ResultSet fruitResult = fruitPrepare.executeQuery();
-            while (fruitResult.next()) {
-                int orderID = fruitResult.getInt("order_id");
-                String itemName = fruitResult.getString("size") + " " + fruitResult.getString("item_name");
-                double itemPrice = fruitResult.getDouble("final_price");
-                int itemQuantity = fruitResult.getInt("quantity");
-
-                ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
-                listData.add(item);
-            }
-
-            ResultSet frappeResult = frappePrepare.executeQuery();
-            while (frappeResult.next()) {
-                int orderID = frappeResult.getInt("order_id");
-                String itemName = frappeResult.getString("size") + " " + frappeResult.getString("item_name");
-                double itemPrice = frappeResult.getDouble("final_price");
-                int itemQuantity = frappeResult.getInt("quantity");
-
-                ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
-                listData.add(item);
-            }
+           
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1003,8 +985,19 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                     Logger.getLogger(AdminFXMLController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
+                
             }
-        });
+            
+            
+        }
+        );
+        
+        columnItemName.setSortable(true);
+        columnItemPrice.setSortable(true);
+        columnItemQuantity.setSortable(true);
+
+        
+        
 
         try {
             // Update the customerLabel with the highest customer ID across databases
