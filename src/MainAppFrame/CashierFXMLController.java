@@ -47,6 +47,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.stage.StageStyle;
+import java.util.Set;
+import java.util.HashSet;
 
 import other.ItemData;
 import other.menu1;
@@ -93,6 +95,9 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @FXML
     private Button deleteItemButton;
+    
+    @FXML
+    private Button deleteAllitemsButton;
 
     @FXML
     private Button getMenu1;
@@ -251,6 +256,12 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
             // Set the scene to the stage
             settlePaymentStage.setScene(scene);
+
+            // Get the controller for SettlePaymentFXML
+            SettlePaymentFXMLController settlePaymentController = loader.getController();
+
+            // Set the order type
+            settlePaymentController.setOrderType("Take Out");
 
             settlePaymentStage.show();
             blurPane.setVisible(true);
@@ -671,6 +682,62 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                     + item.getItemPrice() + ", " + item.getItemQuantity()); // Add this line
         }
     }
+    
+// ...
+
+public void onDeleteAllitemsButtonClicked(ActionEvent event) throws SQLException {
+    // Prompt user for confirmation before deleting all items
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Delete All Items");
+    alert.setHeaderText(null);
+    alert.setContentText("Are you sure you want to delete all items?");
+
+    Optional<ButtonType> result = alert.showAndWait();
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+        Set<Integer> orderIDs = new HashSet<>();
+
+        // Collect unique order IDs from the list
+        for (ItemData item : menuMilkteaAndFrappeListData) {
+            orderIDs.add(item.getorderID());
+        }
+
+        // Iterate through unique order IDs and delete items
+        for (int orderID : orderIDs) {
+            ItemData dummyItem = new ItemData(orderID, "", 0.0, 0);
+            deleteAllitems(dummyItem);
+        }
+
+        menuMilkteaAndFrappeListData.clear(); // Clear all items from the TableView
+    }
+}
+
+
+private void deleteAllitems(ItemData item) throws SQLException {
+    
+    String deleteAllMTsql = "DELETE FROM milk_tea WHERE order_id = ?";
+    String deleteAllFrappeSql = "DELETE FROM frappe WHERE order_id = ?";
+    String deleteAllFDSql = "DELETE FROM fruit_drink WHERE order_id = ?";
+
+    try (Connection connect = database.getConnection();
+         PreparedStatement deleteAllMTPrepare = connect.prepareStatement(deleteAllMTsql);
+         PreparedStatement deleteAllFrappePrepare = connect.prepareStatement(deleteAllFrappeSql);
+         PreparedStatement deleteAllFDPrepare = connect.prepareStatement(deleteAllFDSql)) {
+
+        int orderID = item.getorderID(); 
+
+        deleteAllMTPrepare.setInt(1, orderID);
+        deleteAllFrappePrepare.setInt(1, orderID);
+        deleteAllFDPrepare.setInt(1, orderID);
+
+        int rowsAffectedMT = deleteAllMTPrepare.executeUpdate();
+        int rowsAffectedFrappe = deleteAllFrappePrepare.executeUpdate();
+        int rowsAffectedFD = deleteAllFDPrepare.executeUpdate();
+
+        System.out.println("Rows affected (delete all milk tea): " + rowsAffectedMT);
+        System.out.println("Rows affected (delete all frappe): " + rowsAffectedFrappe);
+        System.out.println("Rows affected (delete all fruit drink): " + rowsAffectedFD);
+    }
+}
 
     private void refreshMenuGrid() {
 

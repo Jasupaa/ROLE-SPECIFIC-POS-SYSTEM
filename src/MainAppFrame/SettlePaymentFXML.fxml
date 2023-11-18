@@ -11,6 +11,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="496.0" prefWidth="740.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.SettlePaymentFXMLController">
    <children>
+      <Button fx:id="cashEnter" layoutX="279.0" layoutY="347.0" mnemonicParsing="false" onAction="#cashEnterButton" prefHeight="25.0" prefWidth="52.0" text="Enter" />
       <Pane layoutX="370.0" layoutY="32.0" prefHeight="433.0" prefWidth="330.0" style="-fx-background-color: #8E8E8E;" />
       <ImageView fx:id="CloseButton" fitHeight="22.0" fitWidth="18.0" layoutX="29.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -32,15 +33,15 @@
             <Font size="10.0" />
          </font>
       </Label>
-      <TextField layoutX="63.0" layoutY="128.0" prefHeight="25.0" prefWidth="269.0" />
+      <TextField fx:id="ordertypeTxtField" layoutX="63.0" layoutY="128.0" prefHeight="25.0" prefWidth="269.0" />
       <Label layoutX="66.0" layoutY="157.0" prefHeight="15.0" prefWidth="95.0" text="Enter Discount Code">
          <font>
             <Font size="10.0" />
          </font>
       </Label>
-      <TextField layoutX="63.0" layoutY="176.0" prefHeight="25.0" prefWidth="112.0" />
-      <Button layoutX="178.0" layoutY="176.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="Enter" />
-      <TextField layoutX="233.0" layoutY="176.0" prefHeight="25.0" prefWidth="98.0" />
+      <TextField fx:id="discCodeTxtLbl" layoutX="63.0" layoutY="176.0" prefHeight="25.0" prefWidth="112.0" />
+      <Button fx:id="discEnter" layoutX="178.0" layoutY="176.0" mnemonicParsing="false" onAction="#discEnterButton" prefHeight="25.0" prefWidth="52.0" text="Enter" />
+      <TextField fx:id="discTxtLbl" layoutX="233.0" layoutY="176.0" prefHeight="25.0" prefWidth="98.0" />
       <Label layoutX="236.0" layoutY="157.0" prefHeight="15.0" prefWidth="95.0" text="Discount">
          <font>
             <Font size="10.0" />
@@ -51,28 +52,27 @@
             <Font size="10.0" />
          </font>
       </Label>
-      <TextField layoutX="63.0" layoutY="222.0" prefHeight="25.0" prefWidth="269.0" />
+      <TextField fx:id="itmTotalTxtLbl" layoutX="63.0" layoutY="222.0" prefHeight="25.0" prefWidth="269.0" />
       <Label layoutX="66.0" layoutY="250.0" prefHeight="15.0" prefWidth="95.0" text="Applied Discount">
          <font>
             <Font size="10.0" />
          </font>
       </Label>
-      <TextField layoutX="63.0" layoutY="270.0" prefHeight="25.0" prefWidth="269.0" />
-      <TextField layoutX="63.0" layoutY="301.0" prefHeight="25.0" prefWidth="269.0" />
+      <TextField fx:id="appldDscTxtLbl" layoutX="63.0" layoutY="270.0" prefHeight="25.0" prefWidth="269.0" />
+      <TextField fx:id="newTotalTxtLbl" layoutX="63.0" layoutY="301.0" prefHeight="25.0" prefWidth="269.0" />
       <Label layoutX="66.0" layoutY="329.0" prefHeight="15.0" prefWidth="95.0" text="Cash">
          <font>
             <Font size="10.0" />
          </font>
       </Label>
-      <TextField layoutX="63.0" layoutY="347.0" prefHeight="25.0" prefWidth="213.0" />
+      <TextField fx:id="cashTxtLbl" layoutX="63.0" layoutY="347.0" prefHeight="25.0" prefWidth="213.0" />
       <Label layoutX="66.0" layoutY="375.0" prefHeight="15.0" prefWidth="95.0" text="Change">
          <font>
             <Font size="10.0" />
          </font>
       </Label>
-      <TextField layoutX="63.0" layoutY="394.0" prefHeight="25.0" prefWidth="269.0" />
+      <TextField fx:id="changeTxtLbl" layoutX="63.0" layoutY="394.0" prefHeight="25.0" prefWidth="269.0" />
       <Button fx:id="confirmButton" layoutX="211.0" layoutY="429.0" mnemonicParsing="false" onAction="#confirmButton" prefHeight="25.0" prefWidth="65.0" text="Confirm" />
       <Button fx:id="printButton" layoutX="279.0" layoutY="429.0" mnemonicParsing="false" onAction="#printButton" prefHeight="25.0" prefWidth="53.0" text="Print" />
-      <Button layoutX="279.0" layoutY="347.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="Enter" />
    </children>
 </AnchorPane>
