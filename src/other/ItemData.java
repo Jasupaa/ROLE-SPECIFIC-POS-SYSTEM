@@ -12,6 +12,7 @@ package other;
 import javafx.beans.property.*;
 
 public class ItemData {
+    
     private final IntegerProperty orderID;
     private final StringProperty itemName;
     private final DoubleProperty itemPrice;
@@ -69,5 +70,4 @@ public class ItemData {
     }
 
 }
-
 

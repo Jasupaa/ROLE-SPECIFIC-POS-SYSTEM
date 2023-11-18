@@ -144,6 +144,17 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private volatile boolean stop = false;
     private LocalDate currentDate = LocalDate.now();
+    
+    @FXML
+    private Label empName;
+    
+     private String employeeName;
+    
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+        
+        empName.setText(employeeName);
+    }
 
     public void setTableViewAndList(TableView<ItemData> tableView, ObservableList<ItemData> dataList) {
         this.receiptTable = tableView;
@@ -946,95 +957,6 @@ private void deleteAllitems(ItemData item) throws SQLException {
 
     private Button lastClickedButton = null;
 
-    /*
-    @FXML
-    public void SwitchForm(ActionEvent event) {
-        Button clickedButton = (Button) event.getSource();
-
-        if (clickedButton == lastClickedButton) {
-            // Ignore the click if the same button was clicked twice in a row
-            return;
-        }
-
-        if (clickedButton == getMenu1) {
-            // ... (rest of the code remains the same)
-        }
-
-        // Update the last clicked button
-        lastClickedButton = clickedButton;
-        if (clickedButton == getMenu1) {
-            setButtonColor(getMenu1, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu2) {
-            setButtonColor(getMenu2, true);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu3) {
-            setButtonColor(getMenu3, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu4) {
-            setButtonColor(getMenu4, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu5) {
-            setButtonColor(getMenu5, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu6) {
-            setButtonColor(getMenu6, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu7) {
-            setButtonColor(getMenu7, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu1, false);
-
-        }
-    }
-
-    private void setButtonColor(Button button, boolean isSelected) {
-        if (isSelected) {
-            button.getStyleClass().add("selected-button");
-        } else {
-            button.getStyleClass().remove("selected-button");
-        }
-    } */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 

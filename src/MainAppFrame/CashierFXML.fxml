@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
+<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
     <children>
       <ScrollPane layoutX="237.0" layoutY="133.0" prefHeight="467.0" prefWidth="465.0" styleClass="scrollPane" stylesheets="@../CSS/CashierCSS.css">  
           <content>
@@ -115,5 +115,6 @@
          </font>
       </Label>
       <Pane fx:id="blurPane" prefHeight="660.0" prefWidth="1136.0" styleClass="card" stylesheets="@../CSS/CashierCSS.css" visible="false" />
+      <Label fx:id="empName" layoutX="441.0" layoutY="104.0" text="Label" textFill="WHITE" />
    </children>
 </AnchorPane>
