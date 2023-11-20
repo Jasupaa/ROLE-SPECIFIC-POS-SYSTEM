@@ -83,6 +83,15 @@ public class SettlePaymentFXMLController implements Initializable {
     private Button printButton;
 
     private CashierFXMLController existingCashierController;
+    
+    private String empName;  
+    private int empId;
+
+    public void setExistingCashierController(CashierFXMLController cashierController, String employeeName, int employeeId) {
+        this.existingCashierController = cashierController;
+        this.empName = employeeName;
+         this.empId = employeeId;
+    }
 
     public void setExistingCashierController(CashierFXMLController cashierController) {
         this.existingCashierController = cashierController;
@@ -93,17 +102,53 @@ public class SettlePaymentFXMLController implements Initializable {
         ordertypeTxtField.setEditable(false); // Disable the TextField
     }
 
-    @FXML
+   @FXML
     void confirmButton(ActionEvent event) {
-
         CashierFXMLController cashierController = ControllerManager.getCashierController();
 
         if (existingCashierController == null && cashierController != null) {
             existingCashierController = cashierController;
         }
+        
+        // Get relevant information from the SettlePayment
+        int customerID = existingCashierController.getCurrentCustomerID();
+        String orderType = ordertypeTxtField.getText();
+        double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1));
+        double cashAmount = Double.parseDouble(cashTxtLbl.getText());
+        double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
+
+        // Insert into the "invoice" table
+        insertInvoiceToDatabase(customerID, orderType, totalAmount, cashAmount, changeAmount);
+
+        // Update UI or perform other actions as needed
+
         cashierController.incrementCurrentCustomerID();
         cashierController.menuGetMilkteaAndFrappe();
         cashierController.setupTableView();
+    }
+
+    private void insertInvoiceToDatabase(int customerID, String orderType, double totalAmount, double cashAmount, double changeAmount) {
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                String sql = "INSERT INTO invoice (customer_id, employee_id, emp_name, date_time, order_type, total, cash, `change`) VALUES (?, ?, ?, NOW(), ?, ?, ?, ?)";
+
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    // Set other values as needed (employee ID, employee name, date-time)
+                    stmt.setInt(1, customerID);
+                    stmt.setInt(2,empId);
+                    stmt.setString(3, empName);
+                    stmt.setString(4, orderType);
+                    stmt.setDouble(5, totalAmount);
+                    stmt.setDouble(6, cashAmount);
+                    stmt.setDouble(7, changeAmount);
+
+                    stmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database-related exceptions
+        }
     }
 
     @FXML
@@ -332,6 +377,9 @@ public class SettlePaymentFXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         changeTxtLbl.setDisable(true);
         
+        
+
+    
         ordertypeTxtField.setDisable(true);
         itmTotalTxtLbl.setDisable(true);
         newTotalTxtLbl.setDisable(true); // Disable the TextField

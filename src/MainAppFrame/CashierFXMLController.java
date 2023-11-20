@@ -157,9 +157,11 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     
     
      private String employeeName;
+     private int employeeId;
     
-    public void setEmployeeName(String employeeName) {
+    public void setEmployee(String employeeName, int employeeId) {
         this.employeeName = employeeName;
+        this.employeeId = employeeId;
         
         empName.setText(employeeName);
     }
@@ -273,6 +275,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
             // Get the controller for SettlePaymentFXML
             SettlePaymentFXMLController settlePaymentController = loader.getController();
+            settlePaymentController.setExistingCashierController(this, employeeName, employeeId);
 
             // Set the order type
             settlePaymentController.setOrderType("Take Out");
