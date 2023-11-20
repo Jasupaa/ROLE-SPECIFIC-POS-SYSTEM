@@ -45,9 +45,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 }
 
 .pinButton {
-    -fx-background-color: #111315;
-    -fx-border-color: white;
     -fx-text-fill: white;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 0, 4, 0, 0);
+    -fx-background-insets: 1; /* Adjust the border thickness */
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-background-blur: 5px;
 }
 
 .pinButton:hover {
@@ -57,9 +63,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 }
 
 .deleteButton {
-    -fx-background-color: #292C2D;
-    -fx-border-color: #292C2D;
     -fx-text-fill: white;
+    -fx-background-color: rgba(78, 77, 85, 0.2);
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 0, 4, 0, 0);
+    -fx-background-insets: 1; /* Adjust the border thickness */
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-background-blur: 5px;
 }
 
 .deleteButton:hover {
@@ -69,9 +81,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 }
 
 .enterButton {
-    -fx-background-color: #292C2D;
-    -fx-border-color: #292C2D;
     -fx-text-fill: white;
+    -fx-background-color: rgba(78, 77, 85, 0.2);
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 0, 4, 0, 0);
+    -fx-background-insets: 1; /* Adjust the border thickness */
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-background-blur: 5px;
 }
 
 .enterButton:hover {

@@ -326,7 +326,8 @@ public class SettlePaymentFXMLController implements Initializable {
     }
 
     /**
-     * Initializes the controller class.
+     * @param url  * Initializes the controller class.
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {

@@ -14,20 +14,27 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
+<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
     <children>
-      <ScrollPane layoutX="237.0" layoutY="133.0" prefHeight="467.0" prefWidth="465.0" styleClass="scrollPane" stylesheets="@../CSS/CashierCSS.css">
+      <ScrollPane fx:id="receiptScrollPane" layoutX="236.0" layoutY="151.0" prefHeight="450.0" prefWidth="424.0" styleClass="scrollPane" stylesheets="@../CSS/CashierCSS.css">
          <content>
-            <GridPane fx:id="menuGrid" prefHeight="0.0" prefWidth="0.0">
+            <GridPane fx:id="menuGrid" alignment="TOP_CENTER" prefHeight="0.0" prefWidth="0.0" styleClass="grid-pane" stylesheets="@../CSS/CashierCSS.css">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                </columnConstraints>
             </GridPane>
          </content></ScrollPane>
-      <Pane layoutX="713.0" prefHeight="652.0" prefWidth="424.0">
+      <Pane layoutX="705.0" prefHeight="660.0" prefWidth="442.0" styleClass="panedesign" stylesheets="@../CSS/CashierCSS.css">
          <children>
-            <Button fx:id="takeOrderButton" layoutX="221.0" layoutY="561.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" text="Dine In" textFill="WHITE" />
-            <TableView fx:id="receiptTable" layoutX="44.0" layoutY="150.0" prefHeight="337.0" prefWidth="337.0">
+            <Button fx:id="takeOrderButton" layoutX="231.0" layoutY="561.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/Group%203%20(3).png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <TableView fx:id="receiptTable" layoutX="53.0" layoutY="151.0" prefHeight="337.0" prefWidth="337.0">
               <columns>
                 
                 <TableColumn fx:id="columnItemName" prefWidth="183.0" resizable="false" text="Item" />
@@ -36,16 +43,37 @@
                   <TableColumn minWidth="5.0" prefWidth="5.0" text="Column X" />
               </columns>
             </TableView>
-            <ImageView fitHeight="58.0" fitWidth="56.0" layoutX="184.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="58.0" fitWidth="56.0" layoutX="194.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../img/Group%201%20(2).png" />
                </image>
             </ImageView>
-            <Button fx:id="takeOutOrderButton" layoutX="50.0" layoutY="561.0" mnemonicParsing="false" onAction="#takeOutOrder" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" text="Take Out" textFill="WHITE" />
-            <Button fx:id="deleteItemButton" layoutX="50.0" layoutY="516.0" mnemonicParsing="false" onAction="#onDeleteItemButtonClicked" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" text="Delete Item" textFill="WHITE" />
-            <Button fx:id="deleteAllitemsButton" layoutX="221.0" layoutY="516.0" mnemonicParsing="false" onAction="#onDeleteAllitemsButtonClicked" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" text="Delete Order" textFill="WHITE" />
-            <Label layoutX="44.0" layoutY="116.0" text="For Customer Number:" textFill="WHITE" />
-            <VBox alignment="CENTER_RIGHT" layoutX="281.0" layoutY="107.0" prefHeight="36.0" prefWidth="100.0">
+            <Button fx:id="takeOutOrderButton" layoutX="60.0" layoutY="561.0" mnemonicParsing="false" onAction="#takeOutOrder" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/Group%203%20(4).png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="deleteItemButton" layoutX="60.0" layoutY="516.0" mnemonicParsing="false" onAction="#onDeleteItemButtonClicked" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/Group%203%20(1).png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="deleteAllitemsButton" layoutX="231.0" layoutY="516.0" mnemonicParsing="false" onAction="#onDeleteAllitemsButtonClicked" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/Group%203%20(2).png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Label layoutX="53.0" layoutY="117.0" text="For Customer Number:" textFill="WHITE" />
+            <VBox alignment="CENTER_RIGHT" layoutX="280.0" layoutY="107.0" prefHeight="36.0" prefWidth="109.0">
                <children>
                   <Label fx:id="customerLabel" text="Label" textFill="WHITE" />
                </children>
@@ -57,7 +85,7 @@
             <Image url="@../img/icons8-log-out-96.png" />
          </image>
       </ImageView>
-      <VBox layoutX="67.0" layoutY="222.0" prefHeight="251.0" prefWidth="136.0">
+      <VBox layoutX="67.0" layoutY="256.0" prefHeight="251.0" prefWidth="136.0">
          <children>
             <Button fx:id="getMenu1" alignment="BASELINE_LEFT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#getMenu1" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Milk Tea" textFill="WHITE">
                <font>
@@ -96,24 +124,25 @@
             </Button>
          </children>
       </VBox>
-      <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="73.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="73.0" layoutY="121.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/Group%201%20(1).png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="59.0" fitWidth="455.0" layoutX="237.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="80.0" fitWidth="329.0" layoutX="237.0" layoutY="39.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/Group%202%20(1).png" />
+            <Image url="@../img/Group%202_1.png" />
          </image>
       </ImageView>
-      <Label fx:id="dateLbl" layoutX="237.0" layoutY="99.0" text="Label" textFill="WHITE" />
-      <Label fx:id="timeLbl" layoutX="335.0" layoutY="99.0" text="Label" textFill="WHITE" />
-      <Label layoutX="75.0" layoutY="201.0" text="FOOD CATEGORY" textFill="#404040">
+      <Label fx:id="dateLbl" layoutX="238.0" layoutY="101.0" text="Label" textFill="WHITE" />
+      <Label fx:id="timeLbl" layoutX="333.0" layoutY="101.0" text="Label" textFill="WHITE" />
+      <Label layoutX="75.0" layoutY="235.0" text="FOOD CATEGORY" textFill="#404040">
          <font>
             <Font size="9.0" />
          </font>
       </Label>
       <Pane fx:id="blurPane" prefHeight="660.0" prefWidth="1136.0" styleClass="card" stylesheets="@../CSS/CashierCSS.css" visible="false" />
-      <Label fx:id="empName" layoutX="441.0" layoutY="104.0" text="Label" textFill="WHITE" />
+      <Label fx:id="empName" layoutX="491.0" layoutY="101.0" text="Label" textFill="WHITE" />
+      <Label fx:id="empName1" layoutX="398.0" layoutY="101.0" text="Cashier Handler:" textFill="WHITE" />
    </children>
 </AnchorPane>

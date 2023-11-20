@@ -49,6 +49,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.StageStyle;
 import java.util.Set;
 import java.util.HashSet;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.StackPane;
 
 import other.ItemData;
 import other.menu1;
@@ -62,6 +64,9 @@ import other.menu7;
 public class CashierFXMLController implements Initializable, ControllerInterface {
 
     double xOffset, yOffset;
+
+    @FXML
+    private ScrollPane receiptScrollPane;
 
     @FXML
     private Pane blurPane;
@@ -95,7 +100,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @FXML
     private Button deleteItemButton;
-    
+
     @FXML
     private Button deleteAllitemsButton;
 
@@ -131,8 +136,8 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @FXML
     private Button takeOutOrderButton;
-    
-     @FXML
+
+    @FXML
     private Label empName;
 
     private Stage settlePaymentStage;
@@ -148,22 +153,19 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     private volatile boolean stop = false;
     private LocalDate currentDate = LocalDate.now();
 
-    
     public void setTableViewAndList(TableView<ItemData> tableView, ObservableList<ItemData> dataList) {
         this.receiptTable = tableView;
         this.menuMilkteaAndFrappeListData = dataList;
     }
 
-    
-    
-     private String employeeName;
-    
+    private String employeeName;
+
     public void setEmployeeName(String employeeName) {
         this.employeeName = employeeName;
-        
+
         empName.setText(employeeName);
     }
-    
+
     private int customerID = 0;
     private int currentCustomerID = 0; // Initialize currentCustomerID
 
@@ -590,34 +592,29 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         }
 
         // For milk_tea
-        String combinedSql = "SELECT order_id, size, item_name, final_price, quantity, date_time FROM milk_tea WHERE customer_id = ? " +
-        "UNION " +
-        "SELECT order_id, size, item_name, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? " +
-        "UNION " +
-        "SELECT order_id, size, item_name, final_price, quantity, date_time FROM frappe WHERE customer_id = ? " +
-        "ORDER BY date_time Asc";
+        String combinedSql = "SELECT order_id, size, item_name, final_price, quantity, date_time FROM milk_tea WHERE customer_id = ? "
+                + "UNION "
+                + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? "
+                + "UNION "
+                + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM frappe WHERE customer_id = ? "
+                + "ORDER BY date_time Asc";
 
+        try (Connection connect = database.getConnection(); PreparedStatement combinedPrepare = connect.prepareStatement(combinedSql)) {
 
-        try (Connection connect = database.getConnection(); PreparedStatement combinedPrepare = connect.prepareStatement(combinedSql)
-             ) {
-
-           combinedPrepare.setInt(1, customerID);
-           combinedPrepare.setInt(2, customerID);
+            combinedPrepare.setInt(1, customerID);
+            combinedPrepare.setInt(2, customerID);
             combinedPrepare.setInt(3, customerID);
 
-           
-    ResultSet combinedResult = combinedPrepare.executeQuery();
-    while (combinedResult.next()) {
-        int orderID = combinedResult.getInt("order_id");
-        String itemName = combinedResult.getString("size") + " " + combinedResult.getString("item_name");
-        double itemPrice = combinedResult.getDouble("final_price");
-        int itemQuantity = combinedResult.getInt("quantity");
+            ResultSet combinedResult = combinedPrepare.executeQuery();
+            while (combinedResult.next()) {
+                int orderID = combinedResult.getInt("order_id");
+                String itemName = combinedResult.getString("size") + " " + combinedResult.getString("item_name");
+                double itemPrice = combinedResult.getDouble("final_price");
+                int itemQuantity = combinedResult.getInt("quantity");
 
-        ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
-        listData.add(item);}
-           
-
-           
+                ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
+                listData.add(item);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -625,7 +622,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
         return listData;
     }
-
 
     private void setupMenusAndRefreshMenuGrid() {
         menus = getMenu1();
@@ -644,6 +640,9 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
         // Bind the TableView to the combined ObservableList
         receiptTable.setItems(menuMilkteaAndFrappeListData);
+
+        StackPane content = (StackPane) receiptScrollPane.getContent();
+        content.setPadding(new Insets(0));
     }
 
     public void onDeleteItemButtonClicked(ActionEvent event) throws SQLException {
@@ -697,62 +696,57 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                     + item.getItemPrice() + ", " + item.getItemQuantity()); // Add this line
         }
     }
-    
+
 // ...
+    public void onDeleteAllitemsButtonClicked(ActionEvent event) throws SQLException {
+        // Prompt user for confirmation before deleting all items
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete All Items");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to delete all items?");
 
-public void onDeleteAllitemsButtonClicked(ActionEvent event) throws SQLException {
-    // Prompt user for confirmation before deleting all items
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setTitle("Delete All Items");
-    alert.setHeaderText(null);
-    alert.setContentText("Are you sure you want to delete all items?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            Set<Integer> orderIDs = new HashSet<>();
 
-    Optional<ButtonType> result = alert.showAndWait();
-    if (result.isPresent() && result.get() == ButtonType.OK) {
-        Set<Integer> orderIDs = new HashSet<>();
+            // Collect unique order IDs from the list
+            for (ItemData item : menuMilkteaAndFrappeListData) {
+                orderIDs.add(item.getorderID());
+            }
 
-        // Collect unique order IDs from the list
-        for (ItemData item : menuMilkteaAndFrappeListData) {
-            orderIDs.add(item.getorderID());
+            // Iterate through unique order IDs and delete items
+            for (int orderID : orderIDs) {
+                ItemData dummyItem = new ItemData(orderID, "", 0.0, 0);
+                deleteAllitems(dummyItem);
+            }
+
+            menuMilkteaAndFrappeListData.clear(); // Clear all items from the TableView
         }
+    }
 
-        // Iterate through unique order IDs and delete items
-        for (int orderID : orderIDs) {
-            ItemData dummyItem = new ItemData(orderID, "", 0.0, 0);
-            deleteAllitems(dummyItem);
+    private void deleteAllitems(ItemData item) throws SQLException {
+
+        String deleteAllMTsql = "DELETE FROM milk_tea WHERE order_id = ?";
+        String deleteAllFrappeSql = "DELETE FROM frappe WHERE order_id = ?";
+        String deleteAllFDSql = "DELETE FROM fruit_drink WHERE order_id = ?";
+
+        try (Connection connect = database.getConnection(); PreparedStatement deleteAllMTPrepare = connect.prepareStatement(deleteAllMTsql); PreparedStatement deleteAllFrappePrepare = connect.prepareStatement(deleteAllFrappeSql); PreparedStatement deleteAllFDPrepare = connect.prepareStatement(deleteAllFDSql)) {
+
+            int orderID = item.getorderID();
+
+            deleteAllMTPrepare.setInt(1, orderID);
+            deleteAllFrappePrepare.setInt(1, orderID);
+            deleteAllFDPrepare.setInt(1, orderID);
+
+            int rowsAffectedMT = deleteAllMTPrepare.executeUpdate();
+            int rowsAffectedFrappe = deleteAllFrappePrepare.executeUpdate();
+            int rowsAffectedFD = deleteAllFDPrepare.executeUpdate();
+
+            System.out.println("Rows affected (delete all milk tea): " + rowsAffectedMT);
+            System.out.println("Rows affected (delete all frappe): " + rowsAffectedFrappe);
+            System.out.println("Rows affected (delete all fruit drink): " + rowsAffectedFD);
         }
-
-        menuMilkteaAndFrappeListData.clear(); // Clear all items from the TableView
     }
-}
-
-
-private void deleteAllitems(ItemData item) throws SQLException {
-    
-    String deleteAllMTsql = "DELETE FROM milk_tea WHERE order_id = ?";
-    String deleteAllFrappeSql = "DELETE FROM frappe WHERE order_id = ?";
-    String deleteAllFDSql = "DELETE FROM fruit_drink WHERE order_id = ?";
-
-    try (Connection connect = database.getConnection();
-         PreparedStatement deleteAllMTPrepare = connect.prepareStatement(deleteAllMTsql);
-         PreparedStatement deleteAllFrappePrepare = connect.prepareStatement(deleteAllFrappeSql);
-         PreparedStatement deleteAllFDPrepare = connect.prepareStatement(deleteAllFDSql)) {
-
-        int orderID = item.getorderID(); 
-
-        deleteAllMTPrepare.setInt(1, orderID);
-        deleteAllFrappePrepare.setInt(1, orderID);
-        deleteAllFDPrepare.setInt(1, orderID);
-
-        int rowsAffectedMT = deleteAllMTPrepare.executeUpdate();
-        int rowsAffectedFrappe = deleteAllFrappePrepare.executeUpdate();
-        int rowsAffectedFD = deleteAllFDPrepare.executeUpdate();
-
-        System.out.println("Rows affected (delete all milk tea): " + rowsAffectedMT);
-        System.out.println("Rows affected (delete all frappe): " + rowsAffectedFrappe);
-        System.out.println("Rows affected (delete all fruit drink): " + rowsAffectedFD);
-    }
-}
 
     private void refreshMenuGrid() {
 
@@ -1067,19 +1061,15 @@ private void deleteAllitems(ItemData item) throws SQLException {
                     Logger.getLogger(AdminFXMLController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
             }
-            
-            
+
         }
         );
-        
+
         columnItemName.setSortable(true);
         columnItemPrice.setSortable(true);
         columnItemQuantity.setSortable(true);
-
-        
-        
 
         try {
             // Update the customerLabel with the highest customer ID across databases
