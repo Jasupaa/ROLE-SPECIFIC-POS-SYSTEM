@@ -13,7 +13,7 @@
       <Pane prefHeight="309.0" prefWidth="393.0" styleClass="containerColorRM" stylesheets="@../CSS/CashierCSS.css">
          <children>
             <Spinner fx:id="spinnerQuantity" layoutX="133.0" layoutY="195.0" prefHeight="25.0" prefWidth="130.0" />
-            <Button layoutX="246.0" layoutY="245.0" mnemonicParsing="false" text="Confirm" />
+            <Button fx:id="confirmButton1" layoutX="246.0" layoutY="245.0" mnemonicParsing="false" onAction="#confirmButton1" text="Confirm" />
             <VBox alignment="CENTER" layoutX="41.0" layoutY="39.0" prefHeight="147.0" prefWidth="313.0">
                <children>
                   <ImageView fx:id="foodImg" fitHeight="119.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />

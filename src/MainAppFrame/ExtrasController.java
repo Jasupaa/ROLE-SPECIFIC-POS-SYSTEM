@@ -4,7 +4,6 @@
  */
 package MainAppFrame;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -19,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import other.ControllerManager;
 
 import other.menu7;
 
@@ -42,6 +42,7 @@ public class ExtrasController {
 
     @FXML
     private Spinner spinnerQuantity;
+    private CashierFXMLController existingCashierController;
 
     private boolean askmeRadioSelected = false;
 
@@ -71,17 +72,22 @@ public class ExtrasController {
         spinnerQuantity.getValueFactory().setConverter(converter);
 
     }
-    
+
     private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity) {
 
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO extras (customer_id, date_time, item_name, quantity) VALUES (?, NOW(), ?, ?)";
+                // Assuming you have a method to calculate the price based on the menu item
+                int price = calculatePrice(menuName);
+                int finalPrice = price * selectedQuantity;
+
+                String sql = "INSERT INTO extras (customer_id, date_time, item_name, quantity, price, final_price) VALUES (?, NOW(), ?, ?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
                     stmt.setInt(3, selectedQuantity);
-
+                    stmt.setInt(4, price);
+                    stmt.setInt(5, finalPrice);
 
                     stmt.executeUpdate();
                 }
@@ -93,15 +99,75 @@ public class ExtrasController {
         }
     }
 
+// Example of a method to calculate the price based on the menu item
+    private int calculatePrice(String menuName) {
+        // Implement your logic to calculate the price based on the menu item
+        // For example, you can use a switch statement or a lookup in a database
+        // This is just a placeholder, replace it with your actual logic
+        switch (menuName) {
+            case "White Rice":
+                return 20;
+            case "Garlic Rice":
+                return 25;
+            case "Coke":
+                return 30;
+            case "Sprite":
+                return 30;
+            case "Royal":
+                return 30;
+            case "Mountain Dew":
+                return 30;
+            // Add more cases as needed
+            default:
+                return 0;
+        }
+    }
+
+    @FXML
+    public void confirmButton1(ActionEvent event) {
+
+        CashierFXMLController cashierController = ControllerManager.getCashierController();
+
+        if (existingCashierController == null && cashierController != null) {
+            existingCashierController = cashierController;
+        }
+
+        if (menuData != null) {
+            String menuName = menuData.getName();
+            Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
+
+            // Check if the quantity is greater than 0
+            if (selectedQuantity == 0) {
+                System.out.println("Please ensure the quantity is greater than 0.");
+            } else {
+                int customer_id = 0; // Initialize customer_id
+
+                if (existingCashierController != null) {
+                    // Now, you can use the existing instance of CashierFXMLController
+                    customer_id = existingCashierController.getCurrentCustomerID();
+                } else {
+                    System.out.println("Cashier controller not available.");
+                }
+
+                // Call the insertOrderToDatabase method
+                insertOrderToDatabase(customer_id, menuName, selectedQuantity);
+                System.out.println("Data inserted into the database.");
+            }
+
+            // Reset the Spinner to the default value (e.g., 0)
+            spinnerQuantity.getValueFactory().setValue(0);
+
+            // Reset the radio button
+            askmeRadioHead.setSelected(false);
+            askmeRadioSelected = false;
+
+            if (cashierController != null) {
+                // Call the setupTableView method from CashierFXMLController
+                cashierController.setupTableView();
+            } else {
+                System.out.println("Cashier controller not available.");
+            }
+        }
+    }
+
 }
-
-
-
-  
-
-    
-  
-
-   
-    
-

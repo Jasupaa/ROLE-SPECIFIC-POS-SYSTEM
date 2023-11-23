@@ -17,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import other.ControllerManager;
 
 import other.menu4;
 
@@ -32,7 +33,6 @@ public class CoffeeController {
     private Spinner spinnerQuantity;
 
 
-
     @FXML
     private ComboBox<String> sizeComboBox;
 
@@ -44,6 +44,8 @@ public class CoffeeController {
 
     @FXML
     private Button confirmButton1;
+ 
+   
 
 
     @FXML
@@ -52,7 +54,7 @@ public class CoffeeController {
     @FXML
     private Label foodLabel;
     private menu4 menuData;   
-
+    private CashierFXMLController existingCashierController;
     private boolean askmeRadioSelected = false;
 
     private static int customerCounter = 0;
@@ -97,26 +99,106 @@ public class CoffeeController {
 
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO coffee (customer_id, date_time, item_name, quantity, size, type, ask_me) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO coffee(customer_id, date_time, item_name, quantity, size, type, ask_me,size_price, final_price) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?,?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
                     stmt.setInt(3, selectedQuantity);
                     stmt.setString(4, selectedSize);
                     stmt.setString(5, selectedType);
-                    stmt.setBoolean(7, askmeRadioSelected);
+                    stmt.setBoolean(6, askmeRadioSelected);
+
+              
+                    // Check if size and add-ons are selected and set the corresponding prices
+                    int sizePrice = calculateSizePrice(selectedSize);
+
+                    stmt.setInt(7, sizePrice);
+                      // Calculate the final price based on selected size and add-ons
+                    int finalPrice = sizePrice * selectedQuantity;
+                    stmt.setInt(8, finalPrice);
 
                     stmt.executeUpdate();
                 }
             } else {
                 System.out.println("Failed to establish a database connection.");
+                
+                
             }
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
+    public void setExistingCashierController(CashierFXMLController cashierController) {
+        this.existingCashierController = cashierController;
+    }
 
 
+    @FXML
+    public void confirmButton1(ActionEvent event) {
+
+        CashierFXMLController cashierController = ControllerManager.getCashierController();
+
+        if (existingCashierController == null && cashierController != null) {
+            existingCashierController = cashierController;
+        }
+
+        if (menuData != null) {
+            String menuName = menuData.getName();
+            String selectedSize = sizeComboBox.getValue();
+            selectedSugarLevel = typeComboBox.getValue(); // Update the class-level variable
+            Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
+
+            // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
+            if ("None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
+                System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
+            } else {
+                int customer_id = 0; // Initialize customer_id
+
+                if (existingCashierController != null) {
+                    // Now, you can use the existing instance of CashierFXMLController
+                    customer_id = existingCashierController.getCurrentCustomerID();
+                } else {
+                    System.out.println("Cashier controller not available.");
+                }
+
+                insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedSugarLevel, askmeRadioSelected);
+                System.out.println("Data inserted into the database.");
+            }
+
+            // Reset the ComboBoxes to "None"
+            sizeComboBox.setValue("None");
+            typeComboBox.setValue("None");
+
+            // Reset the Spinner to the default value (e.g., 0)
+            spinnerQuantity.getValueFactory().setValue(0);
+
+            // Reset the radio button
+            askmeRadioHead.setSelected(false);
+            askmeRadioSelected = false;
+            
+            if (cashierController != null) {
+                // Call the setupTableView method from CashierFXMLController
+                cashierController.setupTableView();
+            } else {
+                System.out.println("Cashier controller not available.");
+            }
+        }
+    }
+
+    private void initializeSizeComboBox() {
+        // Populate the sizeComboBox with items
+        ObservableList<String> sizes = FXCollections.observableArrayList(
+                "None",
+                "Small",
+                "Medium",
+                "Large"
+        );
+        sizeComboBox.setItems(sizes);
+    }
+    
+    
  
 
 
@@ -126,16 +208,7 @@ public class CoffeeController {
 
 
 
-    private void initializeSizeComboBox() {
-        // Populate the sizeComboBox with items
-        ObservableList<String> sizes = FXCollections.observableArrayList(
-            "None",
-            "Small",
-            "Medium",
-            "Large"
-        );
-        sizeComboBox.setItems(sizes);
-    }
+   
 
     private void initializeTypeComboBox() {
         // Populate the sugarlevelComboBox with items
@@ -168,12 +241,6 @@ public class CoffeeController {
         return 0; // Return 0 if an unknown size is selected
     }
 
-    private int calculateAddonsPrice(String selectedAddon) {
-        switch (selectedAddon) {
-            case "Cream Cheese":
-                return 20;
-        }
-        return 0; // Return 0 if an unknown addon is selected
-    }   
+   
     
 }
