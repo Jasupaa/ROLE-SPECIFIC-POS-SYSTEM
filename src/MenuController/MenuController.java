@@ -1,5 +1,7 @@
-package MainAppFrame;
+package MenuController;
 
+import MainAppFrame.CashierFXMLController;
+import MainAppFrame.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,21 +15,25 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.image.Image;
+import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import other.ControllerManager;
-import other.menu3;
 
-/**
- *
- * @author John Paul Uy
- */
-public class FrappeController {
+import ClassFiles.ControllerManager;
+import ClassFiles.ItemData;
+import ClassFiles.MilkteaItemData;
+import com.mysql.cj.jdbc.Blob;
+import java.io.ByteArrayInputStream;
+import javafx.scene.image.Image;
+
+public class MenuController {
 
     @FXML
     private Spinner spinnerQuantity;
+
+    @FXML
+    private ComboBox<String> addonsComboBox;
 
     @FXML
     private ComboBox<String> sizeComboBox;
@@ -46,26 +52,27 @@ public class FrappeController {
 
     @FXML
     private Label foodLabel;
-    private menu3 menuData;
+
+    private MilkteaItemData milkteaItemData;
 
     private boolean askmeRadioSelected = false;
 
     private CashierFXMLController existingCashierController;
 
-    private String selectedSugarLevel;
+    private ObservableList<ItemData> menuMilkteaListData;
 
     public void initialize() {
-        // Initialize your combo boxes with data
 
         initializeSizeComboBox();
         initializeSugarlevelComboBox();
 
         // Set the default value to "None" for all ComboBoxes
+        addonsComboBox.setValue("None");
         sizeComboBox.setValue("None");
         sugarlevelComboBox.setValue("None");
 
         // Set the Spinner to allow only whole number values and set the default value to 0
-        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0);
+        SpinnerValueFactory<Integer> valueFactory = new IntegerSpinnerValueFactory(0, 100, 0);
         spinnerQuantity.setValueFactory(valueFactory);
 
         // Set a StringConverter to display the Spinner values as whole numbers
@@ -74,42 +81,69 @@ public class FrappeController {
 
     }
 
+    // Somewhere in your code (where you create or have access to the CashierFXMLController instance)
+    public void setExistingCashierController(CashierFXMLController cashierController) {
+        this.existingCashierController = cashierController;
+    }
+
     @FXML
     public void askmeRadioHeadSelected(ActionEvent event) {
         askmeRadioSelected = askmeRadioHead.isSelected();
     }
 
-    public void setExistingCashierController(CashierFXMLController cashierController) {
-        this.existingCashierController = cashierController;
-    }
+    /* ito connected siya sa MilkteaItemData java class file natin sa "ClassFiles", taga-get ng mga items na
+    nadadagdag sa CRUD para makapaggenerate ng FXML every time na may pumapasok na new item */
+    
+    public void setMilkteaItemData(MilkteaItemData milkteaItemData) throws SQLException {
+        // Set data to components
+        this.milkteaItemData = milkteaItemData;
 
-    public void setData(menu3 menu) {
-        menuData = menu;
-        Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
+        // Assuming you have a method in MilkteaItemData to get the image name or title
+        String itemName = milkteaItemData.getItemName();
+
+        // Assuming you have a method in MilkteaItemData to get the addons
+        String addons = milkteaItemData.getAddons();
+
+        // Set data to corresponding components
+        foodLabel.setText(itemName);
+        addonsComboBox.getItems().clear();
+        addonsComboBox.getItems().addAll(addons.split(", "));
+
+        /* para doon sa image */
+        Blob imageBlob = milkteaItemData.getImage();
+        byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+        Image image = new Image(bis, 129, 173, false, true);
         foodImg.setImage(image);
-        foodLabel.setText(menu.getName());
+
     }
 
-    private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedSugarLevel, boolean askmeRadioSelected) {
+    /*
+
+    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity, String selectedSize, String selectedAddon, String selectedSugarLevel, boolean askmeRadioSelected) {
+
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO frappe (customer_id, date_time, item_name, quantity, size, sugar_level, ask_me, size_price, final_price) VALUES (?, NOW(),?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO milk_tea (customer_id, date_time, item_name, quantity, size, add_ons, sugar_level, ask_me, size_price, addons_price, final_price) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
                     stmt.setInt(3, selectedQuantity);
                     stmt.setString(4, selectedSize);
-                    stmt.setString(5, selectedSugarLevel);
-                    stmt.setBoolean(6, askmeRadioSelected);
+                    stmt.setString(5, selectedAddon);
+                    stmt.setString(6, selectedSugarLevel);
+                    stmt.setBoolean(7, askmeRadioSelected);
 
                     // Check if size and add-ons are selected and set the corresponding prices
                     int sizePrice = calculateSizePrice(selectedSize);
+                    int addonsPrice = calculateAddonsPrice(selectedAddon);
 
-                    stmt.setInt(7, sizePrice);
+                    stmt.setInt(8, sizePrice);
+                    stmt.setInt(9, addonsPrice);
 
                     // Calculate the final price based on selected size and add-ons
-                    int finalPrice = sizePrice * selectedQuantity;
-                    stmt.setInt(8, finalPrice);
+                    int finalPrice = (sizePrice + addonsPrice) * selectedQuantity;
+                    stmt.setInt(10, finalPrice);
 
                     stmt.executeUpdate();
                 }
@@ -121,6 +155,7 @@ public class FrappeController {
         }
     }
 
+    
     @FXML
     public void confirmButton1(ActionEvent event) {
 
@@ -132,12 +167,12 @@ public class FrappeController {
 
         if (menuData != null) {
             String menuName = menuData.getName();
+            String selectedAddon = addonsComboBox.getValue();
             String selectedSize = sizeComboBox.getValue();
-            selectedSugarLevel = sugarlevelComboBox.getValue(); // Update the class-level variable
+            String selectedSugarLevel = sugarlevelComboBox.getValue();
             Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
 
-            // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
-            if ("None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
+            if ("None".equals(selectedAddon) || "None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
                 System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
             } else {
                 int customer_id = 0; // Initialize customer_id
@@ -149,11 +184,13 @@ public class FrappeController {
                     System.out.println("Cashier controller not available.");
                 }
 
-                insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedSugarLevel, askmeRadioSelected);
+                // Move insertOrderToDatabase inside the else block to ensure customer_id is properly assigned
+                insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedAddon, selectedSugarLevel, askmeRadioSelected);
                 System.out.println("Data inserted into the database.");
             }
 
             // Reset the ComboBoxes to "None"
+            addonsComboBox.setValue("None");
             sizeComboBox.setValue("None");
             sugarlevelComboBox.setValue("None");
 
@@ -163,7 +200,7 @@ public class FrappeController {
             // Reset the radio button
             askmeRadioHead.setSelected(false);
             askmeRadioSelected = false;
-            
+
             if (cashierController != null) {
                 // Call the setupTableView method from CashierFXMLController
                 cashierController.setupTableView();
@@ -171,8 +208,10 @@ public class FrappeController {
                 System.out.println("Cashier controller not available.");
             }
         }
-    }
 
+    } */
+    
+    /* mga hindi na kailangan ng CRUD, hard-coded customazations */
     private void initializeSizeComboBox() {
         // Populate the sizeComboBox with items
         ObservableList<String> sizes = FXCollections.observableArrayList(
@@ -195,6 +234,7 @@ public class FrappeController {
         sugarlevelComboBox.setItems(sugarLevels);
     }
 
+    /*
     private int calculateSizePrice(String selectedSize) {
         switch (selectedSize) {
             case "Small":
@@ -206,13 +246,6 @@ public class FrappeController {
         }
         return 0; // Return 0 if an unknown size is selected
     }
-
-    private int calculateAddonsPrice(String selectedAddon) {
-        switch (selectedAddon) {
-            case "Cream Cheese":
-                return 20;
-        }
-        return 0; // Return 0 if an unknown addon is selected
-    }
-
+    
+     */
 }

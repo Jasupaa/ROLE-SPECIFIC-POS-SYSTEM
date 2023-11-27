@@ -1,22 +1,19 @@
-package MainAppFrame;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+package MainAppFrame;
 
-/**
- *
- * @author John Paul Uy
- */
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ *
+ * @author Jasper
+ */
 public class database {
+  
     private static final String DB_URL = "jdbc:mysql://localhost:3306/sample_database";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "";
@@ -31,4 +28,5 @@ public class database {
         }
     }
 }
+
 

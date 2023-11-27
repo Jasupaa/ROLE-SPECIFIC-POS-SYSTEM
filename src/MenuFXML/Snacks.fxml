@@ -9,12 +9,12 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="382.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.SnacksController">
+<AnchorPane id="AnchorPane" prefHeight="382.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.SnacksController">
    <children>
       <Pane prefHeight="389.0" prefWidth="393.0" styleClass="containerColorRM" stylesheets="@../CSS/CashierCSS.css">
          <children>
             <Spinner fx:id="spinnerQuantity" layoutX="133.0" layoutY="195.0" prefHeight="25.0" prefWidth="130.0" />
-            <Button fx:id="confirmButton1" layoutX="246.0" layoutY="319.0" mnemonicParsing="false" text="Confirm" />
+            <Button fx:id="confirmButton1" layoutX="246.0" layoutY="319.0" mnemonicParsing="false" onAction="#confirmButton1" text="Confirm" />
             <Label layoutX="92.0" layoutY="246.0" styleClass="boldText" stylesheets="@../CSS/CashierCSS.css" text="Customization" textFill="#111315" />
             <Label layoutX="91.0" layoutY="277.0" text="Ask Me" textFill="#111315" />
             <RadioButton fx:id="askmeRadioHead" layoutX="286.0" layoutY="275.0" mnemonicParsing="false" onAction="#askmeRadioHeadSelected" prefHeight="18.0" prefWidth="19.0" />

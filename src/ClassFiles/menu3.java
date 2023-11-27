@@ -2,14 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package other;
+package ClassFiles;
 
 /**
  *
  * @author John Paul Uy
  */
-public class menu1 {
-    
+public class menu3 {
     private String name;
     private String imgSrc;
 
@@ -29,4 +28,4 @@ public class menu1 {
         this.imgSrc = imgSrc;
     }
     
-}
+}  

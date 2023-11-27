@@ -7,6 +7,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Author     : John Paul Uy
 */
 
+.anchorPaneBG {
+    -fx-background-color:  #111315;
+    -fx-background-radius: 5px;
+}
+
 /* Apply custom styles to the buttonMenu class */
 .buttonMenu {
     -fx-background-color: #111315;

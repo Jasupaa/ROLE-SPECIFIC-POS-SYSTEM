@@ -1,9 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package MainAppFrame;
+package MenuController;
 
+import MainAppFrame.CashierFXMLController;
+import MainAppFrame.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -21,16 +19,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import other.ControllerManager;
-import other.menu1;
-import other.menu2;
-import other.menu3;
+import ClassFiles.ControllerManager;
+import ClassFiles.menu3;
 
 /**
  *
  * @author John Paul Uy
  */
-public class FruitDrinkController {
+public class FrappeController {
 
     @FXML
     private Spinner spinnerQuantity;
@@ -39,10 +35,7 @@ public class FruitDrinkController {
     private ComboBox<String> sizeComboBox;
 
     @FXML
-    private ComboBox<String> fruitfComboBox;
-
-    @FXML
-    private ComboBox<String> sinkersComboBox;
+    private ComboBox<String> sugarlevelComboBox;
 
     @FXML
     private RadioButton askmeRadioHead;
@@ -55,25 +48,23 @@ public class FruitDrinkController {
 
     @FXML
     private Label foodLabel;
-
-    @FXML
-    private menu2 menuData;
+    private menu3 menuData;
 
     private boolean askmeRadioSelected = false;
 
     private CashierFXMLController existingCashierController;
 
+    private String selectedSugarLevel;
+
     public void initialize() {
         // Initialize your combo boxes with data
 
         initializeSizeComboBox();
-        initializeFruitfComboBox();
-        initializeSinkersComboBox();
+        initializeSugarlevelComboBox();
 
         // Set the default value to "None" for all ComboBoxes
         sizeComboBox.setValue("None");
-        fruitfComboBox.setValue("None");
-        sinkersComboBox.setValue("None");
+        sugarlevelComboBox.setValue("None");
 
         // Set the Spinner to allow only whole number values and set the default value to 0
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0);
@@ -94,32 +85,33 @@ public class FruitDrinkController {
         this.existingCashierController = cashierController;
     }
 
-    public void setData(menu2 menu) {
+    public void setData(menu3 menu) {
         menuData = menu;
         Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
         foodImg.setImage(image);
         foodLabel.setText(menu.getName());
     }
 
-    private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedfruit, String selectedsinker, boolean askmeRadioSelected) {
+    private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedSugarLevel, boolean askmeRadioSelected) {
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO fruit_drink (customer_id, date_time, item_name, quantity, size, fruit_flavor,sinkers, ask_me, size_price, final_price) VALUES (?, NOW(),?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO frappe (customer_id, date_time, item_name, quantity, size, sugar_level, ask_me, size_price, final_price) VALUES (?, NOW(),?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
                     stmt.setInt(3, selectedQuantity);
                     stmt.setString(4, selectedSize);
-                    stmt.setString(5, selectedfruit);
-                    stmt.setString(6, selectedsinker);
-                    stmt.setBoolean(7, askmeRadioSelected);
+                    stmt.setString(5, selectedSugarLevel);
+                    stmt.setBoolean(6, askmeRadioSelected);
 
                     // Check if size and add-ons are selected and set the corresponding prices
                     int sizePrice = calculateSizePrice(selectedSize);
 
-                    stmt.setInt(8, sizePrice);
+                    stmt.setInt(7, sizePrice);
+
+                    // Calculate the final price based on selected size and add-ons
                     int finalPrice = sizePrice * selectedQuantity;
-                    stmt.setInt(9, finalPrice);
+                    stmt.setInt(8, finalPrice);
 
                     stmt.executeUpdate();
                 }
@@ -131,61 +123,6 @@ public class FruitDrinkController {
         }
     }
 
-    /*
-    stmt.setInt(1, customer_id);
-                stmt.setString(2, menuName);
-                stmt.setInt(3, selectedQuantity);
-                stmt.setString(4, selectedSize);
-                stmt.setBoolean(7, askmeRadioSelected);
-
-    
-    
-     */
- /*  public void confirmButton1(ActionEvent event) {
-    if (menuData != null) {
-        String menuName = menuData.getName();
-        String selectedAddon = addonsComboBox.getValue();
-        String selectedSize = sizeComboBox.getValue();
-        String selectedSugarLevel = sugarlevelComboBox.getValue();
-        Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
-
-
-                stmt.setInt(8, sizePrice);
-
-
-             
-
-                stmt.executeUpdate();
-            }
-        } else {
-            System.out.println("Failed to establish a database connection.");
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-
-
-    @FXML
-public void confirmButton1(ActionEvent event) {
-    if (menuData != null) {
-        
-
-        // Reset the ComboBoxes to "None"
-        sizeComboBox.setValue("None");
-        fruitfComboBox.setValue("None");
-        sinkersComboBox.setValue("None");
-
-        // Reset the Spinner to the default value (e.g., 0)
-        spinnerQuantity.getValueFactory().setValue(0);
-
-        // Reset the radio button
-        askmeRadioHead.setSelected(false);
-        askmeRadioSelected = false;
-    }
-        
-    }
-     */
     @FXML
     public void confirmButton1(ActionEvent event) {
 
@@ -196,15 +133,13 @@ public void confirmButton1(ActionEvent event) {
         }
 
         if (menuData != null) {
-
             String menuName = menuData.getName();
-            String selectedfruit = fruitfComboBox.getValue();
             String selectedSize = sizeComboBox.getValue();
-            String selectedsinker = sinkersComboBox.getValue();
+            selectedSugarLevel = sugarlevelComboBox.getValue(); // Update the class-level variable
             Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
 
             // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
-            if ("None".equals(selectedfruit) || "None".equals(selectedSize) || "None".equals(selectedsinker) || selectedQuantity == 0) {
+            if ("None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
                 System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
             } else {
                 int customer_id = 0; // Initialize customer_id
@@ -215,14 +150,14 @@ public void confirmButton1(ActionEvent event) {
                 } else {
                     System.out.println("Cashier controller not available.");
                 }
-                insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedfruit, selectedsinker, askmeRadioSelected);
+
+                insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedSugarLevel, askmeRadioSelected);
                 System.out.println("Data inserted into the database.");
             }
 
             // Reset the ComboBoxes to "None"
             sizeComboBox.setValue("None");
-            fruitfComboBox.setValue("None");
-            sinkersComboBox.setValue("None");
+            sugarlevelComboBox.setValue("None");
 
             // Reset the Spinner to the default value (e.g., 0)
             spinnerQuantity.getValueFactory().setValue(0);
@@ -230,7 +165,7 @@ public void confirmButton1(ActionEvent event) {
             // Reset the radio button
             askmeRadioHead.setSelected(false);
             askmeRadioSelected = false;
-
+            
             if (cashierController != null) {
                 // Call the setupTableView method from CashierFXMLController
                 cashierController.setupTableView();
@@ -251,32 +186,15 @@ public void confirmButton1(ActionEvent event) {
         sizeComboBox.setItems(sizes);
     }
 
-    private void initializeFruitfComboBox() {
+    private void initializeSugarlevelComboBox() {
         // Populate the sugarlevelComboBox with items
-        ObservableList<String> fruitfList = FXCollections.observableArrayList(
+        ObservableList<String> sugarLevels = FXCollections.observableArrayList(
                 "None",
-                "Lychee",
-                "Strawberry",
-                "Blueberry",
-                "Mango",
-                "Lemon"
+                "Low",
+                "Medium",
+                "High"
         );
-        fruitfComboBox.setItems(fruitfList);
-    }
-
-    private void initializeSinkersComboBox() {
-        // Populate the sugarlevelComboBox with items
-        ObservableList<String> sinkerList = FXCollections.observableArrayList(
-                "None",
-                "Nata De Coco",
-                "Fruit Jelly",
-                "Strawberry Popping Bobba",
-                "Mango Popping Bobba",
-                "Blueberry Popping Bobba",
-                "Lychee Popping Bobba",
-                "Yogurt Popping Bobba"
-        );
-        sinkersComboBox.setItems(sinkerList);
+        sugarlevelComboBox.setItems(sugarLevels);
     }
 
     private int calculateSizePrice(String selectedSize) {

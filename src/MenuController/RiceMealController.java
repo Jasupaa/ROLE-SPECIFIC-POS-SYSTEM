@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package MainAppFrame;
+package MenuController;
 
 
+import MainAppFrame.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -19,14 +20,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
-
-import other.menu7;
+import ClassFiles.menu4;
+import ClassFiles.menu5;
 
 /**
  *
  * @author John Paul Uy
  */
-public class ExtrasController {
+public class RiceMealController {
 
     @FXML
     private RadioButton askmeRadioHead;
@@ -45,9 +46,9 @@ public class ExtrasController {
 
     private boolean askmeRadioSelected = false;
 
-    private menu7 menuData;
+    private menu5 menuData;
 
-    public void setData(menu7 menu) {
+    public void setData(menu5 menu) {
         menuData = menu;
         Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
         foodImg.setImage(image);
@@ -72,16 +73,16 @@ public class ExtrasController {
 
     }
     
-    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity) {
+    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity,  boolean askmeRadioSelected) {
 
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO extras (customer_id, date_time, item_name, quantity) VALUES (?, NOW(), ?, ?)";
+                String sql = "INSERT INTO rice_meal (customer_id, date_time, item_name, quantity, size, add_ons, sugar_level,ask_me) VALUES (?, NOW(), ?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
                     stmt.setInt(3, selectedQuantity);
-
+                    stmt.setBoolean(7, askmeRadioSelected);
 
                     stmt.executeUpdate();
                 }

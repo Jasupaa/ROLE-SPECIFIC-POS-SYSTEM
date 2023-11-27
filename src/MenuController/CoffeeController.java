@@ -1,5 +1,6 @@
-package MainAppFrame;
+package MenuController;
 
+import MainAppFrame.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -18,7 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
-import other.menu4;
+import ClassFiles.menu4;
 
 /**
  *

@@ -42,7 +42,7 @@
       </ImageView>
       <ImageView fitHeight="168.0" fitWidth="268.0" layoutX="434.0" layoutY="115.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/Group%201%20(3).png" />
+            <Image url="@../img/login_g1.png" />
          </image>
       </ImageView>
    </children>

@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package MainAppFrame;
+package MenuController;
 
+
+import MainAppFrame.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -19,13 +21,13 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
-import other.menu6;
+import ClassFiles.menu7;
 
 /**
  *
  * @author John Paul Uy
  */
-public class SnacksController {
+public class ExtrasController {
 
     @FXML
     private RadioButton askmeRadioHead;
@@ -44,9 +46,9 @@ public class SnacksController {
 
     private boolean askmeRadioSelected = false;
 
-    private menu6 menuData;
+    private menu7 menuData;
 
-    public void setData(menu6 menu) {
+    public void setData(menu7 menu) {
         menuData = menu;
         Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
         foodImg.setImage(image);
@@ -70,17 +72,17 @@ public class SnacksController {
         spinnerQuantity.getValueFactory().setConverter(converter);
 
     }
-
-    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity,  boolean askmeRadioSelected) {
+    
+    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity) {
 
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO snacks (customer_id, date_time, item_name, quantity, ask_me) VALUES (?, NOW(), ?, ?, ?)";
+                String sql = "INSERT INTO extras (customer_id, date_time, item_name, quantity) VALUES (?, NOW(), ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
                     stmt.setInt(3, selectedQuantity);
-                    stmt.setBoolean(7, askmeRadioSelected);
+
 
                     stmt.executeUpdate();
                 }
@@ -91,6 +93,16 @@ public class SnacksController {
             e.printStackTrace();
         }
     }
-    
-   
+
 }
+
+
+
+  
+
+    
+  
+
+   
+    
+

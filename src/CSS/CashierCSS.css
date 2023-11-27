@@ -47,7 +47,7 @@
 }
 
 .scroll-pane .scroll-pane-content {
-    -fx-padding: 0;
+    -fx-padding: 0 0 0 0;
 }
 
 .scroll-pane .viewport {
