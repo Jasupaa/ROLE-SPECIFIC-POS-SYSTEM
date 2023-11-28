@@ -15,7 +15,7 @@
    <children>
       <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="93.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/Group%201%20(1).png" />
+            <Image url="@../Pictures/logo.png" />
          </image>
       </ImageView>
       <VBox layoutX="77.0" layoutY="245.0" prefHeight="251.0" prefWidth="173.0">
@@ -54,17 +54,17 @@
       </ImageView>
       <Label fx:id="dateLbl" layoutX="257.0" layoutY="108.0" text="Fri 3 Nov 2003   1:57:03 PM" textFill="WHITE" />
       <Label fx:id="timeLbl" layoutX="257.0" layoutY="146.0" text="Dashboard" textFill="#aea9a9" />
-      <ImageView fitHeight="59.0" fitWidth="455.0" layoutX="247.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="59.0" fitWidth="455.0" layoutX="231.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/Group%205.png" />
+            <Image url="@../Pictures/adminGoodDay.png" />
          </image>
       </ImageView>
       <AnchorPane layoutX="257.0" layoutY="181.0" prefHeight="152.0" prefWidth="159.0" stylesheets="@../CSS/AdminCSS.css">
          <children>
             <Button fx:id="sales" layoutX="-1.0" layoutY="-2.0" mnemonicParsing="false" onAction="#SalesreportButton" prefHeight="152.0" prefWidth="159.0" stylesheets="@../CSS/AdminCSS.css">
                <styleClass>
+                  <String fx:value="buttonPink" />
                   <String fx:value="asalesReportbutton" />
-                  <String fx:value="button" />
                </styleClass></Button>
             <Label layoutX="14.0" layoutY="33.0" prefHeight="21.0" prefWidth="118.0" text="Sales Report" textFill="WHITE">
                <font>
@@ -76,17 +76,17 @@
       </AnchorPane>
       <AnchorPane layoutX="435.0" layoutY="181.0" prefHeight="152.0" prefWidth="159.0" stylesheets="@../CSS/AdminCSS.css">
          <children>
-            <Button fx:id="inventory" mnemonicParsing="false" onAction="#EmployeeDetailsButton" prefHeight="152.0" prefWidth="159.0" styleClass="employeeButton" stylesheets="@../CSS/AdminCSS.css" />
+            <Button fx:id="inventory" mnemonicParsing="false" onAction="#EmployeeDetailsButton" prefHeight="152.0" prefWidth="159.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" />
          </children>
       </AnchorPane>
       <AnchorPane layoutX="257.0" layoutY="358.0" prefHeight="152.0" prefWidth="159.0" styleClass="anchorPaneBG2" stylesheets="@../CSS/AdminCSS.css">
          <children>
-            <Button fx:id="employee" layoutY="-7.0" mnemonicParsing="false" prefHeight="152.0" prefWidth="159.0" styleClass="employeeButton" stylesheets="@../CSS/AdminCSS.css" />
+            <Button fx:id="employee" layoutY="-7.0" mnemonicParsing="false" prefHeight="152.0" prefWidth="159.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" />
          </children>
       </AnchorPane>
       <AnchorPane layoutX="434.0" layoutY="347.0" prefHeight="152.0" prefWidth="159.0" styleClass="anchorPaneBG2" stylesheets="@../CSS/AdminCSS.css">
          <children>
-            <Button fx:id="discount" layoutX="1.0" layoutY="4.0" mnemonicParsing="false" prefHeight="152.0" prefWidth="159.0" styleClass="employeeButton" stylesheets="@../CSS/AdminCSS.css" />
+            <Button fx:id="discount" layoutX="1.0" layoutY="4.0" mnemonicParsing="false" prefHeight="152.0" prefWidth="159.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" />
          </children>
       </AnchorPane>
       <Line endX="140.0" layoutX="453.0" layoutY="155.0" startX="-127.0" stroke="WHITE" />

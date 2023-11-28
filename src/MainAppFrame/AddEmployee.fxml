@@ -15,7 +15,7 @@
          <children>
             <ImageView fitHeight="56.0" fitWidth="221.0" layoutX="25.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/accountDetails.png" />
+                  <Image url="@../Pictures/AccountDetails.png" />
                </image>
             </ImageView>
             <ComboBox layoutX="34.0" layoutY="80.0" prefWidth="150.0" promptText="Cashier" />
@@ -57,7 +57,7 @@
          <children>
             <ImageView fitHeight="184.0" fitWidth="180.0" layoutX="35.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/Group%201%20(1).png" />
+                  <Image url="@../Pictures/logo.png" />
                </image>
             </ImageView>
             <ImageView fx:id="CloseButton" fitHeight="22.0" fitWidth="18.0" layoutX="20.0" layoutY="450.0" pickOnBounds="true" preserveRatio="true">
