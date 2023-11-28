@@ -10,7 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.MilkteaCRUDController">
+<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.MilkteaCRUDController">
    <children>
       <TableView fx:id="milkteaTV" layoutX="39.0" layoutY="51.0" prefHeight="350.0" prefWidth="285.0">
         <columns>
@@ -50,7 +50,7 @@
       </AnchorPane>
       <Button fx:id="attachimageBTN" layoutX="378.0" layoutY="256.0" mnemonicParsing="false" onAction="#onAttachImageButtonClick" text="Attach Image" />
       <Button fx:id="addBTN1" layoutX="717.0" layoutY="375.0" mnemonicParsing="false" onAction="#clearInput" text="Clear" />
-      <Button layoutX="655.0" layoutY="375.0" mnemonicParsing="false" text="Update" />
-      <Button layoutX="598.0" layoutY="375.0" mnemonicParsing="false" text="Delete" />
+      <Button fx:id="updtBTN" layoutX="655.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Update" />
+      <Button fx:id="dltBtn" layoutX="598.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Delete" />
    </children>
 </AnchorPane>
