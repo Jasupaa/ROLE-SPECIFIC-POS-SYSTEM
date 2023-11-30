@@ -94,7 +94,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="415.0" layoutY="64.0" mnemonicParsing="false" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                  <Button layoutX="415.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleFrappeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>
                         <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
                            <image>

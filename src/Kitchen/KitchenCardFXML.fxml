@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="407.0" prefWidth="400.0" styleClass="anchorPaneBG" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Kitchen.KitchenCardFXMLController">
+   <children>
+      <ScrollPane layoutX="23.0" layoutY="82.0" prefHeight="302.0" prefWidth="754.0">
+         <content>
+            <GridPane fx:id="orderCardGP">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+            </GridPane>
+         </content>
+      </ScrollPane>
+      <Label layoutX="22.0" layoutY="36.0" prefHeight="26.0" prefWidth="130.0" text="Customer No." textFill="WHITE">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <VBox alignment="CENTER_LEFT" layoutX="174.0" layoutY="36.0">
+         <children>
+            <Label fx:id="custNoLBL" prefHeight="28.0" prefWidth="70.0" text="1" textFill="WHITE">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

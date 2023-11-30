@@ -1,10 +1,13 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package CRUDs;
 
+import ClassFiles.FrappeItemData;
+import ClassFiles.FruitDrinkItemData;
 import ClassFiles.MilkteaItemData;
 import Databases.CRUDDatabase;
-import MainAppFrame.CashierFXMLController;
-import MainAppFrame.database;
-import com.mysql.cj.jdbc.Blob;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,12 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,37 +24,49 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 
-public class MilkteaCRUDController implements Initializable {
+public class FrappeCRUDController implements Initializable {
 
     @FXML
     private Button addBTN;
 
     @FXML
-    private TableView<MilkteaItemData> milkteaTV;
+    private Button addBTN1;
 
     @FXML
-    private TableColumn<MilkteaItemData, String> itemMT;
+    private Button attachimageBTN;
 
     @FXML
-    private TableColumn<MilkteaItemData, Integer> largeMT;
+    private ImageView iconIV;
 
     @FXML
-    private TableColumn<MilkteaItemData, Integer> medMT;
+    private ImageView itemIV;
 
     @FXML
-    private TableColumn<MilkteaItemData, Integer> smallMT;
+    private TableColumn<FrappeItemData, String> itemMT;
 
-    private TableColumn<MilkteaItemData, String> addonsMT;
+    @FXML
+    private TableColumn<FrappeItemData, Integer> largeMT;
 
-    private TextArea txtAddons;
+    @FXML
+    private TableColumn<FrappeItemData, Integer> medMT;
+
+    @FXML
+    private TableView<FrappeItemData> frappeTV;
+
+    @FXML
+    private TableColumn<FrappeItemData, Integer> smallMT;
 
     @FXML
     private TextField txtItemName;
@@ -71,20 +80,9 @@ public class MilkteaCRUDController implements Initializable {
     @FXML
     private TextField txtSmallPrice;
 
-    @FXML
-    private Button attachimageBTN;
-
-    @FXML
-    private ImageView iconIV;
-
-    @FXML
-    private ImageView itemIV;
-
     private Image selectedImage;
 
-    private ObservableList<MilkteaItemData> milkteaListData = FXCollections.observableArrayList();
-    @FXML
-    private Button addBTN1;
+    private ObservableList<FrappeItemData> frappeItemData = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -111,14 +109,15 @@ public class MilkteaCRUDController implements Initializable {
             iconIV.setVisible(false);
         }
     }
-    
+
     /* ito yung para sa paginsert sa database, magvavary siya sa kung ano lang yung kinukuha sa CRUD */
     @FXML
     private void handleAddButtonClick(ActionEvent event) throws IOException {
-        try (Connection connection = CRUDDatabase.getConnection()) { /* gumawa ako bagong database class kasi bagong database gagamitin natin */
-            if (connection != null) {                                /* para sa mga CRUD para di nakakalito tignan sa sample_database */
+        try (Connection connection = CRUDDatabase.getConnection()) {
+            /* gumawa ako bagong database class kasi bagong database gagamitin natin */
+            if (connection != null) {
+                /* para sa mga CRUD para di nakakalito tignan sa sample_database */
                 String itemName = txtItemName.getText();
-                String addons = txtAddons.getText();
                 String smallPrice = txtSmallPrice.getText();
                 String mediumPrice = txtMediumPrice.getText();
                 String largePrice = txtLargePrice.getText();
@@ -127,7 +126,7 @@ public class MilkteaCRUDController implements Initializable {
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
 
                 // Call the method to insert data into the database
-                insertMilkteaItem(connection, itemName, addons, smallPrice, mediumPrice, largePrice, imageInputStream);
+                insertFrappeDrinkItem(connection, itemName, smallPrice, mediumPrice, largePrice, imageInputStream);
 
                 System.out.println("Data inserted.");
 
@@ -155,17 +154,16 @@ public class MilkteaCRUDController implements Initializable {
 
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
-    */
-    private void insertMilkteaItem(Connection connection, String itemName, String addons, String smallPrice, String mediumPrice, String largePrice, InputStream image) {
-        String sql = "INSERT INTO milktea_items (item_name, addons, small_price, medium_price, large_price, image) VALUES (?, ?, ?, ?, ?, ?)";
+     */
+    private void insertFrappeDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice, InputStream image) {
+        String sql = "INSERT INTO frappe_items (item_name, small_price, medium_price, large_price, image) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
-            preparedStatement.setString(2, addons);
-            preparedStatement.setString(3, smallPrice);
-            preparedStatement.setString(4, mediumPrice);
-            preparedStatement.setString(5, largePrice);
-            preparedStatement.setBlob(6, image); // Use setBlob for InputStream
+            preparedStatement.setString(2, smallPrice);
+            preparedStatement.setString(3, mediumPrice);
+            preparedStatement.setString(4, largePrice);
+            preparedStatement.setBlob(5, image); // Use setBlob for InputStream
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -175,23 +173,22 @@ public class MilkteaCRUDController implements Initializable {
     }
 
     /* ito para sa pagdisplay sa tableview */
-    private ObservableList<MilkteaItemData> fetchDataFromDatabase() {
-        ObservableList<MilkteaItemData> listData = FXCollections.observableArrayList();
+    private ObservableList<FrappeItemData> fetchDataFromDatabase() {
+        ObservableList<FrappeItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_name, addons, small_price, medium_price, large_price FROM milktea_items";
+        String sql = "SELECT item_name, small_price, medium_price, large_price FROM frappe_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
             while (result.next()) {
                 String itemName = result.getString("item_name");
-                String addons = result.getString("addons");
                 Integer smallPrice = result.getInt("small_price");
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
 
                 // Create a MilkteaItemData object and add it to the list
-                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice);
-                listData.add(milkteaItemData);
+                FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice);
+                listData.add(frappeItemData);
             }
 
         } catch (SQLException e) {
@@ -205,13 +202,12 @@ public class MilkteaCRUDController implements Initializable {
     private void displayMilktea() {
         // Set up the PropertyValueFactory for each column
         itemMT.setCellValueFactory(new PropertyValueFactory<>("itemName"));
-        addonsMT.setCellValueFactory(new PropertyValueFactory<>("addons"));
         smallMT.setCellValueFactory(new PropertyValueFactory<>("smallPrice"));
         medMT.setCellValueFactory(new PropertyValueFactory<>("mediumPrice"));
         largeMT.setCellValueFactory(new PropertyValueFactory<>("largePrice"));
 
         // Fetch data from the database and set it in the TableView
-        milkteaTV.setItems(fetchDataFromDatabase());
+        frappeTV.setItems(fetchDataFromDatabase());
     }
 
     /* clear button */
@@ -223,7 +219,6 @@ public class MilkteaCRUDController implements Initializable {
     /* clear method na i-cacall sa clear button action event */
     private void clearTextFields() {
         txtItemName.clear();
-        txtAddons.clear();
         txtSmallPrice.clear();
         txtMediumPrice.clear();
         txtLargePrice.clear();

@@ -172,6 +172,24 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         }
     }
 
+    @FXML
+    private void handleFrappeButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/FrappeCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+
     private Button lastClickedButton = null;
 
     @FXML

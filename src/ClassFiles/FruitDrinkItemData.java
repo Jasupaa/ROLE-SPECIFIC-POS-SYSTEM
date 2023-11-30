@@ -8,7 +8,7 @@ package ClassFiles;
  *
  * @author John Paul Uy
  */
-public class menu2 {
+public class FruitDrinkItemData {
     private String name;
     private String imgSrc;
 

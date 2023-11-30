@@ -6,20 +6,22 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="KitchenPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.KitchenFXMLController">
+<AnchorPane id="AnchorPane" fx:id="KitchenPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.KitchenFXMLController">
     <children>
-      <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="83.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="83.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/Group%201%20(1).png" />
+            <Image url="@../Pictures/Splashscreen%20(1).png" />
          </image>
       </ImageView>
       <VBox layoutX="77.0" layoutY="255.0" prefHeight="251.0" prefWidth="136.0">
          <children>
-            <Button fx:id="orderTabBTN" alignment="BASELINE_LEFT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Orders Tab" textFill="WHITE">
+            <Button fx:id="orderTabBTN" alignment="BASELINE_LEFT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#getOrders" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Orders Tab" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
@@ -38,7 +40,7 @@
       </Label>
       <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="58.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/icons8-log-out-96.png" />
+            <Image url="@../Pictures/icons8-log-out-96.png" />
          </image>
       </ImageView>
       <Label fx:id="dateLbl" layoutX="247.0" layoutY="109.0" text="Label" textFill="WHITE" />
@@ -50,20 +52,24 @@
       </ImageView>
       <AnchorPane layoutX="247.0" layoutY="139.0" prefHeight="450.0" prefWidth="450.0">
          <children>
-            <AnchorPane fx:id="archive" prefHeight="450.4" prefWidth="450.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="orderTab" prefHeight="450.0" prefWidth="822.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-372.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <ScrollPane prefHeight="450.4" prefWidth="450.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fx:id="ordersTabSP" prefHeight="450.4" prefWidth="822.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <Pane prefHeight="446.0" prefWidth="445.0" style="-fx-background-color: #212121;" />
+                        <GridPane fx:id="ordersTabGP" prefHeight="0.0" prefWidth="0.0">
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                        </GridPane>
                      </content>
                   </ScrollPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="orderTab" prefHeight="450.4" prefWidth="450.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="archive" prefHeight="450.4" prefWidth="450.4" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <ScrollPane prefHeight="450.4" prefWidth="450.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <Pane prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: #454545;" />
+                        <Pane prefHeight="446.0" prefWidth="445.0" style="-fx-background-color: #212121;" />
                      </content>
                   </ScrollPane>
                </children>

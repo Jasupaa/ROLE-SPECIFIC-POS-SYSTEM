@@ -20,8 +20,6 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import ClassFiles.ControllerManager;
-import ClassFiles.menu3;
-
 /**
  *
  * @author John Paul Uy
@@ -48,7 +46,6 @@ public class FrappeController {
 
     @FXML
     private Label foodLabel;
-    private menu3 menuData;
 
     private boolean askmeRadioSelected = false;
 
@@ -85,13 +82,6 @@ public class FrappeController {
         this.existingCashierController = cashierController;
     }
 
-    public void setData(menu3 menu) {
-        menuData = menu;
-        Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
-        foodImg.setImage(image);
-        foodLabel.setText(menu.getName());
-    }
-
     private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedSugarLevel, boolean askmeRadioSelected) {
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
@@ -123,57 +113,7 @@ public class FrappeController {
         }
     }
 
-    @FXML
-    public void confirmButton1(ActionEvent event) {
 
-        CashierFXMLController cashierController = ControllerManager.getCashierController();
-
-        if (existingCashierController == null && cashierController != null) {
-            existingCashierController = cashierController;
-        }
-
-        if (menuData != null) {
-            String menuName = menuData.getName();
-            String selectedSize = sizeComboBox.getValue();
-            selectedSugarLevel = sugarlevelComboBox.getValue(); // Update the class-level variable
-            Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
-
-            // Check if any of the ComboBoxes has "None" selected or if the quantity is 0
-            if ("None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
-                System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
-            } else {
-                int customer_id = 0; // Initialize customer_id
-
-                if (existingCashierController != null) {
-                    // Now, you can use the existing instance of CashierFXMLController
-                    customer_id = existingCashierController.getCurrentCustomerID();
-                } else {
-                    System.out.println("Cashier controller not available.");
-                }
-
-                insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedSugarLevel, askmeRadioSelected);
-                System.out.println("Data inserted into the database.");
-            }
-
-            // Reset the ComboBoxes to "None"
-            sizeComboBox.setValue("None");
-            sugarlevelComboBox.setValue("None");
-
-            // Reset the Spinner to the default value (e.g., 0)
-            spinnerQuantity.getValueFactory().setValue(0);
-
-            // Reset the radio button
-            askmeRadioHead.setSelected(false);
-            askmeRadioSelected = false;
-            
-            if (cashierController != null) {
-                // Call the setupTableView method from CashierFXMLController
-                cashierController.setupTableView();
-            } else {
-                System.out.println("Cashier controller not available.");
-            }
-        }
-    }
 
     private void initializeSizeComboBox() {
         // Populate the sizeComboBox with items
