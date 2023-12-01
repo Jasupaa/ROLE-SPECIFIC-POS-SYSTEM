@@ -4,7 +4,7 @@ import ClassFiles.MilkteaItemData;
 import Databases.CRUDDatabase;
 import MainAppFrame.CashierFXMLController;
 import MainAppFrame.database;
-import com.mysql.cj.jdbc.Blob;
+import java.sql.Blob;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -294,45 +294,55 @@ public class MilkteaCRUDController implements Initializable {
       
     /* ito para sa pagdisplay sa tableview */
     private ObservableList<MilkteaItemData> fetchDataFromDatabase() {
-        ObservableList<MilkteaItemData> listData = FXCollections.observableArrayList();
+    ObservableList<MilkteaItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name, addons, small_price, medium_price, large_price FROM milktea_items";
+    String sql = "SELECT item_id, item_name, addons, small_price, medium_price, large_price, image FROM milktea_items";
 
-        try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
+    try (Connection connect = CRUDDatabase.getConnection(); 
+         PreparedStatement prepare = connect.prepareStatement(sql); 
+         ResultSet result = prepare.executeQuery()) {
 
-            while (result.next()) {
-                 int itemID = result.getInt("item_id");
-                String itemName = result.getString("item_name");
-                String addons = result.getString("addons");
-                Integer smallPrice = result.getInt("small_price");
-                Integer mediumPrice = result.getInt("medium_price");
-                Integer largePrice = result.getInt("large_price");
-               
+        while (result.next()) {
+            int itemID = result.getInt("item_id");
+            String itemName = result.getString("item_name");
+            String addons = result.getString("addons");
+            Integer smallPrice = result.getInt("small_price");
+            Integer mediumPrice = result.getInt("medium_price");
+            Integer largePrice = result.getInt("large_price");
 
-                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice);
-                milkteaItemData.setItemID(itemID);
-                
-                listData.add(milkteaItemData);
-                
-            }
+            // Retrieve image as Blob
+            Blob imageBlob = result.getBlob("image");
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            // Convert Blob to InputStream
+            InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
+
+            // Create MilkteaItemData and set properties
+            MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice);
+            milkteaItemData.setItemID(itemID);
+            milkteaItemData.setImage(imageBlob); // Set Blob if needed
+            milkteaItemData.setImageInputStream(imageInputStream); // Set InputStream
+
+            // Add to the list
+            listData.add(milkteaItemData);
         }
 
-        return listData;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return listData;
+}
 
     /* ito pangdisplay din */
     private void displayMilktea() {
-        // Set up the PropertyValueFactory for each column
+      
         itemMT.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         addonsMT.setCellValueFactory(new PropertyValueFactory<>("addons"));
         smallMT.setCellValueFactory(new PropertyValueFactory<>("smallPrice"));
         medMT.setCellValueFactory(new PropertyValueFactory<>("mediumPrice"));
         largeMT.setCellValueFactory(new PropertyValueFactory<>("largePrice"));
 
-        // Fetch data from the database and set it in the TableView
+      
         milkteaTV.setItems(fetchDataFromDatabase());
     }
 
@@ -366,24 +376,29 @@ public class MilkteaCRUDController implements Initializable {
         txtMediumPrice.setText(String.valueOf(selectedItem.getMediumPrice()));
         txtLargePrice.setText(String.valueOf(selectedItem.getLargePrice()));
 
-           Blob imageBlob = selectedItem.getImage();
-        if (imageBlob != null) {
-            try (InputStream inputStream = imageBlob.getBinaryStream()) {
-                Image selectedItemImage = new Image(inputStream);
-                itemIV.setImage(selectedItemImage);
-                iconIV.setVisible(false);
-            } catch (SQLException | IOException e) {
-                e.printStackTrace();
-               
-            }
-        } else {
-           
-            itemIV.setImage(null);
-            iconIV.setVisible(true);
-        }
-        
+         Blob imageBlob = selectedItem.getImage();
+
+try {
+  
+    InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
+
+    selectedItem.setImageInputStream(imageInputStream);
+
+  
+    if (imageInputStream != null) {
+        Image selectedItemImage = new Image(imageInputStream);
+        itemIV.setImage(selectedItemImage);
+        iconIV.setVisible(false);
+    } else {
+       
+        itemIV.setImage(null);
+        iconIV.setVisible(true);
+    }
+} catch (SQLException e) {
+    e.printStackTrace();
+   
 }
  }
-  }
-
+    }
+}
 

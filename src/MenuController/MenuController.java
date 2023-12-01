@@ -23,7 +23,7 @@ import javafx.util.converter.IntegerStringConverter;
 import ClassFiles.ControllerManager;
 import ClassFiles.ItemData;
 import ClassFiles.MilkteaItemData;
-import com.mysql.cj.jdbc.Blob;
+import java.sql.Blob;
 import java.io.ByteArrayInputStream;
 import javafx.scene.image.Image;
 

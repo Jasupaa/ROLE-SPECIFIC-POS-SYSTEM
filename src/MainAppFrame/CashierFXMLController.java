@@ -146,6 +146,14 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private volatile boolean stop = false;
     private LocalDate currentDate = LocalDate.now();
+    
+   
+    
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+        
+        empName.setText(employeeName);
+    }
 
     public void setTableViewAndList(TableView<ItemData> tableView, ObservableList<ItemData> dataList) {
         this.receiptTable = tableView;
@@ -307,6 +315,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @FXML
     private void getMenu1(ActionEvent event) throws SQLException {
+         milkteaListData.clear();
         milkteaListData.addAll(menuGetData());
 
         refreshMenuGrid();
@@ -352,7 +361,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
-
                 // Create a MilkteaItemData object and add it to the list
                 MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice, image, itemID);
                 listData.add(milkteaItemData);
@@ -548,6 +556,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     }
 
     private void refreshMenuGrid() throws SQLException {
+        
         menuGrid.getChildren().clear();
         int column = 0;
         int row = 1;
@@ -578,95 +587,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private Button lastClickedButton = null;
 
-    /*
-    @FXML
-    public void SwitchForm(ActionEvent event) {
-        Button clickedButton = (Button) event.getSource();
-
-        if (clickedButton == lastClickedButton) {
-            // Ignore the click if the same button was clicked twice in a row
-            return;
-        }
-
-        if (clickedButton == getMenu1) {
-            // ... (rest of the code remains the same)
-        }
-
-        // Update the last clicked button
-        lastClickedButton = clickedButton;
-        if (clickedButton == getMenu1) {
-            setButtonColor(getMenu1, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu2) {
-            setButtonColor(getMenu2, true);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu3) {
-            setButtonColor(getMenu3, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu4) {
-            setButtonColor(getMenu4, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu5) {
-            setButtonColor(getMenu5, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu6) {
-            setButtonColor(getMenu6, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu7) {
-            setButtonColor(getMenu7, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu1, false);
-
-        }
-    }
-
-    private void setButtonColor(Button button, boolean isSelected) {
-        if (isSelected) {
-            button.getStyleClass().add("selected-button");
-        } else {
-            button.getStyleClass().remove("selected-button");
-        }
-    } */
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
