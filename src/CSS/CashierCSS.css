@@ -8,6 +8,25 @@
     -fx-background-color: #292C2D;
 }
 
+/* Remove padding for the entire GridPane */
+.grid-pane {
+    -fx-hgap: 0; /* Set horizontal gap to zero */
+    -fx-vgap: 0; /* Set vertical gap to zero */
+}
+
+/* Remove padding for individual cells in the GridPane */
+.grid-pane .card {
+    -fx-margin: -5; /* Set a negative margin to reduce spacing; adjust as needed */
+}
+
+.panedesign {
+    -fx-padding: 60px;
+    -fx-border-style: dotted;
+    -fx-border-width: 2px;
+    -fx-border-color: #4E4D55;
+    -fx-background-radius: 10px;
+}
+
 .imageviewShadow {
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0.5, 2, 2);
 }
@@ -25,6 +44,10 @@
 .containerColorRM {
     -fx-background-color: #DFC3CD;
     -fx-background-radius: 10px;
+}
+
+.scroll-pane .scroll-pane-content {
+    -fx-padding: 0 0 0 0;
 }
 
 .scroll-pane .viewport {
@@ -48,13 +71,15 @@
 .receiptButton {
     -fx-background-color: #111315;
     -fx-border-color: white;
-    -fx-text-fill: white;
+
 }
 
 .receiptButton:hover {
-    -fx-background-color: white;
+    -fx-background-color: #505180;
     -fx-border-color: white;
     -fx-text-fill: #111315;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
 }
 
 .boldText {

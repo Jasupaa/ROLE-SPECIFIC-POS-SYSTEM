@@ -1,5 +1,13 @@
 package MainAppFrame;
 
+import CRUDs.MilkteaCRUDController;
+import MenuController.MenuController;
+import MenuController.ExtrasController;
+import MenuController.RiceMealController;
+import MenuController.FruitDrinkController;
+import MenuController.SnacksController;
+import MenuController.CoffeeController;
+import MenuController.FrappeController;
 import Login.ControllerInterface;
 import Login.LoginTest;
 import java.io.IOException;
@@ -47,17 +55,14 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.stage.StageStyle;
+import javafx.scene.layout.AnchorPane;
 import java.util.Set;
 import java.util.HashSet;
 
-import other.ItemData;
-import other.menu1;
-import other.menu2;
-import other.menu3;
-import other.menu4;
-import other.menu5;
-import other.menu6;
-import other.menu7;
+import ClassFiles.ItemData;
+import ClassFiles.MilkteaItemData;
+import Databases.CRUDDatabase;
+import com.mysql.cj.jdbc.Blob;
 
 public class CashierFXMLController implements Initializable, ControllerInterface {
 
@@ -95,7 +100,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @FXML
     private Button deleteItemButton;
-    
+
     @FXML
     private Button deleteAllitemsButton;
 
@@ -132,23 +137,17 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     @FXML
     private Button takeOutOrderButton;
 
+    @FXML
+    private Label empName;
+
     private Stage settlePaymentStage;
 
-    private List<menu1> menus;
-    private List<menu2> menuss;
-    private List<menu3> menusss;
-    private List<menu4> menussss;
-    private List<menu5> menusssss;
-    private List<menu6> menussssss;
-    private List<menu7> menusssssss;
+    private ObservableList<MilkteaItemData> milkteaListData = FXCollections.observableArrayList();
 
     private volatile boolean stop = false;
     private LocalDate currentDate = LocalDate.now();
     
-    @FXML
-    private Label empName;
-    
-     private String employeeName;
+   
     
     public void setEmployeeName(String employeeName) {
         this.employeeName = employeeName;
@@ -159,6 +158,16 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     public void setTableViewAndList(TableView<ItemData> tableView, ObservableList<ItemData> dataList) {
         this.receiptTable = tableView;
         this.menuMilkteaAndFrappeListData = dataList;
+    }
+
+    private String employeeName;
+    private int employeeId;
+
+    public void setEmployee(String employeeName, int employeeId) {
+        this.employeeName = employeeName;
+        this.employeeId = employeeId;
+
+        empName.setText(employeeName);
     }
 
     private int customerID = 0;
@@ -237,15 +246,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         return blurPane;
     }
 
-    /*
-    @FXML
-    void takeOrder(ActionEvent event) {
-        incrementCustomerID();
-        menuGetMilkteaAndFrappe();
-        setupTableView();
-
-        System.out.println(currentCustomerID);
-    } */
     @FXML
     void takeOutOrder(ActionEvent event) {
         try {
@@ -270,6 +270,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
             // Get the controller for SettlePaymentFXML
             SettlePaymentFXMLController settlePaymentController = loader.getController();
+            settlePaymentController.setExistingCashierController(this, employeeName, employeeId);
 
             // Set the order type
             settlePaymentController.setOrderType("Take Out");
@@ -313,247 +314,11 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     }
 
     @FXML
-    private void getMenu1(ActionEvent event) {
-        menus = getMenu1();
+    private void getMenu1(ActionEvent event) throws SQLException {
+         milkteaListData.clear();
+        milkteaListData.addAll(menuGetData());
+
         refreshMenuGrid();
-    }
-
-    @FXML
-    private void getMenu2(ActionEvent event) {
-        menuss = getMenu2();
-        refreshFruitDrinkGrid();
-    }
-
-    @FXML
-    private void getMenu3(ActionEvent event) {
-        menusss = getMenu3();
-        refreshFrappeGrid();
-    }
-
-    @FXML
-    private void getMenu4(ActionEvent event) {
-        menussss = getMenu4();
-        refreshCoffeeGrid();
-    }
-
-    @FXML
-    private void getMenu5(ActionEvent event) {
-        menusssss = getMenu5();
-        refreshRiceMealGrid();
-    }
-
-    @FXML
-    private void getMenu6(ActionEvent event) {
-        menussssss = getMenu6();
-        refreshSnacksGrid();
-    }
-
-    @FXML
-    private void getMenu7(ActionEvent event) {
-        menusssssss = getMenu7();
-        refreshOthersGrid();
-    }
-
-    private List<menu1> getMenu1() {
-        List<menu1> ls = new ArrayList<>();
-
-        menu1 menu = new menu1();
-        menu.setName("Classic Milktea");
-        menu.setImgSrc("/img/ClassicMt.png");
-        ls.add(menu);
-
-        menu = new menu1();
-        menu.setName("Taro Milktea");
-        menu.setImgSrc("/img/TaroMt.png");
-        ls.add(menu);
-
-        menu = new menu1();
-        menu.setName("Almond Milktea");
-        menu.setImgSrc("/img/AlmondMT.png");
-        ls.add(menu);
-
-        menu = new menu1();
-        menu.setName("Strawberry Milktea");
-        menu.setImgSrc("/img/StrawberryMT.png");
-        ls.add(menu);
-
-        menu = new menu1();
-        menu.setName("Matcha Milktea");
-        menu.setImgSrc("/img/MatchaMT.png");
-        ls.add(menu);
-
-        return ls;
-    }
-
-    private List<menu2> getMenu2() {
-        List<menu2> menuList = new ArrayList<>();
-
-        menu2 menu = new menu2();
-        menu.setName("Fruit Tea");
-        menu.setImgSrc("/img/FruitTea.png");
-        menuList.add(menu);
-
-        menu = new menu2();
-        menu.setName("Quadraple Triple");
-        menu.setImgSrc("/img/QuadrapleTriple.png");
-        menuList.add(menu);
-
-        menu = new menu2();
-        menu.setName("Fruso");
-        menu.setImgSrc("/img/Fruso.png");
-        menuList.add(menu);
-
-        menu = new menu2();
-        menu.setName("Yakult Mix");
-        menu.setImgSrc("/img/Fruso.png");
-        menuList.add(menu);
-
-        return menuList;
-    }
-
-    private List<menu3> getMenu3() {
-        List<menu3> menuList3 = new ArrayList<>();
-
-        menu3 menu = new menu3();
-        menu.setName("HazelNut Almonds");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList3.add(menu);
-
-        menu = new menu3();
-        menu.setName("Caramel Latte");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList3.add(menu);
-
-        menu = new menu3();
-        menu.setName("Coffee Jelly");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList3.add(menu);
-
-        menu = new menu3();
-        menu.setName("Oreo");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList3.add(menu);
-
-        menu = new menu3();
-        menu.setName("Nutella");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList3.add(menu);
-
-        return menuList3;
-    }
-
-    private List<menu4> getMenu4() {
-        List<menu4> menuList4 = new ArrayList<>();
-
-        menu4 menu = new menu4();
-        menu.setName("The Special Coffee");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList4.add(menu);
-
-        menu = new menu4();
-        menu.setName("Matcha Latte");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList4.add(menu);
-
-        menu = new menu4();
-        menu.setName("Pour Over Coffee");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList4.add(menu);
-
-        return menuList4;
-    }
-
-    private List<menu5> getMenu5() {
-        List<menu5> menuList5 = new ArrayList<>();
-
-        menu5 menu = new menu5();
-        menu.setName("Hotsilog");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList5.add(menu);
-
-        menu = new menu5();
-        menu.setName("Chiksilog");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList5.add(menu);
-
-        menu = new menu5();
-        menu.setName("Longsilog");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList5.add(menu);
-
-        menu = new menu5();
-        menu.setName("Bacsilog");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList5.add(menu);
-
-        menu = new menu5();
-        menu.setName("Siomai Rice");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList5.add(menu);
-
-        return menuList5;
-    }
-
-    private List<menu6> getMenu6() {
-        List<menu6> menuList6 = new ArrayList<>();
-
-        menu6 menu = new menu6();
-        menu.setName("Cheesy Burger");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList6.add(menu);
-
-        menu = new menu6();
-        menu.setName("Cheesy Bacon Burger");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList6.add(menu);
-
-        menu = new menu6();
-        menu.setName("Burger Overload");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList6.add(menu);
-
-        menu = new menu6();
-        menu.setName("Beefy Nachos");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList6.add(menu);
-
-        return menuList6;
-    }
-
-    private List<menu7> getMenu7() {
-        List<menu7> menuList7 = new ArrayList<>();
-
-        menu7 menu = new menu7();
-        menu.setName("White Rice");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList7.add(menu);
-
-        menu = new menu7();
-        menu.setName("Garlic Rice");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList7.add(menu);
-
-        menu = new menu7();
-        menu.setName("Sprite");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList7.add(menu);
-
-        menu = new menu7();
-        menu.setName("Coke");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList7.add(menu);
-
-        menu = new menu7();
-        menu.setName("Royal");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList7.add(menu);
-
-        menu = new menu7();
-        menu.setName("Mountain Dew");
-        menu.setImgSrc("/img/ClassicMT.jpg");
-        menuList7.add(menu);
-
-        return menuList7;
     }
 
     @FXML
@@ -573,6 +338,56 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         this.stage = stage;
     }
 
+    public ObservableList<MilkteaItemData> menuGetData() {
+
+        String sql = "SELECT * FROM milktea_items";
+
+        ObservableList<MilkteaItemData> listData = FXCollections.observableArrayList();
+        Connection connect = null;
+        PreparedStatement prepare = null;
+        ResultSet result = null;
+
+        try {
+            connect = CRUDDatabase.getConnection();
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                // Replace these column names with your actual column names from the "milktea_items" table
+                String itemName = result.getString("item_name");
+                String addons = result.getString("addons");
+                Integer smallPrice = result.getInt("small_price");
+                Integer mediumPrice = result.getInt("medium_price");
+                Integer largePrice = result.getInt("large_price");
+                Blob image = (Blob) result.getBlob("image");
+                Integer itemID = result.getInt("item_ID");
+                // Create a MilkteaItemData object and add it to the list
+                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice, image, itemID);
+                listData.add(milkteaItemData);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (result, prepare, connect) if needed
+            try {
+                if (result != null) {
+                    result.close();
+                }
+                if (prepare != null) {
+                    prepare.close();
+                }
+                if (connect != null) {
+                    connect.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return listData;
+    }
+
     public ObservableList<ItemData> menuGetMilkteaAndFrappe() {
         ObservableList<ItemData> listData = FXCollections.observableArrayList();
 
@@ -587,34 +402,29 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         }
 
         // For milk_tea
-        String combinedSql = "SELECT order_id, size, item_name, final_price, quantity, date_time FROM milk_tea WHERE customer_id = ? " +
-        "UNION " +
-        "SELECT order_id, size, item_name, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? " +
-        "UNION " +
-        "SELECT order_id, size, item_name, final_price, quantity, date_time FROM frappe WHERE customer_id = ? " +
-        "ORDER BY date_time Asc";
+        String combinedSql = "SELECT order_id, size, item_name, final_price, quantity, date_time FROM milk_tea WHERE customer_id = ? "
+                + "UNION "
+                + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? "
+                + "UNION "
+                + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM frappe WHERE customer_id = ? "
+                + "ORDER BY date_time Asc";
 
+        try (Connection connect = database.getConnection(); PreparedStatement combinedPrepare = connect.prepareStatement(combinedSql)) {
 
-        try (Connection connect = database.getConnection(); PreparedStatement combinedPrepare = connect.prepareStatement(combinedSql)
-             ) {
-
-           combinedPrepare.setInt(1, customerID);
-           combinedPrepare.setInt(2, customerID);
+            combinedPrepare.setInt(1, customerID);
+            combinedPrepare.setInt(2, customerID);
             combinedPrepare.setInt(3, customerID);
 
-           
-    ResultSet combinedResult = combinedPrepare.executeQuery();
-    while (combinedResult.next()) {
-        int orderID = combinedResult.getInt("order_id");
-        String itemName = combinedResult.getString("size") + " " + combinedResult.getString("item_name");
-        double itemPrice = combinedResult.getDouble("final_price");
-        int itemQuantity = combinedResult.getInt("quantity");
+            ResultSet combinedResult = combinedPrepare.executeQuery();
+            while (combinedResult.next()) {
+                int orderID = combinedResult.getInt("order_id");
+                String itemName = combinedResult.getString("size") + " " + combinedResult.getString("item_name");
+                double itemPrice = combinedResult.getDouble("final_price");
+                int itemQuantity = combinedResult.getInt("quantity");
 
-        ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
-        listData.add(item);}
-           
-
-           
+                ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
+                listData.add(item);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -623,13 +433,12 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         return listData;
     }
 
-
-    private void setupMenusAndRefreshMenuGrid() {
+    /*
+    private void setupMenusAndRefreshMenuGrid() throws SQLException {
         menus = getMenu1();
         menuMilkteaAndFrappeListData = menuGetMilkteaAndFrappe();
         refreshMenuGrid();
-    }
-
+    } */
     private ObservableList<ItemData> menuMilkteaAndFrappeListData;
 
     public void setupTableView() {
@@ -694,135 +503,73 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                     + item.getItemPrice() + ", " + item.getItemQuantity()); // Add this line
         }
     }
-    
+
 // ...
+    public void onDeleteAllitemsButtonClicked(ActionEvent event) throws SQLException {
+        // Prompt user for confirmation before deleting all items
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete All Items");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to delete all items?");
 
-public void onDeleteAllitemsButtonClicked(ActionEvent event) throws SQLException {
-    // Prompt user for confirmation before deleting all items
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setTitle("Delete All Items");
-    alert.setHeaderText(null);
-    alert.setContentText("Are you sure you want to delete all items?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            Set<Integer> orderIDs = new HashSet<>();
 
-    Optional<ButtonType> result = alert.showAndWait();
-    if (result.isPresent() && result.get() == ButtonType.OK) {
-        Set<Integer> orderIDs = new HashSet<>();
-
-        // Collect unique order IDs from the list
-        for (ItemData item : menuMilkteaAndFrappeListData) {
-            orderIDs.add(item.getorderID());
-        }
-
-        // Iterate through unique order IDs and delete items
-        for (int orderID : orderIDs) {
-            ItemData dummyItem = new ItemData(orderID, "", 0.0, 0);
-            deleteAllitems(dummyItem);
-        }
-
-        menuMilkteaAndFrappeListData.clear(); // Clear all items from the TableView
-    }
-}
-
-
-private void deleteAllitems(ItemData item) throws SQLException {
-    
-    String deleteAllMTsql = "DELETE FROM milk_tea WHERE order_id = ?";
-    String deleteAllFrappeSql = "DELETE FROM frappe WHERE order_id = ?";
-    String deleteAllFDSql = "DELETE FROM fruit_drink WHERE order_id = ?";
-
-    try (Connection connect = database.getConnection();
-         PreparedStatement deleteAllMTPrepare = connect.prepareStatement(deleteAllMTsql);
-         PreparedStatement deleteAllFrappePrepare = connect.prepareStatement(deleteAllFrappeSql);
-         PreparedStatement deleteAllFDPrepare = connect.prepareStatement(deleteAllFDSql)) {
-
-        int orderID = item.getorderID(); 
-
-        deleteAllMTPrepare.setInt(1, orderID);
-        deleteAllFrappePrepare.setInt(1, orderID);
-        deleteAllFDPrepare.setInt(1, orderID);
-
-        int rowsAffectedMT = deleteAllMTPrepare.executeUpdate();
-        int rowsAffectedFrappe = deleteAllFrappePrepare.executeUpdate();
-        int rowsAffectedFD = deleteAllFDPrepare.executeUpdate();
-
-        System.out.println("Rows affected (delete all milk tea): " + rowsAffectedMT);
-        System.out.println("Rows affected (delete all frappe): " + rowsAffectedFrappe);
-        System.out.println("Rows affected (delete all fruit drink): " + rowsAffectedFD);
-    }
-}
-
-    private void refreshMenuGrid() {
-
-        menuGrid.getChildren().clear();
-        int column = 0;
-        int row = 1;
-
-        for (menu1 menu : menus) {
-            try {
-                FXMLLoader fxmlloader = new FXMLLoader();
-                fxmlloader.setLocation(getClass().getResource("Milktea.fxml"));
-
-                Pane pane = fxmlloader.load();
-                MenuController menucontroller = fxmlloader.getController();
-                menucontroller.setData(menu);
-
-                if (column == 1) {
-                    column = 0;
-                    ++row;
-                }
-
-                menuGrid.add(pane, column++, row);
-                GridPane.setMargin(pane, new Insets(20));
-
-            } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class
-                        .getName()).log(Level.SEVERE, null, ex);
+            // Collect unique order IDs from the list
+            for (ItemData item : menuMilkteaAndFrappeListData) {
+                orderIDs.add(item.getorderID());
             }
-        }
-    }
 
-    private void refreshFruitDrinkGrid() {
-        menuGrid.getChildren().clear();
-        int column = 0;
-        int row = 1;
-
-        for (menu2 menu2 : menuss) { // Change the variable name to 'menu2' for clarity
-            try {
-                FXMLLoader fxmlloader = new FXMLLoader();
-                fxmlloader.setLocation(getClass().getResource("FruitDrink.fxml"));
-
-                Pane pane = fxmlloader.load();
-                FruitDrinkController fruitdrinkcontroller = fxmlloader.getController();
-                fruitdrinkcontroller.setData(menu2); // Use 'menu2' as the data
-
-                if (column == 1) {
-                    column = 0;
-                    ++row;
-                }
-
-                menuGrid.add(pane, column++, row);
-                GridPane.setMargin(pane, new Insets(20));
-
-            } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class
-                        .getName()).log(Level.SEVERE, null, ex);
+            // Iterate through unique order IDs and delete items
+            for (int orderID : orderIDs) {
+                ItemData dummyItem = new ItemData(orderID, "", 0.0, 0);
+                deleteAllitems(dummyItem);
             }
+
+            menuMilkteaAndFrappeListData.clear(); // Clear all items from the TableView
         }
     }
 
-    private void refreshFrappeGrid() {
+    private void deleteAllitems(ItemData item) throws SQLException {
+
+        String deleteAllMTsql = "DELETE FROM milk_tea WHERE order_id = ?";
+        String deleteAllFrappeSql = "DELETE FROM frappe WHERE order_id = ?";
+        String deleteAllFDSql = "DELETE FROM fruit_drink WHERE order_id = ?";
+
+        try (Connection connect = database.getConnection(); PreparedStatement deleteAllMTPrepare = connect.prepareStatement(deleteAllMTsql); PreparedStatement deleteAllFrappePrepare = connect.prepareStatement(deleteAllFrappeSql); PreparedStatement deleteAllFDPrepare = connect.prepareStatement(deleteAllFDSql)) {
+
+            int orderID = item.getorderID();
+
+            deleteAllMTPrepare.setInt(1, orderID);
+            deleteAllFrappePrepare.setInt(1, orderID);
+            deleteAllFDPrepare.setInt(1, orderID);
+
+            int rowsAffectedMT = deleteAllMTPrepare.executeUpdate();
+            int rowsAffectedFrappe = deleteAllFrappePrepare.executeUpdate();
+            int rowsAffectedFD = deleteAllFDPrepare.executeUpdate();
+
+            System.out.println("Rows affected (delete all milk tea): " + rowsAffectedMT);
+            System.out.println("Rows affected (delete all frappe): " + rowsAffectedFrappe);
+            System.out.println("Rows affected (delete all fruit drink): " + rowsAffectedFD);
+        }
+    }
+
+    private void refreshMenuGrid() throws SQLException {
+        
         menuGrid.getChildren().clear();
         int column = 0;
         int row = 1;
 
-        for (menu3 menu3 : menusss) { // Change the variable name to 'menu2' for clarity
+        for (MilkteaItemData milkteaItemData : milkteaListData) {
             try {
-                FXMLLoader fxmlloader = new FXMLLoader();
-                fxmlloader.setLocation(getClass().getResource("Frappe.fxml"));
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/MenuFXML/Milktea.fxml"));
+                AnchorPane pane = loader.load();
 
-                Pane pane = fxmlloader.load();
-                FrappeController frappecontroller = fxmlloader.getController();
-                frappecontroller.setData(menu3); // Use 'menu2' as the data
+                // Access the controller and set the data
+                MenuController menuController = loader.getController();
+                menuController.setMilkteaItemData(milkteaItemData);
 
                 if (column == 1) {
                     column = 0;
@@ -833,132 +580,22 @@ private void deleteAllitems(ItemData item) throws SQLException {
                 GridPane.setMargin(pane, new Insets(20));
 
             } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    private void refreshCoffeeGrid() {
-        menuGrid.getChildren().clear();
-        int column = 0;
-        int row = 1;
-
-        for (menu4 menu4 : menussss) { // Change the variable name to 'menu2' for clarity
-            try {
-                FXMLLoader fxmlloader = new FXMLLoader();
-                fxmlloader.setLocation(getClass().getResource("Coffee.fxml"));
-
-                Pane pane = fxmlloader.load();
-                CoffeeController coffeecontroller = fxmlloader.getController();
-                coffeecontroller.setData(menu4); // Use 'menu2' as the data
-
-                if (column == 1) {
-                    column = 0;
-                    ++row;
-                }
-
-                menuGrid.add(pane, column++, row);
-                GridPane.setMargin(pane, new Insets(20));
-
-            } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    private void refreshRiceMealGrid() {
-        menuGrid.getChildren().clear();
-        int column = 0;
-        int row = 1;
-
-        for (menu5 menu5 : menusssss) { // Change the variable name to 'menu2' for clarity
-            try {
-                FXMLLoader fxmlloader = new FXMLLoader();
-                fxmlloader.setLocation(getClass().getResource("RiceMeal.fxml"));
-
-                Pane pane = fxmlloader.load();
-                RiceMealController ricemealcontroller = fxmlloader.getController();
-                ricemealcontroller.setData(menu5); // Use 'menu2' as the data
-
-                if (column == 1) {
-                    column = 0;
-                    ++row;
-                }
-
-                menuGrid.add(pane, column++, row);
-                GridPane.setMargin(pane, new Insets(20));
-
-            } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    private void refreshSnacksGrid() {
-        menuGrid.getChildren().clear();
-        int column = 0;
-        int row = 1;
-
-        for (menu6 menu6 : menussssss) { // Change the variable name to 'menu2' for clarity
-            try {
-                FXMLLoader fxmlloader = new FXMLLoader();
-                fxmlloader.setLocation(getClass().getResource("Snacks.fxml"));
-
-                Pane pane = fxmlloader.load();
-                SnacksController snackscontroller = fxmlloader.getController();
-                snackscontroller.setData(menu6); // Use 'menu2' as the data
-
-                if (column == 1) {
-                    column = 0;
-                    ++row;
-                }
-
-                menuGrid.add(pane, column++, row);
-                GridPane.setMargin(pane, new Insets(20));
-
-            } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    private void refreshOthersGrid() {
-        menuGrid.getChildren().clear();
-        int column = 0;
-        int row = 1;
-
-        for (menu7 menu7 : menusssssss) { // Change the variable name to 'menu2' for clarity
-            try {
-                FXMLLoader fxmlloader = new FXMLLoader();
-                fxmlloader.setLocation(getClass().getResource("Extras.fxml"));
-
-                Pane pane = fxmlloader.load();
-                ExtrasController extrascontroller = fxmlloader.getController();
-                extrascontroller.setData(menu7); // Use 'menu2' as the data
-
-                if (column == 1) {
-                    column = 0;
-                    ++row;
-                }
-
-                menuGrid.add(pane, column++, row);
-                GridPane.setMargin(pane, new Insets(20));
-
-            } catch (IOException ex) {
-                Logger.getLogger(CashierFXMLController.class
-                        .getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
         }
     }
 
     private Button lastClickedButton = null;
 
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        try {
+            refreshMenuGrid();
+        } catch (SQLException ex) {
+            Logger.getLogger(CashierFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -975,15 +612,22 @@ private void deleteAllitems(ItemData item) throws SQLException {
                     Logger.getLogger(AdminFXMLController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
+
             }
-        });
+
+        }
+        );
+
+        columnItemName.setSortable(true);
+        columnItemPrice.setSortable(true);
+        columnItemQuantity.setSortable(true);
 
         try {
             // Update the customerLabel with the highest customer ID across databases
             updateCustomerID();
 
             // Other initialization code...
-            setupMenusAndRefreshMenuGrid();
+            /* setupMenusAndRefreshMenuGrid(); */
             DateLabel();
             Timenow();
             setupTableView();

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package MainAppFrame;
 
 import Login.ControllerInterface;
@@ -16,6 +12,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,17 +22,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 
-/**
- * FXML Controller class
- *
- * @author Jasper
- */
 public class KitchenFXMLController implements Initializable, ControllerInterface {
-double xOffset, yOffset;
+    
+    double xOffset, yOffset;
     
     @FXML
     private ImageView CloseButton;
@@ -44,32 +35,41 @@ double xOffset, yOffset;
     private AnchorPane KitchenPane;
 
     @FXML
+    private AnchorPane archive;
+
+    @FXML
+    private Button archiveBTN;
+
+    @FXML
     private Label dateLbl;
 
     @FXML
-    private Button getMenu1;
+    private AnchorPane orderTab;
 
     @FXML
-    private Button getMenu2;
+    private Button orderTabBTN;
 
     @FXML
     private Label timeLbl;
     
-    @FXML
     private Stage stage;
+   
+    @FXML
+    private void handleMousePressed(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML
+    private void handleMouseDragged(MouseEvent event) {
+        Stage stage = (Stage) ((Pane) event.getSource()).getScene().getWindow();
+        stage.setX(event.getScreenX() - xOffset);
+        stage.setY(event.getScreenY() - yOffset);
+    }
     
-    @FXML
-    private TableColumn<?, ?> sampleName;
-
-    @FXML
-    private TableColumn<?, ?> samplePrice;
-
-    @FXML
-    private TableColumn<?, ?> sampleQuantity;
-
-    @FXML
-    private TableView<?> sampleTableView;
-
+    public void setStage(Stage stage) {
+    this.stage = stage;   
+    }  
     
     private volatile boolean stop = false;
     
@@ -98,23 +98,6 @@ double xOffset, yOffset;
 
         thread.start();
     }
-     
-    @FXML
-    private void handleMousePressed(MouseEvent event) {
-        xOffset = event.getSceneX();
-        yOffset = event.getSceneY();
-    }
-
-    @FXML
-    private void handleMouseDragged(MouseEvent event) {
-        Stage stage = (Stage) ((Pane) event.getSource()).getScene().getWindow();
-        stage.setX(event.getScreenX() - xOffset);
-        stage.setY(event.getScreenY() - yOffset);
-    }
-    
-    public void setStage(Stage stage) {
-    this.stage = stage;   
-}  
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -122,7 +105,7 @@ double xOffset, yOffset;
         DateLabel();
         Timenow();
         
-        CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
@@ -137,6 +120,36 @@ double xOffset, yOffset;
                     Logger.getLogger(AdminFXMLController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        });   
-}
+        });
+    }
+   
+    private Button lastClickedButton = null;
+
+    @FXML
+    public void SwitchForm(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+
+        if (clickedButton == lastClickedButton) {
+            // Ignore the click if the same button was clicked twice in a row
+            return;
+        }
+
+        if (clickedButton == orderTabBTN) {
+            // ... (rest of the code remains the same)
+        }
+
+        // Update the last clicked button
+        lastClickedButton = clickedButton;
+        if (clickedButton == orderTabBTN) {
+            
+            orderTab.setVisible(true);
+            archive.setVisible(false);
+
+        } else if (clickedButton == archiveBTN) {
+
+            orderTab.setVisible(false);
+            archive.setVisible(true);
+        }
+    }
+    
 }

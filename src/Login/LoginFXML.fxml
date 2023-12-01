@@ -9,29 +9,24 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-padding: 5; -fx-background-color: #111315; -fx-background-radius: 5; -fx-border-radius: 30 30 30 30; -fx-border-width: 2; -fx-border-color: #00000000;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="CodeLabel" alignment="CENTER" contentDisplay="TOP" layoutX="450.0" layoutY="203.0" prefHeight="31.0" prefWidth="241.0" style="-fx-background-color: white;" text="" />
-      <Button fx:id="Button1" layoutX="462.0" layoutY="251.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="1" textFill="WHITE" />
-      <Button fx:id="Button2" layoutX="539.0" layoutY="251.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="2" textFill="WHITE" />
-      <Button fx:id="Button3" layoutX="618.0" layoutY="251.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="3" textFill="WHITE" />
-      <Button fx:id="Button4" layoutX="462.0" layoutY="310.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="4" textFill="WHITE" />
-      <Button fx:id="Button5" layoutX="540.0" layoutY="310.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="5" textFill="WHITE" />
-      <Button fx:id="Button6" layoutX="618.0" layoutY="310.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="6" textFill="WHITE" />
-      <Button fx:id="Button7" layoutX="462.0" layoutY="369.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="7" textFill="WHITE" />
-      <Button fx:id="Button8" layoutX="540.0" layoutY="369.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="8" textFill="WHITE" />
-      <Button fx:id="Button9" layoutX="618.0" layoutY="369.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="9" textFill="WHITE" />
-      <Button fx:id="ButtonX" layoutX="462.0" layoutY="430.0" mnemonicParsing="false" onAction="#clearCodeLabel" prefHeight="49.0" prefWidth="62.0" styleClass="deleteButton" stylesheets="@../CSS/Login.css" text="X" textFill="WHITE" />
-      <Button fx:id="Button0" layoutX="540.0" layoutY="430.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="0" textFill="WHITE" />
-      <Button fx:id="ButtonEnter" layoutX="618.0" layoutY="430.0" mnemonicParsing="false" onAction="#LoginHandler" prefHeight="49.0" prefWidth="62.0" styleClass="enterButton" stylesheets="@../CSS/Login.css" text="E" textFill="WHITE" />
-      <Label layoutX="526.0" layoutY="173.0" prefHeight="22.0" prefWidth="84.0" text="Enter your PIN" textAlignment="CENTER" textFill="WHITE">
-         <font>
-            <Font name="Ebrima" size="13.0" />
-         </font>
-      </Label>
-      <Label fx:id="DateLbl" layoutX="113.0" layoutY="21.0" prefHeight="22.0" prefWidth="1136.0" text="Default Text" textFill="WHITE">
+      <Label fx:id="CodeLabel" alignment="CENTER" contentDisplay="TOP" layoutX="447.0" layoutY="257.0" prefHeight="31.0" prefWidth="241.0" style="-fx-background-color: white;" text="" />
+      <Button fx:id="Button1" layoutX="459.0" layoutY="308.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="1" textFill="WHITE" />
+      <Button fx:id="Button2" layoutX="536.0" layoutY="308.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="2" textFill="WHITE" />
+      <Button fx:id="Button3" layoutX="615.0" layoutY="308.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="3" textFill="WHITE" />
+      <Button fx:id="Button4" layoutX="459.0" layoutY="367.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="4" textFill="WHITE" />
+      <Button fx:id="Button5" layoutX="537.0" layoutY="367.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="5" textFill="WHITE" />
+      <Button fx:id="Button6" layoutX="615.0" layoutY="367.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="6" textFill="WHITE" />
+      <Button fx:id="Button7" layoutX="459.0" layoutY="426.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="7" textFill="WHITE" />
+      <Button fx:id="Button8" layoutX="537.0" layoutY="426.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="8" textFill="WHITE" />
+      <Button fx:id="Button9" layoutX="615.0" layoutY="426.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="9" textFill="WHITE" />
+      <Button fx:id="ButtonX" layoutX="459.0" layoutY="487.0" mnemonicParsing="false" onAction="#clearCodeLabel" prefHeight="49.0" prefWidth="62.0" styleClass="deleteButton" stylesheets="@../CSS/Login.css" text="X" textFill="WHITE" />
+      <Button fx:id="Button0" layoutX="537.0" layoutY="487.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="0" textFill="WHITE" />
+      <Button fx:id="ButtonEnter" layoutX="615.0" layoutY="487.0" mnemonicParsing="false" onAction="#LoginHandler" prefHeight="49.0" prefWidth="62.0" styleClass="enterButton" stylesheets="@../CSS/Login.css" text="E" textFill="WHITE" />
+      <Label fx:id="DateLbl" layoutX="113.0" layoutY="22.0" prefHeight="22.0" prefWidth="1136.0" text="Default Text" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font></Label>
-      <Label fx:id="TimeLbl" layoutX="200.0" layoutY="24.0" prefHeight="16.0" prefWidth="89.0" text="Default Text" textFill="WHITE">
+      <Label fx:id="TimeLbl" layoutX="200.0" layoutY="25.0" prefHeight="16.0" prefWidth="89.0" text="Default Text" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font></Label>
@@ -40,9 +35,14 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <ImageView fx:id="closebutton" fitHeight="23.0" fitWidth="24.0" layoutX="1085.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="closebutton" fitHeight="23.0" fitWidth="24.0" layoutX="34.0" layoutY="597.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/icons8-log-out-96.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="168.0" fitWidth="268.0" layoutX="434.0" layoutY="115.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/login_g1.png" />
          </image>
       </ImageView>
    </children>

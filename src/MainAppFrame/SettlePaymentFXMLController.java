@@ -31,7 +31,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import other.ControllerManager;
+import ClassFiles.ControllerManager;
 
 /**
  * FXML Controller class
@@ -84,6 +84,15 @@ public class SettlePaymentFXMLController implements Initializable {
 
     private CashierFXMLController existingCashierController;
 
+    private String empName;
+    private int empId;
+
+    public void setExistingCashierController(CashierFXMLController cashierController, String employeeName, int employeeId) {
+        this.existingCashierController = cashierController;
+        this.empName = employeeName;
+        this.empId = employeeId;
+    }
+
     public void setExistingCashierController(CashierFXMLController cashierController) {
         this.existingCashierController = cashierController;
     }
@@ -95,15 +104,50 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     void confirmButton(ActionEvent event) {
-
         CashierFXMLController cashierController = ControllerManager.getCashierController();
 
         if (existingCashierController == null && cashierController != null) {
             existingCashierController = cashierController;
         }
+
+        // Get relevant information from the SettlePayment
+        int customerID = existingCashierController.getCurrentCustomerID();
+        String orderType = ordertypeTxtField.getText();
+        double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1));
+        double cashAmount = Double.parseDouble(cashTxtLbl.getText());
+        double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
+
+        // Insert into the "invoice" table
+        insertInvoiceToDatabase(customerID, orderType, totalAmount, cashAmount, changeAmount);
+
+        // Update UI or perform other actions as needed
         cashierController.incrementCurrentCustomerID();
         cashierController.menuGetMilkteaAndFrappe();
         cashierController.setupTableView();
+    }
+
+    private void insertInvoiceToDatabase(int customerID, String orderType, double totalAmount, double cashAmount, double changeAmount) {
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                String sql = "INSERT INTO invoice (customer_id, employee_id, emp_name, date_time, order_type, total, cash, `change`) VALUES (?, ?, ?, NOW(), ?, ?, ?, ?)";
+
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    // Set other values as needed (employee ID, employee name, date-time)
+                    stmt.setInt(1, customerID);
+                    stmt.setInt(2, empId);
+                    stmt.setString(3, empName);
+                    stmt.setString(4, orderType);
+                    stmt.setDouble(5, totalAmount);
+                    stmt.setDouble(6, cashAmount);
+                    stmt.setDouble(7, changeAmount);
+
+                    stmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database-related exceptions
+        }
     }
 
     @FXML
@@ -119,6 +163,7 @@ public class SettlePaymentFXMLController implements Initializable {
         try {
             // Load the CashierConfirmationFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CashierConfirmationFXML.fxml"));
+            loader.setController(this); // Make sure to set the controller
             Parent root = loader.load();
 
             // Create a new stage for the CashierConfirmationFXML
@@ -137,30 +182,30 @@ public class SettlePaymentFXMLController implements Initializable {
 
             // Set event handler for the hidden event
             cashierConfirm.setOnHidden(e -> {
-                // Load the CashierFXML file
-                FXMLLoader cashierLoader = new FXMLLoader(getClass().getResource("CashierFXML.fxml"));
-                Parent cashierRoot = null;
                 try {
-                    cashierRoot = cashierLoader.load();
+                    // Load the CashierFXML file
+                    FXMLLoader cashierLoader = new FXMLLoader(getClass().getResource("CashierFXML.fxml"));
+                    Parent cashierRoot = cashierLoader.load();
+
+                    // Set the scene for the CashierFXML
+                    Scene cashierScene = new Scene(cashierRoot);
+
+                    // Get the stage of the current scene (assuming your CashierFXML is already loaded)
+                    Stage currentStage = (Stage) root.getScene().getWindow();
+
+                    // Set the scene to the current stage (returning to CashierFXML)
+                    currentStage.setScene(cashierScene);
+
+                    // Set the pane visibility to false
+                    CashierFXMLController cashierController = cashierLoader.getController();
+                    if (existingCashierController == null && cashierController != null) {
+                        existingCashierController = cashierController;
+                    }
+                    existingCashierController.getMyPane().setVisible(false);
                 } catch (IOException ex) {
-                    Logger.getLogger(SettlePaymentFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
+                    // Handle exceptions accordingly
                 }
-
-                // Set the scene for the CashierFXML
-                Scene cashierScene = new Scene(cashierRoot);
-
-                // Get the stage of the current scene (assuming your CashierFXML is already loaded)
-                Stage currentStage = (Stage) root.getScene().getWindow();
-
-                // Set the scene to the current stage (returning to CashierFXML)
-                currentStage.setScene(cashierScene);
-
-                // Set the pane visibility to false
-                CashierFXMLController cashierController = ControllerManager.getCashierController();
-                if (existingCashierController == null && cashierController != null) {
-                    existingCashierController = cashierController;
-                }
-                existingCashierController.getMyPane().setVisible(false);
             });
 
             cashierConfirm.show();
@@ -331,16 +376,16 @@ public class SettlePaymentFXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         changeTxtLbl.setDisable(true);
-        
+
         ordertypeTxtField.setDisable(true);
         itmTotalTxtLbl.setDisable(true);
         newTotalTxtLbl.setDisable(true); // Disable the TextField
         discTxtLbl.setDisable(true); // Disable the TextField
         appldDscTxtLbl.setDisable(true); // Disable the TextField
         calculateTotal();
-        CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        /*CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+           /* public void handle(MouseEvent event) {
                 try {
                     Stage stage = (Stage) CloseButton.getScene().getWindow();
                     stage.close();
@@ -360,7 +405,7 @@ public class SettlePaymentFXMLController implements Initializable {
                 // Consume the event to prevent it from propagating
                 event.consume();
             }
-        });
+        }); */
 
     }
 }
