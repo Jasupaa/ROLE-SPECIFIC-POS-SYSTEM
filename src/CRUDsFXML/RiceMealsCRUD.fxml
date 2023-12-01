@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.RiceMealsCRUDController">
+   <children>
+      <TableView fx:id="ricemealsTV" layoutX="39.0" layoutY="51.0" prefHeight="350.0" prefWidth="285.0">
+        <columns>
+          <TableColumn fx:id="itemMT" prefWidth="160.79998779296875" text="Item" />
+          <TableColumn fx:id="priceMT" prefWidth="124.800048828125" text="Price" />
+        </columns>
+      </TableView>
+      <TextField fx:id="txtItemName" layoutX="609.0" layoutY="94.0" prefHeight="26.0" prefWidth="200.0" promptText="Eg. Classic Milktea" />
+      <TextField fx:id="txtPrice" layoutX="611.0" layoutY="138.0" prefHeight="26.0" prefWidth="88.0" promptText="P 0.00" />
+      <Button fx:id="addBTN" layoutX="766.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Add" />
+      <Label layoutX="533.0" layoutY="98.0" text="Item Name" />
+      <Label layoutX="563.0" layoutY="142.0" text="Price" />
+      <ImageView fitHeight="18.0" fitWidth="209.0" layoutX="353.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Pictures/Add_RiceMeals.png" />
+         </image>
+      </ImageView>
+      <AnchorPane layoutX="353.0" layoutY="90.0" prefHeight="152.0" prefWidth="138.0" styleClass="containerglass" stylesheets="@../CSS/AdminCSS.css">
+         <children>
+            <ImageView fx:id="itemIV" fitHeight="150.0" fitWidth="137.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="iconIV" fitHeight="26.0" fitWidth="38.0" layoutX="56.0" layoutY="62.0" opacity="0.22" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/BT_Image.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <Button fx:id="attachimageBTN" layoutX="378.0" layoutY="256.0" mnemonicParsing="false" onAction="#onAttachImageButtonClick" text="Attach Image" />
+      <Button fx:id="addBTN1" layoutX="717.0" layoutY="375.0" mnemonicParsing="false" onAction="#clearInput" text="Clear" />
+      <Button fx:id="updtBTN" layoutX="655.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Update" />
+      <Button fx:id="dltBtn" layoutX="598.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Delete" />
+   </children>
+</AnchorPane>
