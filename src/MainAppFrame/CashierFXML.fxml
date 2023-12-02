@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
+<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
     <children>
       <ScrollPane fx:id="receiptScrollPane" layoutX="211.0" layoutY="151.0" prefHeight="450.0" prefWidth="449.0" styleClass="scrollPane" stylesheets="@../CSS/CashierCSS.css" AnchorPane.topAnchor="151.0">
          <content>
@@ -86,7 +86,7 @@
       </Pane>
       <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="48.0" layoutY="570.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/icons8-log-out-96.png" />
+            <Image url="@../Pictures/icons8-log-out-96.png" />
          </image>
       </ImageView>
       <VBox layoutX="67.0" layoutY="256.0" prefHeight="251.0" prefWidth="136.0">
@@ -101,7 +101,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="getMenu3" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Frappe" textFill="WHITE">
+            <Button fx:id="getMenu3" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#getMenu3" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Frappe" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-padding: 5; -fx-background-color: #111315; -fx-background-radius: 5; -fx-border-radius: 30 30 30 30; -fx-border-width: 2; -fx-border-color: #00000000;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-padding: 5; -fx-background-color: #111315; -fx-background-radius: 5; -fx-border-radius: 30 30 30 30; -fx-border-width: 2; -fx-border-color: #00000000;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="CodeLabel" alignment="CENTER" contentDisplay="TOP" layoutX="447.0" layoutY="257.0" prefHeight="31.0" prefWidth="241.0" style="-fx-background-color: white;" text="" />
       <Button fx:id="Button1" layoutX="459.0" layoutY="308.0" mnemonicParsing="false" onAction="#showNumber" prefHeight="49.0" prefWidth="62.0" styleClass="pinButton" stylesheets="@../CSS/Login.css" text="1" textFill="WHITE" />
@@ -37,12 +37,12 @@
       </Label>
       <ImageView fx:id="closebutton" fitHeight="23.0" fitWidth="24.0" layoutX="34.0" layoutY="597.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/icons8-log-out-96.png" />
+            <Image url="@../Pictures/icons8-log-out-96.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="168.0" fitWidth="268.0" layoutX="434.0" layoutY="115.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/login_g1.png" />
+            <Image url="@../Pictures/login_g1.png" />
          </image>
       </ImageView>
    </children>

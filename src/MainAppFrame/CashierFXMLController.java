@@ -1,13 +1,6 @@
 package MainAppFrame;
 
-import CRUDs.MilkteaCRUDController;
-import MenuController.MenuController;
-import MenuController.ExtrasController;
-import MenuController.RiceMealController;
-import MenuController.FruitDrinkController;
-import MenuController.SnacksController;
-import MenuController.CoffeeController;
-import MenuController.FrappeController;
+import ClassFiles.FrappeItemData;
 import Login.ControllerInterface;
 import Login.LoginTest;
 import java.io.IOException;
@@ -62,6 +55,8 @@ import java.util.HashSet;
 import ClassFiles.ItemData;
 import ClassFiles.MilkteaItemData;
 import Databases.CRUDDatabase;
+import MenuController.FrappeController;
+import MenuController.MenuController;
 import com.mysql.cj.jdbc.Blob;
 
 public class CashierFXMLController implements Initializable, ControllerInterface {
@@ -142,16 +137,27 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private Stage settlePaymentStage;
 
-    private ObservableList<MilkteaItemData> milkteaListData = FXCollections.observableArrayList();
-
     private volatile boolean stop = false;
     private LocalDate currentDate = LocalDate.now();
+    
+   
+    
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+        
+        empName.setText(employeeName);
+    }
+
+    private ObservableList<MilkteaItemData> milkteaListData = FXCollections.observableArrayList();
+
+    private ObservableList<FrappeItemData> frappeListData = FXCollections.observableArrayList();
 
     public void setTableViewAndList(TableView<ItemData> tableView, ObservableList<ItemData> dataList) {
         this.receiptTable = tableView;
         this.menuMilkteaAndFrappeListData = dataList;
     }
 
+    //////////
     private String employeeName;
     private int employeeId;
 
@@ -307,9 +313,18 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @FXML
     private void getMenu1(ActionEvent event) throws SQLException {
+        milkteaListData.clear();
         milkteaListData.addAll(menuGetData());
 
         refreshMenuGrid();
+    }
+
+    @FXML
+    private void getMenu3(ActionEvent event) throws SQLException {
+        frappeListData.clear();
+        frappeListData.addAll(menuGetDataForFrappe());
+
+        refreshFrappeGrid();
     }
 
     @FXML
@@ -352,10 +367,58 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
-
                 // Create a MilkteaItemData object and add it to the list
                 MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice, image, itemID);
                 listData.add(milkteaItemData);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (result, prepare, connect) if needed
+            try {
+                if (result != null) {
+                    result.close();
+                }
+                if (prepare != null) {
+                    prepare.close();
+                }
+                if (connect != null) {
+                    connect.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return listData;
+    }
+
+    public ObservableList<FrappeItemData> menuGetDataForFrappe() {
+
+        String sql = "SELECT * FROM frappe_items";
+
+        ObservableList<FrappeItemData> listData = FXCollections.observableArrayList();
+        Connection connect = null;
+        PreparedStatement prepare = null;
+        ResultSet result = null;
+
+        try {
+            connect = CRUDDatabase.getConnection();
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                // Replace these column names with your actual column names from the "milktea_items" table
+                String itemName = result.getString("item_name");
+                Integer smallPrice = result.getInt("small_price");
+                Integer mediumPrice = result.getInt("medium_price");
+                Integer largePrice = result.getInt("large_price");
+                Blob image = (Blob) result.getBlob("image");
+
+                // Create a MilkteaItemData object and add it to the list
+                FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice, image);
+                listData.add(frappeItemData);
 
             }
         } catch (SQLException e) {
@@ -425,12 +488,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         return listData;
     }
 
-    /*
-    private void setupMenusAndRefreshMenuGrid() throws SQLException {
-        menus = getMenu1();
-        menuMilkteaAndFrappeListData = menuGetMilkteaAndFrappe();
-        refreshMenuGrid();
-    } */
     private ObservableList<ItemData> menuMilkteaAndFrappeListData;
 
     public void setupTableView() {
@@ -496,7 +553,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         }
     }
 
-// ...
     public void onDeleteAllitemsButtonClicked(ActionEvent event) throws SQLException {
         // Prompt user for confirmation before deleting all items
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -548,6 +604,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     }
 
     private void refreshMenuGrid() throws SQLException {
+        
         menuGrid.getChildren().clear();
         int column = 0;
         int row = 1;
@@ -576,97 +633,35 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         }
     }
 
-    private Button lastClickedButton = null;
+    private void refreshFrappeGrid() throws SQLException {
+        menuGrid.getChildren().clear();
+        int column = 0;
+        int row = 1;
 
-    /*
-    @FXML
-    public void SwitchForm(ActionEvent event) {
-        Button clickedButton = (Button) event.getSource();
+        for (FrappeItemData frappeItemData : frappeListData) {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/MenuFXML/Frappe.fxml"));
+                AnchorPane pane = loader.load();
 
-        if (clickedButton == lastClickedButton) {
-            // Ignore the click if the same button was clicked twice in a row
-            return;
-        }
+                // Access the controller and set the data
+                FrappeController frappeController = loader.getController();
+                frappeController.setFrappeItemData(frappeItemData);
 
-        if (clickedButton == getMenu1) {
-            // ... (rest of the code remains the same)
-        }
+                if (column == 1) {
+                    column = 0;
+                    ++row;
+                }
 
-        // Update the last clicked button
-        lastClickedButton = clickedButton;
-        if (clickedButton == getMenu1) {
-            setButtonColor(getMenu1, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
+                menuGrid.add(pane, column++, row);
+                GridPane.setMargin(pane, new Insets(20));
 
-        } else if (clickedButton == getMenu2) {
-            setButtonColor(getMenu2, true);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu3) {
-            setButtonColor(getMenu3, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu4) {
-            setButtonColor(getMenu4, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu5) {
-            setButtonColor(getMenu5, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu6) {
-            setButtonColor(getMenu6, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu1, false);
-            setButtonColor(getMenu7, false);
-
-        } else if (clickedButton == getMenu7) {
-            setButtonColor(getMenu7, true);
-            setButtonColor(getMenu2, false);
-            setButtonColor(getMenu3, false);
-            setButtonColor(getMenu4, false);
-            setButtonColor(getMenu5, false);
-            setButtonColor(getMenu6, false);
-            setButtonColor(getMenu1, false);
-
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
-    private void setButtonColor(Button button, boolean isSelected) {
-        if (isSelected) {
-            button.getStyleClass().add("selected-button");
-        } else {
-            button.getStyleClass().remove("selected-button");
-        }
-    } */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -702,11 +697,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         columnItemQuantity.setSortable(true);
 
         try {
-            // Update the customerLabel with the highest customer ID across databases
             updateCustomerID();
-
-            // Other initialization code...
-            /* setupMenusAndRefreshMenuGrid(); */
             DateLabel();
             Timenow();
             setupTableView();

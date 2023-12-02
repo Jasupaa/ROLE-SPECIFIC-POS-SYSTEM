@@ -1,142 +1,88 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package MainAppFrame;
 
 import Login.ControllerInterface;
 import Login.LoginTest;
+import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import java.sql.SQLException;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Label;
-import javafx.stage.StageStyle;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import java.util.Set;
-import java.util.HashSet;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.Node;
-import java.io.IOException;
-import javafx.scene.control.TableView;
 
-import ClassFiles.EmployeeData;
-/**
- * FXML Controller class
- *
- * @author Jasper
- */
-public class AdminFXMLController implements Initializable, ControllerInterface  {
-    
+public class AdminFXMLController implements Initializable, ControllerInterface {
+
     double xOffset, yOffset;
-    
-    
-      @FXML
+
+    @FXML
     private AnchorPane AdminPane;
 
     @FXML
-    private Button SalesReport;
-
-    @FXML
-    private Button InventoryManagement;
-
-    @FXML
-    private Button EmployeeDetails;
-
-    @FXML
-    private Button DiscountCoupon;
+    private ImageView CloseButton;
 
     @FXML
     private Label dateLbl;
 
     @FXML
+    private AnchorPane home;
+
+    @FXML
+    private Button homeBTN;
+
+    @FXML
+    private AnchorPane disCoup;
+
+    @FXML
+    private Button disCoupBTN;
+
+    @FXML
+    private AnchorPane empDetails;
+
+    @FXML
+    private Button empDetailsBTN;
+
+    @FXML
+    private AnchorPane invManage;
+
+    @FXML
+    private Button invManageBTN;
+
+    @FXML
+    private AnchorPane salesRep;
+
+    @FXML
+    private Button salesRepBTN;
+
+    @FXML
     private Label timeLbl;
 
     @FXML
-    private Button sales;
-
-
-    @FXML
-    private Label timeLbl1;
-
-    @FXML
-    private ImageView CloseButton;
-     
     private Stage stage;
-     
-    private Stage salesReportStage;
-    @FXML
-    private Label timeLbl2;
-    @FXML
-    private AnchorPane AdminPane1;
-    @FXML
-    private Button SalesReport1;
-    @FXML
-    private Button InventoryManagement1;
-    @FXML
-    private Button EmployeeDetails1;
-    @FXML
-    private Button DiscountCoupon1;
-    @FXML
-    private ImageView CloseButton1;
-    @FXML
-    private Label dateLbl1;
-    @FXML
-    private Button sales1;
-    @FXML
-    private TableView<?> employeeTable;
- 
-    @FXML
-    void SalesreportButton(ActionEvent event) {
-      try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("SalesReport.fxml"));
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
 
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
     @FXML
-    void EmployeeDetailsButton(ActionEvent event) {
-      try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("EmployeeData.fxml"));
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
+    private Button milkteaIMGVW;
 
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-    }
-    
-    
+    @FXML
+    private Button milkteaBTN;
+
     @FXML
     private void handleMousePressed(MouseEvent event) {
         xOffset = event.getSceneX();
@@ -151,13 +97,45 @@ public class AdminFXMLController implements Initializable, ControllerInterface  
     }
 
     public void setStage(Stage stage) {
-    this.stage = stage;    
-}
-  
+        this.stage = stage;
+    }
+
+    private volatile boolean stop = false;
+
+    private void DateLabel() {
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter DateFormat = DateTimeFormatter.ofPattern("E dd MMM yyyy", Locale.ENGLISH);
+        String formattedDate = currentDate.format(DateFormat);
+        dateLbl.setText(formattedDate);
+    }
+
+    private void Timenow() {
+        Thread thread = new Thread(() -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+            while (!stop) {
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                final String timenow = sdf.format(new Date());
+                Platform.runLater(() -> {
+                    timeLbl.setText(timenow); // This is the label
+                });
+            }
+        });
+
+        thread.start();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-            CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+        milkteaBTN.setStyle("-fx-background-color: #111315; -fx-background-radius: 20px");
+        DateLabel();
+        Timenow();
+
+        CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
@@ -173,7 +151,192 @@ public class AdminFXMLController implements Initializable, ControllerInterface  
                 }
             }
         });
+    }
 
-    }    
+    /* @RODEL ito yung action event para sa mga buttons na pa-square */
+    @FXML
+    private void handleMilkteaButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/MilkteaCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
     
+    @FXML
+    private void handleFruitDrinkButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/FruitDrinkCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+    
+    
+    @FXML
+    private void handleCoffeeButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/CoffeeCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+    
+    
+    @FXML
+    private void handleRiceMealsButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/RiceMealsCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+    
+    @FXML
+    private void handleSnacksButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/SnacksCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+    
+    @FXML
+    private void handleExtrasButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/ExtrasCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+    
+
+    @FXML
+    private void handleFrappeButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/FrappeCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+
+    private Button lastClickedButton = null;
+
+    @FXML
+    public void SwitchForm(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+
+        if (clickedButton == lastClickedButton) {
+            // Ignore the click if the same button was clicked twice in a row
+            return;
+        }
+
+        if (clickedButton == homeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == salesRepBTN) {
+            home.setVisible(false);
+            salesRep.setVisible(true);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == salesRepBTN) {
+            home.setVisible(false);
+            salesRep.setVisible(true);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == invManageBTN) {
+            home.setVisible(false);
+            salesRep.setVisible(false);
+            invManage.setVisible(true);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == empDetailsBTN) {
+            home.setVisible(false);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(true);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == disCoupBTN) {
+            home.setVisible(false);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(true);
+
+        }
+
+    }
 }

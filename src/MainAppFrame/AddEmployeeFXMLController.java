@@ -40,7 +40,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import other.ControllerManager;
+import ClassFiles.ControllerManager;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 

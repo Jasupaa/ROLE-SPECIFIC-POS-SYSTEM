@@ -24,8 +24,6 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import ClassFiles.ControllerManager;
-import ClassFiles.menu2;
-import ClassFiles.menu3;
 
 /**
  *
@@ -58,7 +56,6 @@ public class FruitDrinkController {
     private Label foodLabel;
 
     @FXML
-    private menu2 menuData;
 
     private boolean askmeRadioSelected = false;
 
@@ -95,12 +92,7 @@ public class FruitDrinkController {
         this.existingCashierController = cashierController;
     }
 
-    public void setData(menu2 menu) {
-        menuData = menu;
-        Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
-        foodImg.setImage(image);
-        foodLabel.setText(menu.getName());
-    }
+
 
     private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedfruit, String selectedsinker, boolean askmeRadioSelected) {
         try (Connection conn = database.getConnection()) {
@@ -196,9 +188,9 @@ public void confirmButton1(ActionEvent event) {
             existingCashierController = cashierController;
         }
 
-        if (menuData != null) {
+        
 
-            String menuName = menuData.getName();
+
             String selectedfruit = fruitfComboBox.getValue();
             String selectedSize = sizeComboBox.getValue();
             String selectedsinker = sinkersComboBox.getValue();
@@ -216,6 +208,7 @@ public void confirmButton1(ActionEvent event) {
                 } else {
                     System.out.println("Cashier controller not available.");
                 }
+                String menuName = null;
                 insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedfruit, selectedsinker, askmeRadioSelected);
                 System.out.println("Data inserted into the database.");
             }
@@ -239,7 +232,7 @@ public void confirmButton1(ActionEvent event) {
                 System.out.println("Cashier controller not available.");
             }
         }
-    }
+    
 
     private void initializeSizeComboBox() {
         // Populate the sizeComboBox with items
