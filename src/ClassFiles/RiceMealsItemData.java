@@ -4,7 +4,9 @@
  */
 package ClassFiles;
 
-import com.mysql.cj.jdbc.Blob;
+import java.sql.Blob;
+
+import java.io.InputStream;
 
 
 public class RiceMealsItemData {
@@ -13,7 +15,7 @@ public class RiceMealsItemData {
     private Integer price;
     private Blob image;
     private Integer itemID;
-    
+    private InputStream imageInputStream;
     
      public RiceMealsItemData(String itemName, Integer price, Blob image, Integer itemID) {
         this.itemName = itemName;
@@ -61,6 +63,13 @@ public class RiceMealsItemData {
     public void setItemID(Integer itemID) {
         this.itemID = itemID;
     }
-
+    
+    public InputStream getImageInputStream() {
+        return imageInputStream;
+    }
+     public void setImageInputStream(InputStream imageInputStream) {
+        this.imageInputStream = imageInputStream;
+    }
+  
     
 }
