@@ -28,7 +28,8 @@ import javafx.event.ActionEvent;
 import java.sql.*;
 import java.util.Random;
 import javafx.scene.control.TableView;
-
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  * FXML Controller class
@@ -117,13 +118,39 @@ public class DiscountCRUDController implements Initializable {
         String descCoup = disCript.getText();
         LocalDate dateCreated = LocalDate.now();
         LocalDate dateValid = DatePicker.getValue();
+        
+        if (isDiscountCodeExists(discCode, id)) {
+        showAlert("Discount Code Exists", "The discount code already exists. Please use a different code.");
+        return; // Exit the method if the code already exists
+    }
 
         // Call a method to insert data into the database
         insertDiscountIntoDatabase(discCode, discValue, descCoup, dateCreated, dateValid);
         
           adminController.refreshTableView();
+          
+          
     }
-
+  @FXML
+    private void updateCreateButtonAction(ActionEvent event) {
+        // Get data from the UI controls
+        String discCode = DisCode.getText();
+        double discValue = Double.parseDouble(DisCount.getText());
+        String descCoup = disCript.getText();
+        LocalDate dateCreated = LocalDate.now();
+        LocalDate dateValid = DatePicker.getValue();
+        
+         if (isDiscountCodeExists(discCode, id)) {
+        showAlert("Discount Code Exists", "The discount code already exists. Please use a different code.");
+        return;
+         }
+        
+        // Call a method to insert data into the database
+        updateDiscountIntoDatabase(discCode, discValue, descCoup, dateCreated, dateValid);
+        
+          adminController.refreshTableView();
+    }
+    
     private void insertDiscountIntoDatabase(String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid) {
         try (Connection connection = database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -147,20 +174,7 @@ public class DiscountCRUDController implements Initializable {
             e.printStackTrace();
         }
     }
-      @FXML
-    private void updateCreateButtonAction(ActionEvent event) {
-        // Get data from the UI controls
-        String discCode = DisCode.getText();
-        double discValue = Double.parseDouble(DisCount.getText());
-        String descCoup = disCript.getText();
-        LocalDate dateCreated = LocalDate.now();
-        LocalDate dateValid = DatePicker.getValue();
-        
-        // Call a method to insert data into the database
-        updateDiscountIntoDatabase(discCode, discValue, descCoup, dateCreated, dateValid);
-        
-        adminController.refreshTableView();
-    }
+    
     
         private void updateDiscountIntoDatabase(String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid) {
        
@@ -228,5 +242,55 @@ public class DiscountCRUDController implements Initializable {
         }
         // Set other fields as needed...
     }
+    
+private boolean isDiscountCodeExists(String discCode) {
+    try (Connection connection = database.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(
+                 "SELECT COUNT(*) FROM discount WHERE disc_code = ?")) {
 
+        preparedStatement.setString(1, discCode);
+
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return false; // Default to false in case of an exception
+}
+
+// Helper method to check if a discount code already exists in the database (excluding the current discount being edited)
+private boolean isDiscountCodeExists(String discCode, int currentDiscountId) {
+    try (Connection connection = database.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(
+                 "SELECT COUNT(*) FROM discount WHERE disc_code = ? AND id <> ?")) {
+
+        preparedStatement.setString(1, discCode);
+        preparedStatement.setInt(2, currentDiscountId);
+
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return false; // Default to false in case of an exception
+}
+
+// Helper method to show an alert
+private void showAlert(String title, String content) {
+    Alert alert = new Alert(AlertType.ERROR);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(content);
+    alert.showAndWait();
+}
 }
