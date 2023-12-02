@@ -4,6 +4,7 @@ import MainAppFrame.CashierFXMLController;
 import MainAppFrame.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +24,7 @@ import javafx.util.converter.IntegerStringConverter;
 import ClassFiles.ControllerManager;
 import ClassFiles.ItemData;
 import ClassFiles.MilkteaItemData;
+import Databases.CRUDDatabase;
 import java.sql.Blob;
 import java.io.ByteArrayInputStream;
 import javafx.scene.image.Image;
@@ -93,7 +95,6 @@ public class MenuController {
 
     /* ito connected siya sa MilkteaItemData java class file natin sa "ClassFiles", taga-get ng mga items na
     nadadagdag sa CRUD para makapaggenerate ng FXML every time na may pumapasok na new item */
-    
     public void setMilkteaItemData(MilkteaItemData milkteaItemData) throws SQLException {
         // Set data to components
         this.milkteaItemData = milkteaItemData;
@@ -118,13 +119,10 @@ public class MenuController {
 
     }
 
-    /*
-
     private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity, String selectedSize, String selectedAddon, String selectedSugarLevel, boolean askmeRadioSelected) {
-
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO milk_tea (customer_id, date_time, item_name, quantity, size, add_ons, sugar_level, ask_me, size_price, addons_price, final_price) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO milk_tea (customer_id, date_time, item_name, quantity, size, add_ons, sugar_level, ask_me, size_price, final_price) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
@@ -136,14 +134,12 @@ public class MenuController {
 
                     // Check if size and add-ons are selected and set the corresponding prices
                     int sizePrice = calculateSizePrice(selectedSize);
-                    int addonsPrice = calculateAddonsPrice(selectedAddon);
 
                     stmt.setInt(8, sizePrice);
-                    stmt.setInt(9, addonsPrice);
 
                     // Calculate the final price based on selected size and add-ons
-                    int finalPrice = (sizePrice + addonsPrice) * selectedQuantity;
-                    stmt.setInt(10, finalPrice);
+                    int finalPrice = sizePrice * selectedQuantity;
+                    stmt.setInt(9, finalPrice);
 
                     stmt.executeUpdate();
                 }
@@ -155,7 +151,6 @@ public class MenuController {
         }
     }
 
-    
     @FXML
     public void confirmButton1(ActionEvent event) {
 
@@ -165,8 +160,8 @@ public class MenuController {
             existingCashierController = cashierController;
         }
 
-        if (menuData != null) {
-            String menuName = menuData.getName();
+        if (milkteaItemData != null) {
+            String menuName = milkteaItemData.getItemName();
             String selectedAddon = addonsComboBox.getValue();
             String selectedSize = sizeComboBox.getValue();
             String selectedSugarLevel = sugarlevelComboBox.getValue();
@@ -209,8 +204,8 @@ public class MenuController {
             }
         }
 
-    } */
-    
+    }
+
     /* mga hindi na kailangan ng CRUD, hard-coded customazations */
     private void initializeSizeComboBox() {
         // Populate the sizeComboBox with items
@@ -234,18 +229,24 @@ public class MenuController {
         sugarlevelComboBox.setItems(sugarLevels);
     }
 
-    /*
     private int calculateSizePrice(String selectedSize) {
-        switch (selectedSize) {
-            case "Small":
-                return 39;
-            case "Medium":
-                return 69;
-            case "Large":
-                return 79; // Return 0 if "None" is selected
+        try (Connection conn = CRUDDatabase.getConnection()) {
+            if (conn != null) {
+                String sql = "SELECT " + selectedSize.toLowerCase() + "_price FROM milktea_items WHERE item_name = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setString(1, foodLabel.getText());  // Assuming foodLabel is the label displaying the food name
+                    ResultSet resultSet = stmt.executeQuery();
+                    if (resultSet.next()) {
+                        return resultSet.getInt(selectedSize.toLowerCase() + "_price");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return 0; // Return 0 if an unknown size is selected
+
+        // Return 0 if an unknown size is selected, the item_name is not found, or if an error occurred
+        return 0;
     }
-    
-     */
+
 }

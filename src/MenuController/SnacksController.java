@@ -21,7 +21,6 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import ClassFiles.ControllerManager;
-import ClassFiles.menu6;
 
 /**
  *
@@ -46,15 +45,6 @@ public class SnacksController {
     private CashierFXMLController existingCashierController;
 
     private boolean askmeRadioSelected = false;
-
-    private menu6 menuData;
-
-    public void setData(menu6 menu) {
-        menuData = menu;
-        Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
-        foodImg.setImage(image);
-        foodLabel.setText(menu.getName());
-    }
 
     @FXML
     public void askmeRadioHeadSelected(ActionEvent event) {
@@ -118,53 +108,6 @@ public class SnacksController {
             // Add more cases as needed
             default:
                 return 0;
-        }
-    }
-
-    @FXML
-    public void confirmButton1(ActionEvent event) {
-
-        CashierFXMLController cashierController = ControllerManager.getCashierController();
-
-        if (existingCashierController == null && cashierController != null) {
-            existingCashierController = cashierController;
-        }
-
-        if (menuData != null) {
-            String menuName = menuData.getName();
-            Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
-
-            // Check if the quantity is greater than 0
-            if (selectedQuantity == 0) {
-                System.out.println("Please ensure the quantity is greater than 0.");
-            } else {
-                int customer_id = 0; // Initialize customer_id
-
-                if (existingCashierController != null) {
-                    // Now, you can use the existing instance of CashierFXMLController
-                    customer_id = existingCashierController.getCurrentCustomerID();
-                } else {
-                    System.out.println("Cashier controller not available.");
-                }
-
-                // Call the insertOrderToDatabase method
-                insertOrderToDatabase(customer_id, menuName, selectedQuantity, askmeRadioSelected);
-                System.out.println("Data inserted into the database.");
-            }
-
-            // Reset the Spinner to the default value (e.g., 0)
-            spinnerQuantity.getValueFactory().setValue(0);
-
-            // Reset the radio button
-            askmeRadioHead.setSelected(false);
-            askmeRadioSelected = false;
-
-            if (cashierController != null) {
-                // Call the setupTableView method from CashierFXMLController
-                cashierController.setupTableView();
-            } else {
-                System.out.println("Cashier controller not available.");
-            }
         }
     }
 }

@@ -11,6 +11,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-background-radius: 5px;
 }
 
+.CRUDPaneBG {
+    -fx-background-color:  gray;
+}
+
 .buttonNavigation {
     -fx-background-color: transparent;
     -fx-background-radius: 10px; /* Set the background radius */

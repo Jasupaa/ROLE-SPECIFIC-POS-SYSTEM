@@ -19,20 +19,14 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
-import ClassFiles.menu4;
-
 /**
  *
  * @author John Paul Uy
  */
-
 public class CoffeeController {
-    
 
     @FXML
     private Spinner spinnerQuantity;
-
-
 
     @FXML
     private ComboBox<String> sizeComboBox;
@@ -46,20 +40,17 @@ public class CoffeeController {
     @FXML
     private Button confirmButton1;
 
-
     @FXML
     private ImageView foodImg;
 
     @FXML
     private Label foodLabel;
-    private menu4 menuData;   
 
     private boolean askmeRadioSelected = false;
 
     private static int customerCounter = 0;
     private boolean orderTaken = false;
     private String selectedSugarLevel;
-   
 
     public void initialize() {
         // Initialize your combo boxes with data
@@ -68,7 +59,6 @@ public class CoffeeController {
         initializeTypeComboBox();
 
         // Set the default value to "None" for all ComboBoxes
-
         sizeComboBox.setValue("None");
         typeComboBox.setValue("None");
 
@@ -79,19 +69,12 @@ public class CoffeeController {
         // Set a StringConverter to display the Spinner values as whole numbers
         StringConverter<Integer> converter = new IntegerStringConverter();
         spinnerQuantity.getValueFactory().setConverter(converter);
-        
+
     }
 
     @FXML
     public void askmeRadioHeadSelected(ActionEvent event) {
         askmeRadioSelected = askmeRadioHead.isSelected();
-    }
-
-    public void setData(menu4 menu) {
-        menuData = menu;
-        Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
-        foodImg.setImage(image);
-        foodLabel.setText(menu.getName());
     }
 
     private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity, String selectedSize, String selectedType, boolean askmeRadioSelected) {
@@ -117,23 +100,17 @@ public class CoffeeController {
         }
     }
 
-
- 
-
-
     public void takeOrderButtonClicked(ActionEvent event) {
         orderTaken = true;
     }
 
-
-
     private void initializeSizeComboBox() {
         // Populate the sizeComboBox with items
         ObservableList<String> sizes = FXCollections.observableArrayList(
-            "None",
-            "Small",
-            "Medium",
-            "Large"
+                "None",
+                "Small",
+                "Medium",
+                "Large"
         );
         sizeComboBox.setItems(sizes);
     }
@@ -141,9 +118,9 @@ public class CoffeeController {
     private void initializeTypeComboBox() {
         // Populate the sugarlevelComboBox with items
         ObservableList<String> typeList = FXCollections.observableArrayList(
-            "None",
-            "Cold",
-            "Hot"
+                "None",
+                "Cold",
+                "Hot"
         );
         typeComboBox.setItems(typeList);
     }
@@ -175,6 +152,6 @@ public class CoffeeController {
                 return 20;
         }
         return 0; // Return 0 if an unknown addon is selected
-    }   
-    
+    }
+
 }

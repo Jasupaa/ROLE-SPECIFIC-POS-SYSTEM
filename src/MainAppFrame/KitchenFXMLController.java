@@ -53,7 +53,7 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     private AnchorPane KitchenPane;
 
     @FXML
-    private Pane archive;
+    private AnchorPane archive;
 
     @FXML
     private Button archiveBTN;
@@ -62,7 +62,7 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     private Label dateLbl;
 
     @FXML
-    private Pane orderTab;
+    private AnchorPane orderTab;
 
     @FXML
     private Button orderTabBTN;
@@ -74,6 +74,8 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     private GridPane ordersTabGP;
 
     private Stage stage;
+
+    ObservableList<KitchenCardData> kitchenCardDataList = kitchenGetData();
 
     private ObservableList<KitchenCardData> kitchenCardData = FXCollections.observableArrayList();
 
@@ -176,8 +178,6 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
         int column = 0;
         int row = 1;
 
-        ObservableList<KitchenCardData> kitchenCardDataList = kitchenGetData();
-
         for (KitchenCardData kitchenCardData : kitchenCardDataList) {
             try {
                 FXMLLoader loader = new FXMLLoader();
@@ -187,7 +187,6 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
                 // Access the controller and set the data
                 KitchenCardFXMLController kitchenCardFXMLController = loader.getController();
                 kitchenCardFXMLController.setKitchenCardData(kitchenCardData);
-               
 
                 if (column == 1) {
                     column = 0;
@@ -237,25 +236,19 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     @FXML
     public void SwitchForm(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
-
+        
+        lastClickedButton = clickedButton;
+        
         if (clickedButton == lastClickedButton) {
             // Ignore the click if the same button was clicked twice in a row
             return;
         }
 
         if (clickedButton == orderTabBTN) {
-            // ... (rest of the code remains the same)
-        }
-
-        // Update the last clicked button
-        lastClickedButton = clickedButton;
-        if (clickedButton == orderTabBTN) {
-
             orderTab.setVisible(true);
             archive.setVisible(false);
 
         } else if (clickedButton == archiveBTN) {
-
             orderTab.setVisible(false);
             archive.setVisible(true);
         }

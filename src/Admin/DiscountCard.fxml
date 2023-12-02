@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="77.0" prefWidth="731.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="Admin.DiscountCardController">
+   <children>
+      <Label layoutX="48.0" layoutY="29.0" text="FNAKDJ10">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="171.0" layoutY="29.0" text="10% Off">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="284.0" layoutY="29.0" text="Nyoging Day">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="416.0" layoutY="30.0" text="00-00-00">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="531.0" layoutY="30.0" text="00-00-00">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

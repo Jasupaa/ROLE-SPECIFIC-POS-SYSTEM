@@ -20,8 +20,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import ClassFiles.menu4;
-import ClassFiles.menu5;
 
 /**
  *
@@ -45,15 +43,6 @@ public class RiceMealController {
     private Spinner spinnerQuantity;
 
     private boolean askmeRadioSelected = false;
-
-    private menu5 menuData;
-
-    public void setData(menu5 menu) {
-        menuData = menu;
-        Image image = new Image(getClass().getResourceAsStream(menu.getImgSrc()));
-        foodImg.setImage(image);
-        foodLabel.setText(menu.getName());
-    }
 
     @FXML
     public void askmeRadioHeadSelected(ActionEvent event) {

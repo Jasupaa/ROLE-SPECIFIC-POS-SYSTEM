@@ -326,14 +326,16 @@ public class MilkteaCRUDController implements Initializable {
 
     /* ito pangdisplay din */
     private void displayMilktea() {
-
+        // Set up the PropertyValueFactory for each column
         itemMT.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         addonsMT.setCellValueFactory(new PropertyValueFactory<>("addons"));
         smallMT.setCellValueFactory(new PropertyValueFactory<>("smallPrice"));
         medMT.setCellValueFactory(new PropertyValueFactory<>("mediumPrice"));
         largeMT.setCellValueFactory(new PropertyValueFactory<>("largePrice"));
 
+        // Fetch data from the database and set it in the TableView
         milkteaTV.setItems(fetchDataFromDatabase());
+
     }
 
     /* clear button */
