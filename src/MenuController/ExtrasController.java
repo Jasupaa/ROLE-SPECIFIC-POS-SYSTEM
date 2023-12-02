@@ -4,8 +4,13 @@
  */
 package MenuController;
 
-
+import ClassFiles.ControllerManager;
+import ClassFiles.ExtrasItemData;
+import ClassFiles.RiceMealsItemData;
+import MainAppFrame.CashierFXMLController;
 import MainAppFrame.database;
+import java.io.ByteArrayInputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -41,7 +46,8 @@ public class ExtrasController {
 
     @FXML
     private Spinner spinnerQuantity;
-
+    private ExtrasItemData extrasItemData;
+    private CashierFXMLController existingCashierController;
     private boolean askmeRadioSelected = false;
 
     @FXML
@@ -62,16 +68,44 @@ public class ExtrasController {
 
     }
     
-    private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity) {
+    
+    public void setExtrasItemData(ExtrasItemData extrasItemData) throws SQLException {
+        // Set data to components
+        this.extrasItemData = extrasItemData;
+
+        // Assuming you have a method in MilkteaItemData to get the image name or title
+        String itemName = extrasItemData.getItemName();
+        Integer price = extrasItemData.getPrice();
+
+        // Set data to corresponding components
+        foodLabel.setText(itemName);
+
+
+        /* para doon sa image */
+        Blob imageBlob = extrasItemData.getImage();
+        byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+        Image image = new Image(bis, 129, 173, false, true);
+        foodImg.setImage(image);
+
+    }
+
+    private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, boolean askmeRadioSelected) {
 
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO extras (customer_id, date_time, item_name, quantity) VALUES (?, NOW(), ?, ?)";
+                String sql = "INSERT INTO extras (customer_id, date_time, item_name, quantity,ask_me,price,final_price) VALUES (?, NOW(), ?, ?, ?, ?,?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
                     stmt.setInt(3, selectedQuantity);
+                    stmt.setBoolean(4, askmeRadioSelected);
+                    int price = calculatePrice();
+                    stmt.setInt(5, price);
 
+                    // Calculate the final price based on selected size and add-ons
+                    int final_price = calculatePrice();
+                    stmt.setInt(6, final_price);
 
                     stmt.executeUpdate();
                 }
@@ -83,15 +117,72 @@ public class ExtrasController {
         }
     }
 
+    @FXML
+    public void confirmButton1(ActionEvent event) {
+
+        CashierFXMLController cashierController = ControllerManager.getCashierController();
+
+        if (existingCashierController == null && cashierController != null) {
+            existingCashierController = cashierController;
+        }
+
+        if (extrasItemData != null) {
+            String menuName = extrasItemData.getItemName();
+
+            Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
+
+            if (selectedQuantity == 0) {
+                System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
+            } else {
+                int customer_id = 0; // Initialize customer_id
+
+                if (existingCashierController != null) {
+                    // Now, you can use the existing instance of CashierFXMLController
+                    customer_id = existingCashierController.getCurrentCustomerID();
+                } else {
+                    System.out.println("Cashier controller not available.");
+                }
+
+                // Move insertOrderToDatabase inside the else block to ensure customer_id is properly assigned
+                insertOrderToDatabase(customer_id, menuName, selectedQuantity, askmeRadioSelected);
+                System.out.println("Data inserted into the database.");
+            }
+
+            // Reset the ComboBoxes to "None"
+            // Reset the Spinner to the default value (e.g., 0)
+            spinnerQuantity.getValueFactory().setValue(0);
+
+            // Reset the radio button
+            askmeRadioHead.setSelected(false);
+            askmeRadioSelected = false;
+
+            if (cashierController != null) {
+                // Call the setupTableView method from CashierFXMLController
+                cashierController.setupTableView();
+            } else {
+                System.out.println("Cashier controller not available.");
+            }
+        }
+
+    }
+
+    private int calculatePrice() {
+        if (extrasItemData != null) {
+            Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
+
+            if (selectedQuantity == 0) {
+                System.out.println("Please select a valid quantity.");
+                return 0; // or handle the error as needed
+            }
+
+            int price = extrasItemData.getPrice();
+
+            // Calculate the final price based on the selected quantity
+            int finalPrice = price * selectedQuantity;
+
+            return finalPrice;
+        }
+        return 0; // or handle the error as needed
+    }
+
 }
-
-
-
-  
-
-    
-  
-
-   
-    
-
