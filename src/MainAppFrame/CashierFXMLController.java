@@ -1,6 +1,7 @@
 package MainAppFrame;
 
 import ClassFiles.FrappeItemData;
+import ClassFiles.FruitDrinkItemData;
 import Login.ControllerInterface;
 import Login.LoginTest;
 import java.io.IOException;
@@ -56,6 +57,7 @@ import ClassFiles.ItemData;
 import ClassFiles.MilkteaItemData;
 import Databases.CRUDDatabase;
 import MenuController.FrappeController;
+import MenuController.FruitDrinkController;
 import MenuController.MenuController;
 import com.mysql.cj.jdbc.Blob;
 
@@ -139,17 +141,15 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private volatile boolean stop = false;
     private LocalDate currentDate = LocalDate.now();
-    
-   
-    
+
     public void setEmployeeName(String employeeName) {
         this.employeeName = employeeName;
-        
+
         empName.setText(employeeName);
     }
 
     private ObservableList<MilkteaItemData> milkteaListData = FXCollections.observableArrayList();
-
+    private ObservableList<FruitDrinkItemData> fruitdrinkListData = FXCollections.observableArrayList();
     private ObservableList<FrappeItemData> frappeListData = FXCollections.observableArrayList();
 
     public void setTableViewAndList(TableView<ItemData> tableView, ObservableList<ItemData> dataList) {
@@ -320,6 +320,14 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     }
 
     @FXML
+    private void getMenu2(ActionEvent event) throws SQLException {
+        fruitdrinkListData.clear();
+        fruitdrinkListData.addAll(menuGetDataForFruitDrink());
+
+        refreshFruitDrinkGrid();
+    }
+
+    @FXML
     private void getMenu3(ActionEvent event) throws SQLException {
         frappeListData.clear();
         frappeListData.addAll(menuGetDataForFrappe());
@@ -370,6 +378,58 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 // Create a MilkteaItemData object and add it to the list
                 MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice, image, itemID);
                 listData.add(milkteaItemData);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (result, prepare, connect) if needed
+            try {
+                if (result != null) {
+                    result.close();
+                }
+                if (prepare != null) {
+                    prepare.close();
+                }
+                if (connect != null) {
+                    connect.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return listData;
+    }
+    
+    public ObservableList<FruitDrinkItemData> menuGetDataForFruitDrink() {
+
+        String sql = "SELECT * FROM fruitdrink_items";
+
+        ObservableList<FruitDrinkItemData> listData = FXCollections.observableArrayList();
+        Connection connect = null;
+        PreparedStatement prepare = null;
+        ResultSet result = null;
+
+        try {
+            connect = CRUDDatabase.getConnection();
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                // Replace these column names with your actual column names from the "milktea_items" table
+                String itemName = result.getString("item_name");
+                Integer smallPrice = result.getInt("small_price");
+                Integer mediumPrice = result.getInt("medium_price");
+                Integer largePrice = result.getInt("large_price");
+                String fruitFlavor = result.getString("fruit_flavor");
+                String sinkers = result.getString("sinkers");
+                Blob image = (Blob) result.getBlob("image");
+                Integer itemID = result.getInt("item_ID");
+
+                // Create a MilkteaItemData object and add it to the list
+                FruitDrinkItemData fruitDrinkItemData = new FruitDrinkItemData(itemName, smallPrice, mediumPrice, largePrice, fruitFlavor, sinkers, image, itemID);
+                listData.add(fruitDrinkItemData);
 
             }
         } catch (SQLException e) {
@@ -462,7 +522,8 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? "
                 + "UNION "
                 + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM frappe WHERE customer_id = ? "
-                + "ORDER BY date_time Asc";
+                + "ORDER BY date_time"
+                + " Asc";
 
         try (Connection connect = database.getConnection(); PreparedStatement combinedPrepare = connect.prepareStatement(combinedSql)) {
 
@@ -604,7 +665,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     }
 
     private void refreshMenuGrid() throws SQLException {
-        
+
         menuGrid.getChildren().clear();
         int column = 0;
         int row = 1;
@@ -618,6 +679,36 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 // Access the controller and set the data
                 MenuController menuController = loader.getController();
                 menuController.setMilkteaItemData(milkteaItemData);
+
+                if (column == 1) {
+                    column = 0;
+                    ++row;
+                }
+
+                menuGrid.add(pane, column++, row);
+                GridPane.setMargin(pane, new Insets(20));
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void refreshFruitDrinkGrid() throws SQLException {
+
+        menuGrid.getChildren().clear();
+        int column = 0;
+        int row = 1;
+
+        for (FruitDrinkItemData fruitDrinkItemData : fruitdrinkListData) {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/MenuFXML/FruitDrink.fxml"));
+                AnchorPane pane = loader.load();
+
+                // Access the controller and set the data
+                FruitDrinkController fruitDrinkController = loader.getController();
+                fruitDrinkController.setFruitDrinkItemData(fruitDrinkItemData);
 
                 if (column == 1) {
                     column = 0;
