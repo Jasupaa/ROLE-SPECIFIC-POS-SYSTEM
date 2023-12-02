@@ -280,6 +280,43 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             // Handle exceptions accordingly
         }
     }
+    
+    @FXML
+    void takeOrder(ActionEvent event) {
+        try {
+            // Load the SettlePaymentFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SettlePaymentFXML.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the SettlePaymentFXML
+            settlePaymentStage = new Stage();
+
+            // Set stage properties to make it transparent and non-resizable
+            settlePaymentStage.initStyle(StageStyle.TRANSPARENT);
+            settlePaymentStage.initStyle(StageStyle.UNDECORATED); // Removes the title bar
+            settlePaymentStage.setResizable(false);
+
+            // Set the scene fill to transparent
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+
+            // Set the scene to the stage
+            settlePaymentStage.setScene(scene);
+
+            // Get the controller for SettlePaymentFXML
+            SettlePaymentFXMLController settlePaymentController = loader.getController();
+            settlePaymentController.setExistingCashierController(this, employeeName, employeeId);
+
+            // Set the order type
+            settlePaymentController.setOrderType("Take Out");
+
+            settlePaymentStage.show();
+            blurPane.setVisible(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exceptions accordingly
+        }
+    }
 
     public Stage getSettlePaymentStage() {
         return settlePaymentStage;

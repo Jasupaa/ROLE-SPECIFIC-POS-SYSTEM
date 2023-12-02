@@ -43,19 +43,19 @@
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="discount" layoutX="264.0" layoutY="328.0" text="Discount">
+                              <Label fx:id="appldDscLbl" layoutX="264.0" layoutY="328.0" text="Discount">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="itmTotalTxtLbl" layoutX="264.0" layoutY="348.0" text="Total">
+                              <Label fx:id="customTotalLabel" layoutX="264.0" layoutY="348.0" text="Total">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
                               <Label layoutX="17.0" layoutY="373.0" text="CASH:" />
                               <Label layoutX="16.0" layoutY="392.0" text="CHANGE DUE:" />
-                              <Label fx:id="cash" layoutX="264.0" layoutY="372.0" text="Cash">
+                              <Label fx:id="cashInput" layoutX="264.0" layoutY="372.0" text="Cash">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
