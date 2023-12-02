@@ -1,5 +1,6 @@
 package MainAppFrame;
 
+import ClassFiles.ArchiveCardData;
 import ClassFiles.KitchenCardData;
 import ClassFiles.MilkteaItemData;
 import Databases.CRUDDatabase;
@@ -36,6 +37,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import ClassFiles.KitchenCardData;
+import Kitchen.ArchiveCardFXMLController;
 import Kitchen.KitchenCardFXMLController;
 import MenuController.MenuController;
 import java.io.IOException;
@@ -73,11 +75,18 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     @FXML
     private GridPane ordersTabGP;
 
+    @FXML
+    private GridPane archiveGP;
+
     private Stage stage;
 
     ObservableList<KitchenCardData> kitchenCardDataList = kitchenGetData();
 
     private ObservableList<KitchenCardData> kitchenCardData = FXCollections.observableArrayList();
+
+    ObservableList<ArchiveCardData> archiveCardDataList = kitchenGetArchive();
+
+    private ObservableList<ArchiveCardData> archiveCardData = FXCollections.observableArrayList();
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -125,10 +134,15 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     }
 
     @FXML
-    private void getOrders(ActionEvent event) throws SQLException {
+    public void getOrders() throws SQLException {
+        kitchenCardData.clear();
         kitchenCardData.addAll(kitchenGetData());
-
         orderTabsGrid();
+    }
+
+    @FXML
+    public void refresh() throws SQLException {
+        kitchenCardData.clear();
     }
 
     public ObservableList<KitchenCardData> kitchenGetData() {
@@ -173,29 +187,68 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
         return listData;
     }
 
-    private void orderTabsGrid() throws SQLException {
+    private boolean isCustomerDataPresent(String customerID) {
+        String sql = "SELECT customer_id FROM invoice WHERE customer_id = ?";
+        Connection connect = null;
+        PreparedStatement prepare = null;
+        ResultSet result = null;
+
+        try {
+            connect = database.getConnection();
+            prepare = connect.prepareStatement(sql);
+            prepare.setString(1, customerID);
+            result = prepare.executeQuery();
+
+            return result.next(); // If result.next() is true, data is present; otherwise, it's not present
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false in case of an exception or other error
+        } finally {
+            // Close resources (result, prepare, connect) if needed
+            try {
+                if (result != null) {
+                    result.close();
+                }
+                if (prepare != null) {
+                    prepare.close();
+                }
+                if (connect != null) {
+                    connect.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public void orderTabsGrid() throws SQLException {
         ordersTabGP.getChildren().clear();
         int column = 0;
         int row = 1;
 
         for (KitchenCardData kitchenCardData : kitchenCardDataList) {
             try {
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/Kitchen/KitchenCardFXML.fxml"));
-                AnchorPane pane = loader.load();
+                // Check if the data for the customer is present
+                if (isCustomerDataPresent(kitchenCardData.getCustomerID())) {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("/Kitchen/KitchenCardFXML.fxml"));
+                    AnchorPane pane = loader.load();
 
-                // Access the controller and set the data
-                KitchenCardFXMLController kitchenCardFXMLController = loader.getController();
-                kitchenCardFXMLController.setKitchenCardData(kitchenCardData);
+                    // Access the controller and set the data
+                    KitchenCardFXMLController kitchenCardFXMLController = loader.getController();
+                    kitchenCardFXMLController.setKitchenCardData(kitchenCardData);
 
-                if (column == 1) {
-                    column = 0;
-                    ++row;
+                    // Set the reference to KitchenFXMLController
+                    kitchenCardFXMLController.setKitchenController(this);
+
+                    if (column == 1) {
+                        column = 0;
+                        ++row;
+                    }
+
+                    ordersTabGP.add(pane, column++, row);
+                    GridPane.setMargin(pane, new Insets(10));
                 }
-
-                ordersTabGP.add(pane, column++, row);
-                GridPane.setMargin(pane, new Insets(10));
-
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -234,11 +287,9 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     private Button lastClickedButton = null;
 
     @FXML
-    public void SwitchForm(ActionEvent event) {
+    public void SwitchForm(ActionEvent event) throws SQLException {
         Button clickedButton = (Button) event.getSource();
-        
-        lastClickedButton = clickedButton;
-        
+
         if (clickedButton == lastClickedButton) {
             // Ignore the click if the same button was clicked twice in a row
             return;
@@ -251,6 +302,141 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
         } else if (clickedButton == archiveBTN) {
             orderTab.setVisible(false);
             archive.setVisible(true);
+        }
+
+    }
+
+    ///////////////////////////////////////////////////
+    public void getArchive() throws SQLException {
+        System.out.println("getArchive method called.");
+
+        // Fetch new data from the database
+        archiveCardData.clear();
+        archiveCardData.addAll(kitchenGetArchive());
+
+        // Manually trigger UI updates on the JavaFX Application Thread
+        Platform.runLater(() -> {
+            updateArchiveUI();
+        });
+
+        System.out.println("getArchive method completed.");
+    }
+
+    private void updateArchiveUI() {
+        try {
+            archiveTabsGrid();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public ObservableList<ArchiveCardData> kitchenGetArchive() {
+        String sql = "SELECT DISTINCT customer_id FROM invoice_archive";
+
+        ObservableList<ArchiveCardData> listData = FXCollections.observableArrayList();
+        Connection connect = null;
+        PreparedStatement prepare = null;
+        ResultSet result = null;
+
+        try {
+            connect = database.getConnection();
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                String customerID = result.getString("customer_id");
+
+                // Create a KitchenCardData object and add it to the list
+                ArchiveCardData archiveCardData = new ArchiveCardData(customerID);
+                listData.add(archiveCardData);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (result, prepare, connect) if needed
+            try {
+                if (result != null) {
+                    result.close();
+                }
+                if (prepare != null) {
+                    prepare.close();
+                }
+                if (connect != null) {
+                    connect.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return listData;
+    }
+
+    private boolean isCustomerDataPresentArchive(String customerID) {
+        String sql = "SELECT customer_id FROM invoice_archive WHERE customer_id = ?";
+        Connection connect = null;
+        PreparedStatement prepare = null;
+        ResultSet result = null;
+
+        try {
+            connect = database.getConnection();
+            prepare = connect.prepareStatement(sql);
+            prepare.setString(1, customerID);
+            result = prepare.executeQuery();
+
+            return result.next(); // If result.next() is true, data is present; otherwise, it's not present
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false in case of an exception or other error
+        } finally {
+            // Close resources (result, prepare, connect) if needed
+            try {
+                if (result != null) {
+                    result.close();
+                }
+                if (prepare != null) {
+                    prepare.close();
+                }
+                if (connect != null) {
+                    connect.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public void archiveTabsGrid() throws SQLException {
+        ordersTabGP.getChildren().clear();
+        int column = 0;
+        int row = 1;
+
+        for (ArchiveCardData archiveCardData : archiveCardDataList) {
+            try {
+                // Check if the data for the customer is present
+                if (isCustomerDataPresentArchive(archiveCardData.getCustomerID())) {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("/Kitchen/ArchiveCardFXML.fxml"));
+                    AnchorPane pane = loader.load();
+
+                    // Access the controller and set the data
+                    ArchiveCardFXMLController archiveCardFXMLController = loader.getController();
+                    archiveCardFXMLController.setArchiveKitchenCardData(archiveCardData);
+
+                    // Set the reference to KitchenFXMLController
+                    archiveCardFXMLController.setKitchenController1(this);
+
+                    if (column == 1) {
+                        column = 0;
+                        ++row;
+                    }
+
+                    ordersTabGP.add(pane, column++, row);
+                    GridPane.setMargin(pane, new Insets(10));
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

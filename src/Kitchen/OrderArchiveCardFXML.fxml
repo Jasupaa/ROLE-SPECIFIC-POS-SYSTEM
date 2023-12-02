@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Line?>
 
-<AnchorPane prefHeight="38.0" prefWidth="763.0" styleClass="orderCard" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Kitchen.OrderCardFXMLController">
+<AnchorPane prefHeight="38.0" prefWidth="763.0" styleClass="orderCard" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Kitchen.OrderArchiveCardFXMLController">
    <children>
       <AnchorPane id="AnchorPane" prefHeight="38.0" prefWidth="605.0" styleClass="anchorPaneBG" stylesheets="@../CSS/KitchenEmpsCSS.css">
          <children>

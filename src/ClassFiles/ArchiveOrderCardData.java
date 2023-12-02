@@ -10,7 +10,7 @@ package ClassFiles;
  *
  * @author Gwyneth Uy
  */
-public class OrderCardData {
+public class ArchiveOrderCardData {
 
     public String getItemName() {
         return itemName;
@@ -76,7 +76,7 @@ public class OrderCardData {
         this.askMe = askMe;
     }
 
-    public OrderCardData(String itemName, Integer quantity, String size, String addOns, String fruitFlavor, String sinkers, String sugarLevel, Boolean askMe) {
+    public ArchiveOrderCardData(String itemName, Integer quantity, String size, String addOns, String fruitFlavor, String sinkers, String sugarLevel, Boolean askMe) {
         this.itemName = itemName;
         this.quantity = quantity;
         this.size = size;
@@ -95,5 +95,4 @@ public class OrderCardData {
     private String sinkers;
     private String sugarLevel;
     private Boolean askMe;
-
 }

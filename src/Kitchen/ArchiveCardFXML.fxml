@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -13,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="kitchenCardAP" prefHeight="407.0" prefWidth="829.0" styleClass="kitchenCard" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Kitchen.KitchenCardFXMLController">
+<AnchorPane id="AnchorPane" fx:id="kitchenCardAP" prefHeight="407.0" prefWidth="829.0" styleClass="kitchenCard" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Kitchen.ArchiveCardFXMLController">
    <children>
       <VBox alignment="CENTER_LEFT" layoutX="153.0" layoutY="34.0">
          <children>
@@ -59,7 +58,6 @@
             <Label fx:id="datetimeLBL" alignment="CENTER" text="Label" />
          </children>
       </VBox>
-      <Button fx:id="orderCompletedBTN" layoutX="698.0" layoutY="346.0" mnemonicParsing="false" onAction="#handleOrderCompleted" text="Order Completed" />
       <ComboBox fx:id="wholeOrderStatusCB" layoutX="657.0" layoutY="37.0" prefHeight="13.0" prefWidth="150.0" />
       <ImageView fitHeight="134.0" fitWidth="772.0" layoutX="33.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>

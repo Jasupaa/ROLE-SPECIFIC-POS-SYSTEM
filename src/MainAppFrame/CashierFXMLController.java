@@ -401,7 +401,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
         return listData;
     }
-    
+
     public ObservableList<FruitDrinkItemData> menuGetDataForFruitDrink() {
 
         String sql = "SELECT * FROM fruitdrink_items";
@@ -522,14 +522,25 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? "
                 + "UNION "
                 + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM frappe WHERE customer_id = ? "
-                + "ORDER BY date_time"
-                + " Asc";
+                + "UNION "
+                + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM coffee WHERE customer_id = ? "
+                + "UNION "
+                + "SELECT order_id, 'NONE' AS size, item_name, final_price, quantity, date_time FROM rice_meal WHERE customer_id = ? "
+                + "UNION "
+                + "SELECT order_id, 'NONE' AS size, item_name, final_price, quantity, date_time FROM snacks WHERE customer_id = ? "
+                + "UNION "
+                + "SELECT order_id, 'NONE' AS size, item_name, final_price, quantity, date_time FROM extras WHERE customer_id = ? "
+                + "ORDER BY date_time Asc";
 
         try (Connection connect = database.getConnection(); PreparedStatement combinedPrepare = connect.prepareStatement(combinedSql)) {
 
             combinedPrepare.setInt(1, customerID);
             combinedPrepare.setInt(2, customerID);
             combinedPrepare.setInt(3, customerID);
+            combinedPrepare.setInt(4, customerID);
+            combinedPrepare.setInt(5, customerID);
+            combinedPrepare.setInt(6, customerID);
+            combinedPrepare.setInt(7, customerID);
 
             ResultSet combinedResult = combinedPrepare.executeQuery();
             while (combinedResult.next()) {
@@ -581,25 +592,15 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private void deleteItem(ItemData item) throws SQLException {
         System.out.println("Deleting item: " + item.getItemName());
-        String dltMTsql = "DELETE FROM milk_tea WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ? AND final_price = ? AND quantity = ?";
-        String dltfrappesql = "DELETE FROM frappe WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ? AND final_price = ? AND quantity = ?";
-        String dltFDsql = "DELETE FROM fruit_drink WHERE order_id = ? AND CONCAT(size, ' ', item_name) = ? AND final_price = ? AND quantity = ?";
+        String dltMTsql = "DELETE FROM milk_tea WHERE order_id = ?";
+        String dltfrappesql = "DELETE FROM frappe WHERE order_id = ?";
+        String dltFDsql = "DELETE FROM fruit_drink WHERE order_id = ?";
+
         try (Connection connect = database.getConnection(); PreparedStatement prepare = connect.prepareStatement(dltMTsql); PreparedStatement frapprepare = connect.prepareStatement(dltfrappesql); PreparedStatement FDprepare = connect.prepareStatement(dltFDsql)) {
 
             prepare.setInt(1, item.getorderID());
-            prepare.setString(2, item.getItemName());
-            prepare.setDouble(3, item.getItemPrice());
-            prepare.setInt(4, item.getItemQuantity());
-
             frapprepare.setInt(1, item.getorderID());
-            frapprepare.setString(2, item.getItemName());
-            frapprepare.setDouble(3, item.getItemPrice());
-            frapprepare.setInt(4, item.getItemQuantity());
-
             FDprepare.setInt(1, item.getorderID());
-            FDprepare.setString(2, item.getItemName());
-            FDprepare.setDouble(3, item.getItemPrice());
-            FDprepare.setInt(4, item.getItemQuantity());
 
             int rowsAffected = prepare.executeUpdate();
             int rowsAffectedFrappe = frapprepare.executeUpdate();
@@ -609,8 +610,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             System.out.println("Rows affected (frappe): " + rowsAffectedFrappe);
             System.out.println("Rows affected (fruit_drink): " + rowsAffectedFD);
 
-            System.out.println("SQL Parameters: " + item.getItemName() + ", "
-                    + item.getItemPrice() + ", " + item.getItemQuantity()); // Add this line
+            System.out.println("SQL Parameters (order_id only): " + item.getorderID());
         }
     }
 
@@ -755,6 +755,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
 
         try {
             refreshMenuGrid();

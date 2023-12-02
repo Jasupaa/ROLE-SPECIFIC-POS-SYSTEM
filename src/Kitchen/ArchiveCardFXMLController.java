@@ -44,7 +44,7 @@ import javafx.scene.layout.GridPane;
  * @author Gwyneth Uy
  */
 // Import statements...
-public class KitchenCardFXMLController implements Initializable {
+public class ArchiveCardFXMLController implements Initializable {
 
     @FXML
     private AnchorPane kitchenCardAP;
@@ -67,23 +67,19 @@ public class KitchenCardFXMLController implements Initializable {
     @FXML
     private ComboBox<String> wholeOrderStatusCB;
 
-    private ObservableList<OrderCardData> orderCardData = FXCollections.observableArrayList();
+    private ObservableList<ArchiveOrderCardData> archiveOrderCardData = FXCollections.observableArrayList();
 
     private KitchenFXMLController kitchenController;
 
     private KitchenFXMLController kitchencontroller;
 
-    public void setKitchenController(KitchenFXMLController kitchenController) {
-        this.kitchenController = kitchenController;
-    }
-
     public void setKitchenController1(KitchenFXMLController kitchencontroller) {
         this.kitchencontroller = kitchencontroller;
     }
 
-    public void setKitchenCardData(KitchenCardData kitchenCardData) throws SQLException {
+    public void setArchiveKitchenCardData(ArchiveCardData archiveCardData) throws SQLException {
         // Fetch customer data from the invoice table
-        CustomerData customerData = getCustomerDataFromDatabase(kitchenCardData.getCustomerID());
+        CustomerData customerData = getCustomerDataFromDatabase(archiveCardData.getCustomerID());
 
         if (customerData != null) {
             // Set data to corresponding components
@@ -93,13 +89,13 @@ public class KitchenCardFXMLController implements Initializable {
             cashierLBL.setText(customerData.getCashierHandler());
 
             // Retrieve orders for the specific customer
-            orderCardData = menuGetData(kitchenCardData.getCustomerID());
+            archiveOrderCardData = menuGetData(archiveCardData.getCustomerID());
 
             // Set data to the grid
-            orderGrid();
+            orderArchiveGrid();
 
             // Fetch and display date time
-            String dateTime = getDateTimeFromDatabase(kitchenCardData.getCustomerID());
+            String dateTime = getDateTimeFromDatabase(archiveCardData.getCustomerID());
             datetimeLBL.setText(dateTime);
         }
     }
@@ -108,7 +104,7 @@ public class KitchenCardFXMLController implements Initializable {
         String dateTime = null;
 
         try (Connection connection = database.getConnection()) {
-            String query = "SELECT date_time FROM invoice WHERE customer_id = ?";
+            String query = "SELECT date_time FROM invoice_archive WHERE customer_id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, customerID);
 
@@ -130,7 +126,7 @@ public class KitchenCardFXMLController implements Initializable {
         CustomerData customerData = null;
 
         try (Connection connection = database.getConnection()) {
-            String query = "SELECT emp_name FROM invoice WHERE customer_id = ?";
+            String query = "SELECT emp_name FROM invoice_archive WHERE customer_id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, customerID);
 
@@ -160,12 +156,12 @@ public class KitchenCardFXMLController implements Initializable {
         wholeOrderStatusCB.setValue("New Order!");
     }
 
-    public ObservableList<OrderCardData> menuGetData(String customerID) {
+    public ObservableList<ArchiveOrderCardData> menuGetData(String customerID) {
         // Fetch milk tea data
-        ObservableList<OrderCardData> listData = fetchData("SELECT item_name, quantity, size, add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, ask_me FROM milk_tea WHERE customer_id = ?", customerID);
+        ObservableList<ArchiveOrderCardData> listData = fetchData("SELECT item_name, quantity, size, add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, ask_me FROM milk_tea WHERE customer_id = ?", customerID);
 
         // Fetch fruit drink data
-        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, fruit_flavor, sinkers, 'None' AS sugar_level, ask_me FROM fruit_drink WHERE customer_id = ?", customerID));
+        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, fruit_flavor, sinkers, 'None' AS sugar_level FROM fruit_drink, ask_me WHERE customer_id = ?", customerID));
 
         // Fetch frappe data
         listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, ask_me FROM frappe WHERE customer_id = ?", customerID));
@@ -173,8 +169,8 @@ public class KitchenCardFXMLController implements Initializable {
         return listData;
     }
 
-    private ObservableList<OrderCardData> fetchData(String sql, String customerID) {
-        ObservableList<OrderCardData> listData = FXCollections.observableArrayList();
+    private ObservableList<ArchiveOrderCardData> fetchData(String sql, String customerID) {
+        ObservableList<ArchiveOrderCardData> listData = FXCollections.observableArrayList();
         try (Connection connect = database.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql)) {
 
             prepare.setString(1, customerID);
@@ -189,16 +185,11 @@ public class KitchenCardFXMLController implements Initializable {
                     String sinkers = result.getString("sinkers");
                     String sugarlvl = result.getString("sugar_level");
 
-                    // Fetch the ask_me boolean value from the result set
                     boolean askMe = result.getBoolean("ask_me");
 
                     // Create an OrderCardData object and add it to the list
-                    OrderCardData orderCardData = new OrderCardData(itemName, quantity, size, addOns, fruitFlavor, sinkers, sugarlvl, askMe);
-
-                    // Set the ask_me boolean value in the OrderCardData object
-                    orderCardData.setAskMe(askMe);
-
-                    listData.add(orderCardData);
+                    ArchiveOrderCardData archiveOrderCardData = new ArchiveOrderCardData(itemName, quantity, size, addOns, fruitFlavor, sinkers, sugarlvl, askMe);
+                    listData.add(archiveOrderCardData);
                 }
             }
         } catch (SQLException e) {
@@ -208,20 +199,30 @@ public class KitchenCardFXMLController implements Initializable {
         return listData;
     }
 
-    private void orderGrid() throws SQLException {
+    private void initializeSizeComboBox() {
+        // Populate the sizeComboBox with items
+        ObservableList<String> sizes = FXCollections.observableArrayList(
+                "New Order!",
+                "In Progress",
+                "Completed"
+        );
+        wholeOrderStatusCB.setItems(sizes);
+    }
+
+    private void orderArchiveGrid() throws SQLException {
         orderCardGP.getChildren().clear();
         int column = 0;
         int row = 1;
 
-        for (OrderCardData orderCardData : orderCardData) {
+        for (ArchiveOrderCardData archiveOrderCardData : archiveOrderCardData) {
             try {
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/Kitchen/OrderCardFXML.fxml"));
+                loader.setLocation(getClass().getResource("/Kitchen/OrderArchiveCardFXML.fxml"));
                 AnchorPane pane = loader.load();
 
                 // Access the controller and set the data
-                OrderCardFXMLController orderCardFXMLController = loader.getController();
-                orderCardFXMLController.setOrderCardData(orderCardData);
+                OrderArchiveCardFXMLController orderArchiveCardFXMLController = loader.getController();
+                orderArchiveCardFXMLController.setArchiveCardData(archiveOrderCardData);
 
                 if (column == 1) {
                     column = 0;
@@ -236,52 +237,4 @@ public class KitchenCardFXMLController implements Initializable {
             }
         }
     }
-
-    @FXML
-    private void handleOrderCompleted() throws SQLException {
-        try (Connection connection = database.getConnection()) {
-            // Get the customer ID from the label
-            String customerID = custNoLBL.getText();
-
-            // Transfer data for the specific customer from invoice to invoice_archive
-            String transferQuery = "INSERT INTO invoice_archive SELECT * FROM invoice WHERE customer_id = ?";
-            try (PreparedStatement transferStatement = connection.prepareStatement(transferQuery)) {
-                transferStatement.setString(1, customerID);
-                transferStatement.executeUpdate();
-
-                // After transferring, you can delete the row from invoice
-                String deleteQuery = "DELETE FROM invoice WHERE customer_id = ?";
-                try (PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
-                    deleteStatement.setString(1, customerID);
-                    deleteStatement.executeUpdate();
-                }
-
-                // Optionally, you can perform additional actions after completing the order
-                // For example, update the UI or display a confirmation message
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        // Call the getArchive method in the KitchenFXMLController
-        if (kitchenController != null) {
-            kitchenController.getOrders(); // If needed, also update the Orders tab
-        }
-
-        if (kitchencontroller != null) {
-            kitchencontroller.getArchive();
-        }
-    }
-
-    private void initializeSizeComboBox() {
-        // Populate the sizeComboBox with items
-        ObservableList<String> sizes = FXCollections.observableArrayList(
-                "New Order!",
-                "In Progress",
-                "Completed"
-        );
-        wholeOrderStatusCB.setItems(sizes);
-    }
-
-    ////////////////////////////////////
 }

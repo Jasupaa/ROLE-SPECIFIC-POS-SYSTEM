@@ -19,7 +19,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.image.ImageView;
 
-public class OrderCardFXMLController implements Initializable {
+public class OrderArchiveCardFXMLController implements Initializable {
 
     @FXML
     private Label addoLBL;
@@ -73,19 +73,18 @@ public class OrderCardFXMLController implements Initializable {
         });
     }
 
-    public void setOrderCardData(OrderCardData orderCardData) throws SQLException {
-        this.orderCardData = orderCardData;
+    public void setArchiveCardData(ArchiveOrderCardData archiveOrderCardData) throws SQLException {
+        this.archiveOrderCardData = archiveOrderCardData;
 
-        String itemName = orderCardData.getItemName();
-        Integer quantity = orderCardData.getQuantity();
-        String size = orderCardData.getSize();
-        String addOns = orderCardData.getAddOns();
-        String fruitFlavor = orderCardData.getFruitFlavor();
-        String sinkers = orderCardData.getSinkers();
-        String sugarLevel = orderCardData.getSugarLevel();
+        String itemName = archiveOrderCardData.getItemName();
+        Integer quantity = archiveOrderCardData.getQuantity();
+        String size = archiveOrderCardData.getSize();
+        String addOns = archiveOrderCardData.getAddOns();
+        String fruitFlavor = archiveOrderCardData.getFruitFlavor();
+        String sinkers = archiveOrderCardData.getSinkers();
+        String sugarLevel = archiveOrderCardData.getSugarLevel();
 
-        // Get the askMe boolean value
-        boolean askMe = orderCardData.getAskMe();
+        boolean askMe = archiveOrderCardData.getAskMe();
 
         // Set data to corresponding components
         nameLBL.setText(itemName);
@@ -98,7 +97,6 @@ public class OrderCardFXMLController implements Initializable {
         sinkersLBL.setText(sinkers != null ? sinkers : "");
         sugarlvlLBL.setText(sugarLevel != null ? sugarLevel : "");
 
-        // Set visibility of checkBoxIV based on the value of askMe
         checkBoxIV.setVisible(askMe);
     }
 
