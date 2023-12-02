@@ -14,7 +14,7 @@
     <children>
       <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="83.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/Group%201%20(1).png" />
+            <Image url="@../Pictures/Splashscreen%20(1).png" />
          </image>
       </ImageView>
       <VBox layoutX="77.0" layoutY="255.0" prefHeight="251.0" prefWidth="136.0">
@@ -38,14 +38,14 @@
       </Label>
       <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="58.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/icons8-log-out-96.png" />
+            <Image url="@../Pictures/icons8-log-out-96.png" />
          </image>
       </ImageView>
       <Label fx:id="dateLbl" layoutX="247.0" layoutY="109.0" text="Label" textFill="WHITE" />
       <Label fx:id="timeLbl" layoutX="345.0" layoutY="109.0" text="Label" textFill="WHITE" />
       <ImageView fitHeight="59.0" fitWidth="455.0" layoutX="247.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/Group%204.png" />
+            <Image url="@../Pictures/Group%204.png" />
          </image>
       </ImageView>
       <AnchorPane layoutX="247.0" layoutY="139.0" prefHeight="450.0" prefWidth="450.0">

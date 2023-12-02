@@ -312,12 +312,12 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
         thread.start();
     }
-
+    
     @FXML
     private void getMenu1(ActionEvent event) throws SQLException {
          milkteaListData.clear();
         milkteaListData.addAll(menuGetData());
-
+        
         refreshMenuGrid();
     }
 
