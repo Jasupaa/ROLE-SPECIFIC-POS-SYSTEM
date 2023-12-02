@@ -2,6 +2,8 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -9,32 +11,94 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="496.0" prefWidth="740.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.SettlePaymentFXMLController">
+<AnchorPane id="AnchorPane" prefHeight="496.0" prefWidth="740.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.SettlePaymentFXMLController">
    <children>
       <Button fx:id="cashEnter" layoutX="279.0" layoutY="347.0" mnemonicParsing="false" onAction="#cashEnterButton" prefHeight="25.0" prefWidth="52.0" text="Enter" />
-      <Pane layoutX="370.0" layoutY="32.0" prefHeight="433.0" prefWidth="330.0" style="-fx-background-color: #8E8E8E;" />
+      <Pane layoutX="370.0" layoutY="32.0" prefHeight="433.0" prefWidth="330.0" style="-fx-background-color: #8E8E8E;">
+         <children>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="434.0" prefWidth="330.0" style="-fx-border-radius: 5px;">
+               <children>
+                  <Pane layoutX="159.0" layoutY="14.0" prefHeight="472.0" prefWidth="392.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #FFFFFF; -fx-border-style: dashed; -fx-border-radius: 5px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <AnchorPane prefHeight="434.0" prefWidth="330.0" style="-fx-border-radius: 5px;">
+                           <children>
+                              <TableView fx:id="tableView" layoutX="15.0" layoutY="123.0" prefHeight="180.0" prefWidth="300.0" style="-fx-background-color: transparent;">
+                                 <columns>
+                                    <TableColumn fx:id="Product" prefWidth="169.60003662109375" text="Product" />
+                                    <TableColumn fx:id="Quantity" prefWidth="68.7999267578125" text="Quantity" />
+                                    <TableColumn fx:id="Price" prefWidth="58.4000244140625" text="Price" />
+                                 </columns>
+                              </TableView>
+                              <Label layoutX="15.0" layoutY="98.0" text="Served By:" />
+                              <Label layoutX="17.0" layoutY="312.0" text="SUBTOTAL:" />
+                              <Label layoutX="17.0" layoutY="329.0" text="DISCOUNT:" />
+                              <Label layoutX="17.0" layoutY="349.0" text="TOTAL:" />
+                              <Label fx:id="handlerName" layoutX="74.0" layoutY="97.0" text="Serrano">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="subTotal" layoutX="265.0" layoutY="311.0" text="Subtotal">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="appldDscLbl" layoutX="264.0" layoutY="328.0" text="Discount">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="customTotalLabel" layoutX="264.0" layoutY="348.0" text="Total">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="17.0" layoutY="373.0" text="CASH:" />
+                              <Label layoutX="16.0" layoutY="392.0" text="CHANGE DUE:" />
+                              <Label fx:id="cashInput" layoutX="264.0" layoutY="372.0" text="Cash">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="change" layoutX="263.0" layoutY="391.0" text="Change">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <ImageView fitHeight="68.0" fitWidth="95.0" layoutX="118.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                 <image>
+                                    <Image url="@../Pictures/Splashscreen%20(2).png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+         </children></Pane>
       <ImageView fx:id="CloseButton" fitHeight="22.0" fitWidth="18.0" layoutX="29.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/icons8-log-out-96%20(1).png" />
+            <Image url="@../Pictures/icons8-log-out-96.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="56.0" fitWidth="207.0" layoutX="62.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/Group%202%20(2).png" />
+            <Image url="@../Pictures/Group%202%20(2).png" />
          </image>
       </ImageView>
       <ImageView fitHeight="28.0" fitWidth="179.0" layoutX="62.0" layoutY="77.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/Note_%20Double%20check%20your%20orders%20before%20settling%20your%20payment!Note.png" />
+            <Image url="@../Pictures/Note_%20Double%20check%20your%20orders%20before%20settling%20your%20payment!Note.png" />
          </image>
       </ImageView>
-      <Label layoutX="66.0" layoutY="110.0" prefHeight="15.0" prefWidth="63.0" text="Order Type">
+      <Label layoutX="66.0" layoutY="110.0" prefHeight="15.0" prefWidth="63.0" text="Order Type" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font>
       </Label>
       <TextField fx:id="ordertypeTxtField" layoutX="63.0" layoutY="128.0" prefHeight="25.0" prefWidth="269.0" />
-      <Label layoutX="66.0" layoutY="157.0" prefHeight="15.0" prefWidth="95.0" text="Enter Discount Code">
+      <Label layoutX="66.0" layoutY="157.0" prefHeight="15.0" prefWidth="95.0" text="Enter Discount Code" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font>
@@ -42,31 +106,31 @@
       <TextField fx:id="discCodeTxtLbl" layoutX="63.0" layoutY="176.0" prefHeight="25.0" prefWidth="112.0" />
       <Button fx:id="discEnter" layoutX="178.0" layoutY="176.0" mnemonicParsing="false" onAction="#discEnterButton" prefHeight="25.0" prefWidth="52.0" text="Enter" />
       <TextField fx:id="discTxtLbl" layoutX="233.0" layoutY="176.0" prefHeight="25.0" prefWidth="98.0" />
-      <Label layoutX="236.0" layoutY="157.0" prefHeight="15.0" prefWidth="95.0" text="Discount">
+      <Label layoutX="236.0" layoutY="157.0" prefHeight="15.0" prefWidth="95.0" text="Discount" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font>
       </Label>
-      <Label layoutX="66.0" layoutY="204.0" prefHeight="15.0" prefWidth="95.0" text="Item Total">
+      <Label layoutX="66.0" layoutY="204.0" prefHeight="15.0" prefWidth="95.0" text="Item Total" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font>
       </Label>
       <TextField fx:id="itmTotalTxtLbl" layoutX="63.0" layoutY="222.0" prefHeight="25.0" prefWidth="269.0" />
-      <Label layoutX="66.0" layoutY="250.0" prefHeight="15.0" prefWidth="95.0" text="Applied Discount">
+      <Label layoutX="66.0" layoutY="250.0" prefHeight="15.0" prefWidth="95.0" text="Applied Discount" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font>
       </Label>
       <TextField fx:id="appldDscTxtLbl" layoutX="63.0" layoutY="270.0" prefHeight="25.0" prefWidth="269.0" />
       <TextField fx:id="newTotalTxtLbl" layoutX="63.0" layoutY="301.0" prefHeight="25.0" prefWidth="269.0" />
-      <Label layoutX="66.0" layoutY="329.0" prefHeight="15.0" prefWidth="95.0" text="Cash">
+      <Label layoutX="66.0" layoutY="329.0" prefHeight="15.0" prefWidth="95.0" text="Cash" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font>
       </Label>
       <TextField fx:id="cashTxtLbl" layoutX="63.0" layoutY="347.0" prefHeight="25.0" prefWidth="213.0" />
-      <Label layoutX="66.0" layoutY="375.0" prefHeight="15.0" prefWidth="95.0" text="Change">
+      <Label layoutX="66.0" layoutY="375.0" prefHeight="15.0" prefWidth="95.0" text="Change" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font>

@@ -5,6 +5,7 @@
 package ClassFiles;
 
 import MainAppFrame.CashierFXMLController;
+import MainAppFrame.SettlePaymentFXMLController;
 
 /**
  *
@@ -20,5 +21,9 @@ public class ControllerManager {
 
     public static CashierFXMLController getCashierController() {
         return cashierController;
+    }
+
+    public static void setCashierController(SettlePaymentFXMLController paymentController) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

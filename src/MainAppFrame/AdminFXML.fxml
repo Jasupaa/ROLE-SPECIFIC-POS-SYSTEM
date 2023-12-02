@@ -2,6 +2,8 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -64,17 +66,24 @@
         </ImageView>
         <AnchorPane layoutX="251.0" layoutY="148.0" prefHeight="450.0" prefWidth="830.0">
             <children>
-                <AnchorPane fx:id="disCoup" prefHeight="450.4" prefWidth="830.4" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <children>
-                        <!-- Empty list of children -->
-                    </children>
+                <AnchorPane fx:id="disCoup" prefHeight="450.4" prefWidth="830.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <TableView fx:id="discountTableView" layoutX="13.0" layoutY="36.0" prefHeight="370.0" prefWidth="812.0">
+                     <columns>
+                        <TableColumn fx:id="codeColumn" prefWidth="105.33333969116211" text="Code" />
+                        <TableColumn fx:id="discountColumn" prefWidth="97.99996948242188" text="Discount" />
+                        <TableColumn fx:id="descriptionColumn" prefWidth="255.0" text="Description" />
+                        <TableColumn fx:id="createdAtColumn" prefWidth="175.0" text="Created At" />
+                        <TableColumn fx:id="validAtColumn" prefWidth="175.0" text="Valid At" />
+                     </columns>
+                  </TableView>
+                  <Button fx:id="AddCoup" layoutX="631.0" mnemonicParsing="false" onAction="#handleDiscountButtonClick" prefHeight="25.0" prefWidth="193.0" text="+ Add Coupon" />
+                  <Button fx:id="DelBtn" layoutX="682.0" layoutY="414.0" mnemonicParsing="false" onAction="#handleDeleteButtonAction" prefHeight="25.0" prefWidth="142.0" text="Delete" />
+                  <Button fx:id="EditBtn" layoutX="534.0" layoutY="414.0" mnemonicParsing="false" onAction="#handleEditButtonAction" prefHeight="25.0" prefWidth="142.0" text="Edit" />
+               </children>
                 </AnchorPane>
-                <AnchorPane fx:id="empDetails" prefHeight="450.4" prefWidth="830.4" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <children>
-                        <!-- Empty list of children -->
-                    </children>
-                </AnchorPane>
-                <AnchorPane fx:id="invManage" prefHeight="450.4" prefWidth="830.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <AnchorPane fx:id="empDetails" layoutY="-1.0" prefHeight="450.0" prefWidth="817.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0" />
+                <AnchorPane fx:id="invManage" prefHeight="450.4" prefWidth="830.4" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Button fx:id="milkteaBTN" layoutX="31.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleMilkteaButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>

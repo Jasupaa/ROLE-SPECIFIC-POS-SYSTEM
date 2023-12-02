@@ -169,7 +169,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         this.menuMilkteaAndFrappeListData = dataList;
     }
 
-    //////////
+   
     private String employeeName;
     private int employeeId;
 
@@ -283,6 +283,43 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             settlePaymentController.setExistingCashierController(this, employeeName, employeeId);
 
             // Set the order type
+            settlePaymentController.setOrderType("Dine In");
+
+            settlePaymentStage.show();
+            blurPane.setVisible(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle exceptions accordingly
+        }
+    }
+    
+    @FXML
+    void takeOrder(ActionEvent event) {
+        try {
+            // Load the SettlePaymentFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SettlePaymentFXML.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the SettlePaymentFXML
+            settlePaymentStage = new Stage();
+
+            // Set stage properties to make it transparent and non-resizable
+            settlePaymentStage.initStyle(StageStyle.TRANSPARENT);
+            settlePaymentStage.initStyle(StageStyle.UNDECORATED); // Removes the title bar
+            settlePaymentStage.setResizable(false);
+
+            // Set the scene fill to transparent
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+
+            // Set the scene to the stage
+            settlePaymentStage.setScene(scene);
+
+            // Get the controller for SettlePaymentFXML
+            SettlePaymentFXMLController settlePaymentController = loader.getController();
+            settlePaymentController.setExistingCashierController(this, employeeName, employeeId);
+
+            // Set the order type
             settlePaymentController.setOrderType("Take Out");
 
             settlePaymentStage.show();
@@ -322,12 +359,12 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
         thread.start();
     }
-
+    
     @FXML
     private void getMenu1(ActionEvent event) throws SQLException {
         milkteaListData.clear();
         milkteaListData.addAll(menuGetData());
-
+        
         refreshMenuGrid();
     }
 
