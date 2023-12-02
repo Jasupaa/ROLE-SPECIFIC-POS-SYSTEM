@@ -1,8 +1,9 @@
 package CRUDs;
 
+
 import ClassFiles.FruitDrinkItemData;
 import Databases.CRUDDatabase;
-import com.mysql.cj.jdbc.Blob;
+import java.sql.Blob;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -315,10 +316,18 @@ public class FruitDrinkCRUDController implements Initializable {
                 Integer largePrice = result.getInt("large_price");
                 String fruitFlavor = result.getString("fruit_flavor");
                 String sinkers = result.getString("sinkers");
+                
+                Blob imageBlob = result.getBlob("image");
 
+            
+                InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
+                
                 FruitDrinkItemData fruitDrinkItemData = new FruitDrinkItemData(itemName, smallPrice, mediumPrice, largePrice, fruitFlavor, sinkers);
                 fruitDrinkItemData.setItemID(itemID);
-
+                fruitDrinkItemData.setImage(imageBlob);
+                fruitDrinkItemData.setImageInputStream(imageInputStream);
+               
+                
                 listData.add(fruitDrinkItemData);
 
             }
@@ -374,22 +383,29 @@ public class FruitDrinkCRUDController implements Initializable {
             txtLargePrice.setText(String.valueOf(selectedItem.getLargePrice()));
 
             Blob imageBlob = selectedItem.getImage();
-            if (imageBlob != null) {
-                try (InputStream inputStream = imageBlob.getBinaryStream()) {
-                    Image selectedItemImage = new Image(inputStream);
-                    itemIV.setImage(selectedItemImage);
-                    iconIV.setVisible(false);
-                } catch (SQLException | IOException e) {
-                    e.printStackTrace();
+             
+               try {
+  
+    InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
 
-                }
-            } else {
+    selectedItem.setImageInputStream(imageInputStream);
 
-                itemIV.setImage(null);
-                iconIV.setVisible(true);
-            }
-
+  
+    if (imageInputStream != null) {
+        Image selectedItemImage = new Image(imageInputStream);
+        itemIV.setImage(selectedItemImage);
+        iconIV.setVisible(false);
+    } else {
+       
+        itemIV.setImage(null);
+        iconIV.setVisible(true);
+    }
+} catch (SQLException e) {
+    e.printStackTrace();
+   
+}
         }
     }
 
-}
+    }
+

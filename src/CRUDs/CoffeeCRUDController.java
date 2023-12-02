@@ -2,7 +2,7 @@ package CRUDs;
 
 import ClassFiles.CoffeeItemData;
 import Databases.CRUDDatabase;
-import com.mysql.cj.jdbc.Blob;
+import java.sql.Blob;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,6 +36,7 @@ import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 
 public class CoffeeCRUDController implements Initializable {
+
 
     @FXML
     private Button addBTN;
@@ -289,7 +290,7 @@ public class CoffeeCRUDController implements Initializable {
     private ObservableList<CoffeeItemData> fetchDataFromDatabase() {
         ObservableList<CoffeeItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name, type, small_price, medium_price, large_price FROM coffee_items";
+        String sql = "SELECT item_id, item_name, type, small_price, medium_price, large_price, image FROM coffee_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
@@ -300,9 +301,17 @@ public class CoffeeCRUDController implements Initializable {
                 Integer smallPrice = result.getInt("small_price");
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
+                
+                java.sql.Blob imageBlob = result.getBlob("image");
 
+            // Convert Blob to InputStream
+                InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
+  
                 CoffeeItemData coffeeItemData = new CoffeeItemData(itemName, type, smallPrice, mediumPrice, largePrice);
                 coffeeItemData.setItemID(itemID);
+                coffeeItemData.setImage(imageBlob); // Set Blob if needed
+                coffeeItemData.setImageInputStream(imageInputStream);
+
 
                 listData.add(coffeeItemData);
 
@@ -357,7 +366,7 @@ public class CoffeeCRUDController implements Initializable {
             txtMediumPrice.setText(String.valueOf(selectedItem.getMediumPrice()));
             txtLargePrice.setText(String.valueOf(selectedItem.getLargePrice()));
 
-            Blob imageBlob = selectedItem.getImage();
+            java.sql.Blob imageBlob = selectedItem.getImage();
             if (imageBlob != null) {
                 try (InputStream inputStream = imageBlob.getBinaryStream()) {
                     Image selectedItemImage = new Image(inputStream);
@@ -375,5 +384,6 @@ public class CoffeeCRUDController implements Initializable {
 
         }
     }
-
 }
+
+
