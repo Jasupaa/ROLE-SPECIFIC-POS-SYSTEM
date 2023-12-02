@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.EmployeeDataFXMLController">
+<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.EmployeeDataFXMLController">
    <children>
       <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="93.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -125,9 +125,9 @@
                   <Image url="@../Pictures/Employees.png" />
                </image>
             </ImageView>
-            <AnchorPane layoutX="807.0" layoutY="155.0" prefHeight="52.0" prefWidth="173.0" stylesheets="@../CSS/AdminCSS.css">
+            <AnchorPane layoutX="841.0" layoutY="155.0" prefHeight="52.0" prefWidth="173.0" stylesheets="@../CSS/AdminCSS.css">
                <children>
-                  <Button fx:id="addEmployee" layoutX="59.0" layoutY="22.0" mnemonicParsing="false" onAction="#addEmployeeButton" prefHeight="30.0" prefWidth="146.0" stylesheets="@../CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
+                  <Button fx:id="addEmployee" layoutX="27.0" layoutY="23.0" mnemonicParsing="false" onAction="#addEmployeeButton" prefHeight="30.0" prefWidth="146.0" stylesheets="@../CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
                      <styleClass>
                         <String fx:value="asalesReportbutton" />
                         <String fx:value="button" />
@@ -136,17 +136,29 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
+                  <ImageView fx:id="Removeicon" fitHeight="15.0" fitWidth="15.0" layoutX="134.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../ROLE-SPECIFIC-POS-SYSTEM-master/src/img/Editicon.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="Removeicon" fitHeight="15.0" fitWidth="15.0" layoutX="153.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../ROLE-SPECIFIC-POS-SYSTEM-master/src/img/trashicon.png" />
+                     </image>
+                  </ImageView>
                </children>
             </AnchorPane>
             <TableView fx:id="employeeTable" layoutX="286.0" layoutY="220.0" prefHeight="320.0" prefWidth="728.0" styleClass="employeeButton" stylesheets="@../CSS/AdminCSS.css">
               <columns>
                 <TableColumn fx:id="empID" prefWidth="46.0" text="ID" />
+                  <TableColumn fx:id="empPic" maxWidth="4000.0" minWidth="5.0" prefWidth="70.0" />
                 <TableColumn fx:id="empFirstName" prefWidth="101.0" text="FirstName" />
-                  <TableColumn prefWidth="97.0" text="LastName" />
-                  <TableColumn fx:id="empEmail" prefWidth="123.0" text="E-mail" />
+                  <TableColumn fx:id="empLastName" prefWidth="97.0" text="LastName" />
+                  <TableColumn fx:id="empEmail" prefWidth="115.0" text="E-mail" />
                   <TableColumn fx:id="empContact" prefWidth="112.0" text="Contact No." />
-                  <TableColumn fx:id="empRole" prefWidth="97.0" text="Role" />
-                  <TableColumn prefWidth="146.0" text="Actions" />
+                  <TableColumn fx:id="empRole" prefWidth="90.0" text="Role" />
+                  <TableColumn prefWidth="100.0" text="Actions" />
+                  <TableColumn fx:id="empFirstName1" prefWidth="101.0" text="FirstName" />
               </columns>
             </TableView>
             <Pane fx:id="blurPane" layoutY="4.0" prefHeight="652.0" prefWidth="1136.0" styleClass="card" stylesheets="@../CSS/CashierCSS.css" visible="false" />
