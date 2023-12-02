@@ -383,9 +383,9 @@ public class SettlePaymentFXMLController implements Initializable {
         discTxtLbl.setDisable(true); // Disable the TextField
         appldDscTxtLbl.setDisable(true); // Disable the TextField
         calculateTotal();
-        /*CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-           /* public void handle(MouseEvent event) {
+            public void handle(MouseEvent event) {
                 try {
                     Stage stage = (Stage) CloseButton.getScene().getWindow();
                     stage.close();
@@ -405,7 +405,7 @@ public class SettlePaymentFXMLController implements Initializable {
                 // Consume the event to prevent it from propagating
                 event.consume();
             }
-        }); */
+        }); 
 
     }
 }

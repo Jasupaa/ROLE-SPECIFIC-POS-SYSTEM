@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -10,9 +11,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.MilkteaCRUDController">
+<AnchorPane id="AnchorPane" prefHeight="444.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.MilkteaCRUDController">
    <children>
-      <TableView fx:id="milkteaTV" layoutX="39.0" layoutY="51.0" prefHeight="350.0" prefWidth="285.0">
+      <TableView fx:id="milkteaTV" layoutX="39.0" layoutY="51.0" prefHeight="350.0" prefWidth="286.0">
         <columns>
           <TableColumn fx:id="itemMT" prefWidth="91.20001220703125" text="Item" />
           <TableColumn fx:id="smallMT" prefWidth="36.0" text="S" />
@@ -53,4 +54,7 @@
       <Button layoutX="655.0" layoutY="375.0" mnemonicParsing="false" text="Update" />
       <Button layoutX="598.0" layoutY="375.0" mnemonicParsing="false" text="Delete" />
    </children>
+   <padding>
+      <Insets bottom="50.0" />
+   </padding>
 </AnchorPane>

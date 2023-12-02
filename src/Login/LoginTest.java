@@ -24,7 +24,7 @@ public class LoginTest extends Application {
         splashStage.show();
 
         // Set up a Timeline to wait for 5 seconds
-        Duration duration = Duration.seconds(5);
+        Duration duration = Duration.seconds(1);
         KeyFrame keyFrame = new KeyFrame(duration, event -> {
             // Close the splash screen
             splashStage.close();
@@ -57,6 +57,8 @@ public class LoginTest extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
+    
 }
 
 

@@ -85,7 +85,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="223.0" layoutY="64.0" mnemonicParsing="false" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                  <Button layoutX="223.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleFruitDrinkButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>
                         <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -94,7 +94,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="415.0" layoutY="64.0" mnemonicParsing="false" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                  <Button layoutX="415.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleFrappeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>
                         <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -103,7 +103,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="607.0" layoutY="64.0" mnemonicParsing="false" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                  <Button layoutX="607.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleCoffeeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>
                         <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -112,7 +112,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="31.0" layoutY="246.0" mnemonicParsing="false" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                  <Button layoutX="31.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleRiceMealsButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>
                         <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -121,7 +121,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="223.0" layoutY="246.0" mnemonicParsing="false" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                  <Button layoutX="223.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleSnacksButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>
                         <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -130,7 +130,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="415.0" layoutY="246.0" mnemonicParsing="false" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                  <Button layoutX="415.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleExtrasButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>
                         <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
                            <image>

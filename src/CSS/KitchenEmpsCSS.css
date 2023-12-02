@@ -8,25 +8,38 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 */
 
 .anchorPaneBG {
-    -fx-background-color:  #111315;
+    -fx-background-color: #111315;
     -fx-background-radius: 5px;
 }
 
-.scroll-pane .viewport {
-    -fx-background-color: #111315;
-    -fx-border-color: #111315;
+.PaneButton {
+    -fx-background-color: transparent;
 }
 
 .scroll-pane {
-    -fx-background-insets: 0;
-    -fx-padding: 0;
+    -fx-background-color:transparent;
 }
 
-.scroll-pane:focused {
-    -fx-background-insets: 0;
+.scroll-pane .viewport {
+    -fx-background-color: transparent; /* Set the viewport background to transparent */
+    -fx-border-color: transparent; /* Set the border color to transparent */
 }
 
-.scroll-pane .corner {
-    -fx-background-insets: 0;
+.kitchenCard {
+    -fx-background-color: #A4A4A4;
+    -fx-background-radius: 5px;
 }
+
+.orderCard {
+    -fx-background-color: #A4A4A4;
+}
+
+.comboboxStyle .list-cell {
+    -fx-background-color: white;
+}
+
+.comboboxStyle .list-cell:selected {
+    -fx-background-color: green;
+}
+
 

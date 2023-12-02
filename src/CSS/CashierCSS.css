@@ -46,26 +46,13 @@
     -fx-background-radius: 10px;
 }
 
-.scroll-pane .scroll-pane-content {
-    -fx-padding: 0 0 0 0;
+.scroll-pane {
+    -fx-background-color:transparent;
 }
 
 .scroll-pane .viewport {
-    -fx-background-color: #111315;
-    -fx-border-color: #111315;
-}
-
-.scroll-pane {
-    -fx-background-insets: 0;
-    -fx-padding: 0;
-}
-
-.scroll-pane:focused {
-    -fx-background-insets: 0;
-}
-
-.scroll-pane .corner {
-    -fx-background-insets: 0;
+    -fx-background-color: transparent; /* Set the viewport background to transparent */
+    -fx-border-color: transparent; /* Set the border color to transparent */
 }
 
 .receiptButton {

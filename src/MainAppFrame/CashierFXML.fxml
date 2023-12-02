@@ -101,7 +101,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="getMenu3" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Frappe" textFill="WHITE">
+            <Button fx:id="getMenu3" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#getMenu3" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Frappe" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
