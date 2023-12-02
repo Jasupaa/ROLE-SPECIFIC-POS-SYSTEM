@@ -55,8 +55,10 @@ public class MilkteaCRUDController implements Initializable {
     @FXML
     private TableColumn<MilkteaItemData, Integer> smallMT;
 
+    @FXML
     private TableColumn<MilkteaItemData, String> addonsMT;
 
+    @FXML
     private TextArea txtAddons;
 
     @FXML
@@ -83,6 +85,7 @@ public class MilkteaCRUDController implements Initializable {
     private Image selectedImage;
 
     private ObservableList<MilkteaItemData> milkteaListData = FXCollections.observableArrayList();
+
     @FXML
     private Button addBTN1;
 
@@ -90,6 +93,7 @@ public class MilkteaCRUDController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         displayMilktea();
     }
+
 
     /* ito yung action event para sa attach image button */
     @FXML
@@ -111,12 +115,14 @@ public class MilkteaCRUDController implements Initializable {
             iconIV.setVisible(false);
         }
     }
-    
+
     /* ito yung para sa paginsert sa database, magvavary siya sa kung ano lang yung kinukuha sa CRUD */
     @FXML
     private void handleAddButtonClick(ActionEvent event) throws IOException {
-        try (Connection connection = CRUDDatabase.getConnection()) { /* gumawa ako bagong database class kasi bagong database gagamitin natin */
-            if (connection != null) {                                /* para sa mga CRUD para di nakakalito tignan sa sample_database */
+        try (Connection connection = CRUDDatabase.getConnection()) {
+            /* gumawa ako bagong database class kasi bagong database gagamitin natin */
+            if (connection != null) {
+                /* para sa mga CRUD para di nakakalito tignan sa sample_database */
                 String itemName = txtItemName.getText();
                 String addons = txtAddons.getText();
                 String smallPrice = txtSmallPrice.getText();
@@ -155,7 +161,7 @@ public class MilkteaCRUDController implements Initializable {
 
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
-    */
+     */
     private void insertMilkteaItem(Connection connection, String itemName, String addons, String smallPrice, String mediumPrice, String largePrice, InputStream image) {
         String sql = "INSERT INTO milktea_items (item_name, addons, small_price, medium_price, large_price, image) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -201,7 +207,6 @@ public class MilkteaCRUDController implements Initializable {
         return listData;
     }
 
-    /* ito pangdisplay din */
     private void displayMilktea() {
         // Set up the PropertyValueFactory for each column
         itemMT.setCellValueFactory(new PropertyValueFactory<>("itemName"));

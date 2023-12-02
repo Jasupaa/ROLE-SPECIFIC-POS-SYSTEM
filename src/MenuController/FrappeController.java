@@ -20,6 +20,11 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import ClassFiles.ControllerManager;
+import ClassFiles.FrappeItemData;
+import ClassFiles.MilkteaItemData;
+import com.mysql.cj.jdbc.Blob;
+import java.io.ByteArrayInputStream;
+
 /**
  *
  * @author John Paul Uy
@@ -46,6 +51,8 @@ public class FrappeController {
 
     @FXML
     private Label foodLabel;
+
+    private FrappeItemData frappeItemData;
 
     private boolean askmeRadioSelected = false;
 
@@ -82,6 +89,25 @@ public class FrappeController {
         this.existingCashierController = cashierController;
     }
 
+    public void setFrappeItemData(FrappeItemData frappeItemData) throws SQLException {
+        // Set data to components
+        this.frappeItemData = frappeItemData;
+
+        // Assuming you have a method in MilkteaItemData to get the image name or title
+        String itemName = frappeItemData.getItemName();
+
+        // Set data to corresponding components
+        foodLabel.setText(itemName);
+
+        /* para doon sa image */
+        Blob imageBlob = frappeItemData.getImage();
+        byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+        Image image = new Image(bis, 129, 173, false, true);
+        foodImg.setImage(image);
+
+    }
+
     private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedSugarLevel, boolean askmeRadioSelected) {
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
@@ -112,8 +138,6 @@ public class FrappeController {
             e.printStackTrace();
         }
     }
-
-
 
     private void initializeSizeComboBox() {
         // Populate the sizeComboBox with items

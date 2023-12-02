@@ -1,28 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package Kitchen;
 
-import ClassFiles.KitchenCardData;
-import ClassFiles.MilkteaItemData;
 import ClassFiles.OrderCardData;
-import com.mysql.cj.jdbc.Blob;
-import java.io.ByteArrayInputStream;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.util.Callback;
+
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
-/**
- * FXML Controller class
- *
- * @author Gwyneth Uy
- */
 public class OrderCardFXMLController implements Initializable {
 
     @FXML
@@ -46,14 +40,30 @@ public class OrderCardFXMLController implements Initializable {
     @FXML
     private Label sugarlvlLBL;
 
+    @FXML
+    private ComboBox<String> orderStatusCB;
+
     private OrderCardData orderCardData;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        initializeSizeComboBox();
+
+        // Set the default value to "None" for all ComboBoxes
+        orderStatusCB.setValue("Pending");
+
+        // Add a listener to the ComboBox to detect changes in the selected item
+        orderStatusCB.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                // Set the color based on the selected item
+                if ("Completed".equals(newValue)) {
+                    orderStatusCB.setStyle("-fx-background-color: #44AF3C;");
+                } else {
+                    orderStatusCB.setStyle(""); // Reset the style
+                }
+            }
+        });
     }
 
     public void setOrderCardData(OrderCardData orderCardData) throws SQLException {
@@ -79,4 +89,32 @@ public class OrderCardFXMLController implements Initializable {
         sugarlvlLBL.setText(sugarLevel != null ? sugarLevel : "");
     }
 
+    private void initializeSizeComboBox() {
+        // Populate the sizeComboBox with items
+        ObservableList<String> sizes = FXCollections.observableArrayList(
+                "Pending",
+                "In Progress",
+                "Completed"
+        );
+        orderStatusCB.setItems(sizes);
+
+        // Set a custom cell factory for the ComboBox
+        orderStatusCB.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                return new ListCell<String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setText(null);
+                            setStyle(""); // Reset the style
+                        } else {
+                            setText(item);
+                        }
+                    }
+                };
+            }
+        });
+    }
 }

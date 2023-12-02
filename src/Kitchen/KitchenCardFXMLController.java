@@ -4,6 +4,7 @@
  */
 package Kitchen;
 
+import ClassFiles.CustomerData;
 import ClassFiles.KitchenCardData;
 import ClassFiles.MilkteaItemData;
 import ClassFiles.OrderCardData;
@@ -27,6 +28,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -41,84 +44,136 @@ import javafx.scene.layout.GridPane;
 public class KitchenCardFXMLController implements Initializable {
 
     @FXML
+    private AnchorPane kitchenCardAP;
+
+    @FXML
     private Label custNoLBL;
 
     @FXML
     private GridPane orderCardGP;
 
-    private KitchenCardData kitchenCardData;
+    @FXML
+    private Label cashierLBL;
+
+    @FXML
+    private Label datetimeLBL;
+    
+    @FXML
+    private Button orderCompletedBTN;
+
+    @FXML
+    private ComboBox<String> wholeOrderStatusCB;
 
     private ObservableList<OrderCardData> orderCardData = FXCollections.observableArrayList();
 
     public void setKitchenCardData(KitchenCardData kitchenCardData) throws SQLException {
-        this.kitchenCardData = kitchenCardData;
+        // Fetch customer data from the invoice table
+        CustomerData customerData = getCustomerDataFromDatabase(kitchenCardData.getCustomerID());
 
-        String customerID = kitchenCardData.getCustomerID();
+        if (customerData != null) {
+            // Set data to corresponding components
+            custNoLBL.setText(customerData.getCustomerID());
 
-        // Set data to corresponding components
-        custNoLBL.setText(customerID);
+            // Set the retrieved employee name to the label
+            cashierLBL.setText(customerData.getCashierHandler());
 
-        // Retrieve orders for the specific customer
-        orderCardData = menuGetData(customerID);
+            // Retrieve orders for the specific customer
+            orderCardData = menuGetData(kitchenCardData.getCustomerID());
 
-        // Set data to the grid
-        orderGrid();
+            // Set data to the grid
+            orderGrid();
+
+            // Fetch and display date time
+            String dateTime = getDateTimeFromDatabase(kitchenCardData.getCustomerID());
+            datetimeLBL.setText(dateTime);
+        }
+    }
+
+    private String getDateTimeFromDatabase(String customerID) {
+        String dateTime = null;
+
+        try (Connection connection = database.getConnection()) {
+            String query = "SELECT date_time FROM invoice WHERE customer_id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, customerID);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        // Retrieve date time from the result set
+                        dateTime = resultSet.getString("date_time");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return dateTime;
+    }
+
+    private CustomerData getCustomerDataFromDatabase(String customerID) {
+        CustomerData customerData = null;
+
+        try (Connection connection = database.getConnection()) {
+            String query = "SELECT emp_name FROM invoice WHERE customer_id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, customerID);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        // Retrieve employee name from the result set
+                        String employeeName = resultSet.getString("emp_name");
+
+                        // Create a CustomerData object
+                        customerData = new CustomerData(customerID, employeeName);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return customerData;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // No need to retrieve all orders here
+        initializeSizeComboBox();
+
+        // Set the default value to "None" for all ComboBoxes
+        wholeOrderStatusCB.setValue("New Order!");
     }
 
     public ObservableList<OrderCardData> menuGetData(String customerID) {
-        String sql = "SELECT mt.item_name, mt.quantity, mt.size, mt.add_ons,\n"
-                + "       IFNULL(fd.fruit_flavor, 'None') AS fruit_flavor,\n"
-                + "       IFNULL(fd.sinkers, 'None') AS sinkers,\n"
-                + "       mt.sugar_level\n"
-                + "FROM milk_tea mt\n"
-                + "LEFT JOIN fruit_drink fd ON mt.customer_id = fd.customer_id\n"
-                + "LEFT JOIN frappe f ON mt.customer_id = f.customer_id\n"
-                + "WHERE mt.customer_id = ?;";
+        // Fetch milk tea data
+        ObservableList<OrderCardData> listData = fetchData("SELECT item_name, quantity, size, add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level FROM milk_tea WHERE customer_id = ?", customerID);
 
+        // Fetch fruit drink data
+        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, fruit_flavor, sinkers, 'None' AS sugar_level FROM fruit_drink WHERE customer_id = ?", customerID));
+
+        // Fetch frappe data
+        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level FROM frappe WHERE customer_id = ?", customerID));
+
+        return listData;
+    }
+
+    private ObservableList<OrderCardData> fetchData(String sql, String customerID) {
         ObservableList<OrderCardData> listData = FXCollections.observableArrayList();
-        Connection connect = null;
-        PreparedStatement prepare = null;
-        ResultSet result = null;
+        try (Connection connect = database.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql)) {
 
-        try {
-            connect = database.getConnection();
-            prepare = connect.prepareStatement(sql);
             prepare.setString(1, customerID);
 
-            result = prepare.executeQuery();
+            try (ResultSet result = prepare.executeQuery()) {
+                while (result.next()) {
+                    String itemName = result.getString("item_name");
+                    Integer quantity = result.getInt("quantity");
+                    String size = result.getString("size");
+                    String addOns = result.getString("add_ons");
+                    String fruitFlavor = result.getString("fruit_flavor");
+                    String sinkers = result.getString("sinkers");
+                    String sugarlvl = result.getString("sugar_level");
 
-            String currentCustomerID = null;
-
-            while (result.next()) {
-                String itemName = result.getString("item_name");
-                Integer quantity = result.getInt("quantity");
-                String size = result.getString("size");
-                String addOns = result.getString("add_ons");
-                String fruitFlavor = result.getString("fruit_flavor");
-                String sinkers = result.getString("sinkers");
-                String sugarlvl = result.getString("sugar_level");
-
-                // Print customer ID if it's a new customer
-                if (!customerID.equals(currentCustomerID)) {
-                    System.out.println("Customer ID: " + customerID);
-                    currentCustomerID = customerID;
-                }
-
-                System.out.println("Item Name: " + itemName);
-                System.out.println("Quantity: " + quantity);
-                System.out.println("Size: " + size);
-                System.out.println("Add Ons: " + addOns);
-                System.out.println("Fruit Flavor: " + fruitFlavor);
-                System.out.println("Sinkers: " + sinkers);
-                System.out.println("Sugar Level: " + sugarlvl);
-
-                // Filter orders based on the current custNoLBL
-                if (customerID.equals(custNoLBL.getText())) {
                     // Create an OrderCardData object and add it to the list
                     OrderCardData orderCardData = new OrderCardData(itemName, quantity, size, addOns, fruitFlavor, sinkers, sugarlvl);
                     listData.add(orderCardData);
@@ -126,21 +181,6 @@ public class KitchenCardFXMLController implements Initializable {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            // Close resources (result, prepare, connect) if needed
-            try {
-                if (result != null) {
-                    result.close();
-                }
-                if (prepare != null) {
-                    prepare.close();
-                }
-                if (connect != null) {
-                    connect.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
 
         return listData;
@@ -167,11 +207,21 @@ public class KitchenCardFXMLController implements Initializable {
                 }
 
                 orderCardGP.add(pane, column++, row);
-                GridPane.setMargin(pane, new Insets(20));
+                GridPane.setMargin(pane, new Insets(10));
 
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
+    }
+
+    private void initializeSizeComboBox() {
+        // Populate the sizeComboBox with items
+        ObservableList<String> sizes = FXCollections.observableArrayList(
+                "New Order!",
+                "In Progress",
+                "Completed"
+        );
+        wholeOrderStatusCB.setItems(sizes);
     }
 }

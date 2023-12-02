@@ -53,7 +53,7 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     private AnchorPane KitchenPane;
 
     @FXML
-    private AnchorPane archive;
+    private Pane archive;
 
     @FXML
     private Button archiveBTN;
@@ -62,7 +62,7 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     private Label dateLbl;
 
     @FXML
-    private AnchorPane orderTab;
+    private Pane orderTab;
 
     @FXML
     private Button orderTabBTN;
@@ -130,11 +130,7 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     }
 
     public ObservableList<KitchenCardData> kitchenGetData() {
-        String sql = "SELECT DISTINCT customer_id FROM milk_tea "
-                + "UNION "
-                + "SELECT DISTINCT customer_id FROM fruit_drink "
-                + "UNION "
-                + "SELECT DISTINCT customer_id FROM frappe";
+        String sql = "SELECT DISTINCT customer_id FROM invoice";
 
         ObservableList<KitchenCardData> listData = FXCollections.observableArrayList();
         Connection connect = null;
@@ -180,7 +176,9 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
         int column = 0;
         int row = 1;
 
-        for (KitchenCardData kitchenCardData : kitchenCardData) {
+        ObservableList<KitchenCardData> kitchenCardDataList = kitchenGetData();
+
+        for (KitchenCardData kitchenCardData : kitchenCardDataList) {
             try {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource("/Kitchen/KitchenCardFXML.fxml"));
@@ -189,8 +187,9 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
                 // Access the controller and set the data
                 KitchenCardFXMLController kitchenCardFXMLController = loader.getController();
                 kitchenCardFXMLController.setKitchenCardData(kitchenCardData);
+               
 
-                if (column == 2) {
+                if (column == 1) {
                     column = 0;
                     ++row;
                 }

@@ -1,27 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
 
-<AnchorPane id="AnchorPane" prefHeight="76.0" prefWidth="641.0" styleClass="anchorPaneBG" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Kitchen.OrderCardFXMLController">
+
+<AnchorPane prefHeight="38.0" prefWidth="763.0" styleClass="orderCard" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Kitchen.OrderCardFXMLController">
    <children>
-      <Label fx:id="nameLBL" layoutX="40.0" layoutY="25.0" prefHeight="43.0" prefWidth="64.0" text="Label" textFill="WHITE" />
-      <Label fx:id="qtyLBL" layoutX="131.0" layoutY="37.0" prefHeight="18.0" prefWidth="57.0" text="Label" textFill="WHITE" />
-      <Label fx:id="sizeLBL" layoutX="211.0" layoutY="37.0" prefHeight="18.0" prefWidth="64.0" text="Label" textFill="WHITE" />
-      <Label fx:id="addoLBL" layoutX="431.0" layoutY="38.0" prefHeight="18.0" prefWidth="58.0" text="Label" textFill="WHITE" />
-      <Label fx:id="fruitfLBL" layoutX="275.0" layoutY="37.0" prefHeight="18.0" prefWidth="82.0" text="Label" textFill="WHITE" />
-      <Label fx:id="sinkersLBL" layoutX="343.0" layoutY="37.0" prefHeight="18.0" prefWidth="75.0" text="Label" textFill="WHITE" />
-      <Label fx:id="sugarlvlLBL" layoutX="502.0" layoutY="37.0" prefHeight="18.0" prefWidth="64.0" text="Label" textFill="WHITE" />
-      <ImageView fitHeight="17.0" fitWidth="19.0" layoutX="558.0" layoutY="38.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Pictures/icons8-checkbox-24.png" />
-         </image>
-      </ImageView>
+      <AnchorPane id="AnchorPane" prefHeight="38.0" prefWidth="605.0" styleClass="anchorPaneBG" stylesheets="@../CSS/KitchenEmpsCSS.css">
+         <children>
+            <Label fx:id="nameLBL" alignment="CENTER" layoutX="14.0" layoutY="6.0" prefHeight="26.0" prefWidth="96.0" text="Classic Milktea" textAlignment="CENTER" textFill="WHITE" />
+            <Label fx:id="qtyLBL" alignment="CENTER" contentDisplay="CENTER" layoutX="129.0" layoutY="11.0" prefHeight="18.0" prefWidth="13.0" text="00" textFill="WHITE" />
+            <Label fx:id="sizeLBL" alignment="CENTER" contentDisplay="CENTER" layoutX="157.0" layoutY="12.0" prefHeight="18.0" prefWidth="46.0" text="Medium" textFill="WHITE" />
+            <Label fx:id="addoLBL" alignment="CENTER" layoutX="382.0" layoutY="12.0" prefHeight="18.0" prefWidth="77.0" text="Add Ons" textFill="WHITE" />
+            <Label fx:id="fruitfLBL" alignment="CENTER" contentDisplay="CENTER" layoutX="217.0" layoutY="12.0" prefHeight="18.0" prefWidth="76.0" text="Nata De Coco" textFill="WHITE" />
+            <Label fx:id="sinkersLBL" alignment="CENTER" layoutX="305.0" layoutY="11.0" prefHeight="18.0" prefWidth="62.0" text="Sinkers" textFill="WHITE" />
+            <Label fx:id="sugarlvlLBL" alignment="CENTER" layoutX="474.0" layoutY="11.0" prefHeight="18.0" prefWidth="66.0" text="Label" textFill="WHITE" />
+            <ImageView fitHeight="17.0" fitWidth="19.0" layoutX="566.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/icons8-checkbox-24.png" />
+               </image>
+            </ImageView>
+            <Line endX="100.0" layoutX="33.0" layoutY="20.0" rotate="90.0" startX="76.65909576416016" startY="0.051267027854919434" stroke="WHITE" strokeWidth="0.5" />
+            <Line endX="100.0" layoutX="61.0" layoutY="20.0" rotate="90.0" startX="76.65909576416016" startY="0.051267027854919434" stroke="WHITE" strokeWidth="0.5" />
+            <Line endX="100.0" layoutX="122.0" layoutY="19.0" rotate="90.0" startX="76.65909576416016" startY="0.051267027854919434" stroke="WHITE" strokeWidth="0.5" />
+            <Line endX="100.0" layoutX="210.0" layoutY="19.0" rotate="90.0" startX="76.65909576416016" startY="0.051267027854919434" stroke="WHITE" strokeWidth="0.5" />
+            <Line endX="100.0" layoutX="287.0" layoutY="19.0" rotate="90.0" startX="76.65909576416016" startY="0.051267027854919434" stroke="WHITE" strokeWidth="0.5" />
+            <Line endX="100.0" layoutX="378.0" layoutY="20.0" rotate="90.0" startX="76.65909576416016" startY="0.051267027854919434" stroke="WHITE" strokeWidth="0.5" />
+            <Line endX="100.0" layoutX="462.0" layoutY="20.0" rotate="90.0" startX="76.65909576416016" startY="0.051267027854919434" stroke="WHITE" strokeWidth="0.5" />
+         </children>
+      </AnchorPane>
+      <ComboBox fx:id="orderStatusCB" layoutX="627.0" layoutY="6.0" prefHeight="26.0" prefWidth="116.0" />
    </children>
-   <padding>
-      <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
-   </padding>
 </AnchorPane>
