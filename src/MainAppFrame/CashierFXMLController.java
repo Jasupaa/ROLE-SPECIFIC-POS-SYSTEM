@@ -1,5 +1,7 @@
 package MainAppFrame;
 
+import ClassFiles.CoffeeItemData;
+import ClassFiles.ExtrasItemData;
 import ClassFiles.FrappeItemData;
 import ClassFiles.FruitDrinkItemData;
 import Login.ControllerInterface;
@@ -55,10 +57,16 @@ import java.util.HashSet;
 
 import ClassFiles.ItemData;
 import ClassFiles.MilkteaItemData;
+import ClassFiles.RiceMealsItemData;
+import ClassFiles.SnacksItemData;
 import Databases.CRUDDatabase;
+import MenuController.RiceMealController;
+import MenuController.CoffeeController;
+import MenuController.ExtrasController;
 import MenuController.FrappeController;
 import MenuController.FruitDrinkController;
 import MenuController.MenuController;
+import MenuController.SnacksController;
 import com.mysql.cj.jdbc.Blob;
 
 public class CashierFXMLController implements Initializable, ControllerInterface {
@@ -151,6 +159,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     private ObservableList<MilkteaItemData> milkteaListData = FXCollections.observableArrayList();
     private ObservableList<FruitDrinkItemData> fruitdrinkListData = FXCollections.observableArrayList();
     private ObservableList<FrappeItemData> frappeListData = FXCollections.observableArrayList();
+    private ObservableList<CoffeeItemData> coffeeListData = FXCollections.observableArrayList();
+    private ObservableList<RiceMealsItemData> ricemealsListData = FXCollections.observableArrayList();
+    private ObservableList<SnacksItemData> snacksListData = FXCollections.observableArrayList();
+    private ObservableList<ExtrasItemData> extrasListData = FXCollections.observableArrayList();
 
     public void setTableViewAndList(TableView<ItemData> tableView, ObservableList<ItemData> dataList) {
         this.receiptTable = tableView;
@@ -336,6 +348,38 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     }
 
     @FXML
+    private void getMenu4(ActionEvent event) throws SQLException {
+        coffeeListData.clear();
+        coffeeListData.addAll(menuGetDataForCoffee());
+
+        refreshCoffeeGrid();
+    }
+
+    @FXML
+    private void getMenu5(ActionEvent event) throws SQLException {
+        ricemealsListData.clear();
+        ricemealsListData.addAll(menuGetDataForRiceMeals());
+
+        refreshRiceMealsGrid();
+    }
+
+    @FXML
+    private void getMenu6(ActionEvent event) throws SQLException {
+        snacksListData.clear();
+        snacksListData.addAll(menuGetDataForSnacks());
+
+        refreshSnacksGrid();
+    }
+
+    @FXML
+    private void getMenu7(ActionEvent event) throws SQLException {
+        extrasListData.clear();
+        extrasListData.addAll(menuGetDataForExtras());
+
+        refreshExtrasGrid();
+    }
+
+    @FXML
     private void handleMousePressed(MouseEvent event) {
         xOffset = event.getSceneX();
         yOffset = event.getSceneY();
@@ -401,7 +445,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
         return listData;
     }
-    
+
     public ObservableList<FruitDrinkItemData> menuGetDataForFruitDrink() {
 
         String sql = "SELECT * FROM fruitdrink_items";
@@ -503,6 +547,207 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         return listData;
     }
 
+    public ObservableList<CoffeeItemData> menuGetDataForCoffee() {
+
+        String sql = "SELECT * FROM coffee_items";
+
+        ObservableList<CoffeeItemData> listData = FXCollections.observableArrayList();
+        Connection connect = null;
+        PreparedStatement prepare = null;
+        ResultSet result = null;
+
+        try {
+            connect = CRUDDatabase.getConnection();
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                // Replace these column names with your actual column names from the "milktea_items" table
+                String itemName = result.getString("item_name");
+                String type = result.getString("type");
+                Integer smallPrice = result.getInt("small_price");
+                Integer mediumPrice = result.getInt("medium_price");
+                Integer largePrice = result.getInt("large_price");
+                Blob image = (Blob) result.getBlob("image");
+                Integer itemID = result.getInt("item_ID");
+
+                // Create a MilkteaItemData object and add it to the list
+                CoffeeItemData coffeeItemData = new CoffeeItemData(itemName, type, smallPrice, mediumPrice, largePrice, image, itemID);
+                listData.add(coffeeItemData);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (result, prepare, connect) if needed
+            try {
+                if (result != null) {
+                    result.close();
+                }
+                if (prepare != null) {
+                    prepare.close();
+                }
+                if (connect != null) {
+                    connect.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return listData;
+    }
+
+    public ObservableList<RiceMealsItemData> menuGetDataForRiceMeals() {
+
+        String sql = "SELECT * FROM ricemeals_items";
+
+        ObservableList<RiceMealsItemData> listData = FXCollections.observableArrayList();
+        Connection connect = null;
+        PreparedStatement prepare = null;
+        ResultSet result = null;
+
+        try {
+            connect = CRUDDatabase.getConnection();
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                // Replace these column names with your actual column names from the "milktea_items" table
+                String itemName = result.getString("item_name");
+                Integer price = result.getInt("price");
+
+                Blob image = (Blob) result.getBlob("image");
+                Integer itemID = result.getInt("item_ID");
+
+                // Create a MilkteaItemData object and add it to the list
+                RiceMealsItemData riceMealsItemData = new RiceMealsItemData(itemName, price, image, itemID);
+                listData.add(riceMealsItemData);
+
+            }
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        } finally {
+            // Close resources (result, prepare, connect) if needed
+            try {
+                if (result != null) {
+                    result.close();
+                }
+                if (prepare != null) {
+                    prepare.close();
+                }
+                if (connect != null) {
+                    connect.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return listData;
+    }
+
+    public ObservableList<SnacksItemData> menuGetDataForSnacks() {
+
+        String sql = "SELECT * FROM snacks_items";
+
+        ObservableList<SnacksItemData> listData = FXCollections.observableArrayList();
+        Connection connect = null;
+        PreparedStatement prepare = null;
+        ResultSet result = null;
+
+        try {
+            connect = CRUDDatabase.getConnection();
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                // Replace these column names with your actual column names from the "milktea_items" table
+                String itemName = result.getString("item_name");
+                Integer price = result.getInt("price");
+
+                Blob image = (Blob) result.getBlob("image");
+                Integer itemID = result.getInt("item_ID");
+
+                // Create a MilkteaItemData object and add it to the list
+                SnacksItemData snacksItemData = new SnacksItemData(itemName, price, image, itemID);
+                listData.add(snacksItemData);
+
+            }
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        } finally {
+            // Close resources (result, prepare, connect) if needed
+            try {
+                if (result != null) {
+                    result.close();
+                }
+                if (prepare != null) {
+                    prepare.close();
+                }
+                if (connect != null) {
+                    connect.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return listData;
+    }
+
+    public ObservableList<ExtrasItemData> menuGetDataForExtras() {
+
+        String sql = "SELECT * FROM extras_items";
+
+        ObservableList<ExtrasItemData> listData = FXCollections.observableArrayList();
+        Connection connect = null;
+        PreparedStatement prepare = null;
+        ResultSet result = null;
+
+        try {
+            connect = CRUDDatabase.getConnection();
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                // Replace these column names with your actual column names from the "milktea_items" table
+                String itemName = result.getString("item_name");
+                Integer price = result.getInt("price");
+
+                Blob image = (Blob) result.getBlob("image");
+                Integer itemID = result.getInt("item_ID");
+
+                // Create a MilkteaItemData object and add it to the list
+                ExtrasItemData extrasItemData = new ExtrasItemData(itemName, price, image, itemID);
+                listData.add(extrasItemData);
+
+            }
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        } finally {
+            // Close resources (result, prepare, connect) if needed
+            try {
+                if (result != null) {
+                    result.close();
+                }
+                if (prepare != null) {
+                    prepare.close();
+                }
+                if (connect != null) {
+                    connect.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return listData;
+    }
+
     public ObservableList<ItemData> menuGetMilkteaAndFrappe() {
         ObservableList<ItemData> listData = FXCollections.observableArrayList();
 
@@ -522,14 +767,25 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? "
                 + "UNION "
                 + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM frappe WHERE customer_id = ? "
-                + "ORDER BY date_time"
-                + " Asc";
+                + "UNION "
+                + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM coffee WHERE customer_id = ? "
+                + "UNION "
+                + "SELECT order_id, ' ' AS size, item_name, final_price, quantity, date_time FROM rice_meal WHERE customer_id = ? "
+                + "UNION "
+                + "SELECT order_id, ' ' AS size, item_name, final_price, quantity, date_time FROM snacks WHERE customer_id = ? "
+                + "UNION "
+                + "SELECT order_id, ' ' AS size, item_name, final_price, quantity, date_time FROM extras WHERE customer_id = ? "
+                + "ORDER BY date_time Asc";
 
         try (Connection connect = database.getConnection(); PreparedStatement combinedPrepare = connect.prepareStatement(combinedSql)) {
 
             combinedPrepare.setInt(1, customerID);
             combinedPrepare.setInt(2, customerID);
             combinedPrepare.setInt(3, customerID);
+            combinedPrepare.setInt(4, customerID);
+            combinedPrepare.setInt(5, customerID);
+            combinedPrepare.setInt(6, customerID);
+            combinedPrepare.setInt(7, customerID);
 
             ResultSet combinedResult = combinedPrepare.executeQuery();
             while (combinedResult.next()) {
@@ -738,6 +994,126 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 // Access the controller and set the data
                 FrappeController frappeController = loader.getController();
                 frappeController.setFrappeItemData(frappeItemData);
+
+                if (column == 1) {
+                    column = 0;
+                    ++row;
+                }
+
+                menuGrid.add(pane, column++, row);
+                GridPane.setMargin(pane, new Insets(20));
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void refreshCoffeeGrid() throws SQLException {
+        menuGrid.getChildren().clear();
+        int column = 0;
+        int row = 1;
+
+        for (CoffeeItemData coffeeItemData : coffeeListData) {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/MenuFXML/Coffee.fxml"));
+                AnchorPane pane = loader.load();
+
+                // Access the controller and set the data
+                CoffeeController coffeeController = loader.getController();
+
+                coffeeController.setCoffeeItemData(coffeeItemData);
+
+                if (column == 1) {
+                    column = 0;
+                    ++row;
+                }
+
+                menuGrid.add(pane, column++, row);
+                GridPane.setMargin(pane, new Insets(20));
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void refreshRiceMealsGrid() throws SQLException {
+        menuGrid.getChildren().clear();
+        int column = 0;
+        int row = 1;
+
+        for (RiceMealsItemData riceMealsItemData : ricemealsListData) {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/MenuFXML/RiceMeal.fxml"));
+                AnchorPane pane = loader.load();
+
+                // Access the controller and set the data
+                RiceMealController riceMealController = loader.getController();
+
+                riceMealController.setRiceMealsItemData(riceMealsItemData);
+
+                if (column == 1) {
+                    column = 0;
+                    ++row;
+                }
+
+                menuGrid.add(pane, column++, row);
+                GridPane.setMargin(pane, new Insets(20));
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void refreshSnacksGrid() throws SQLException {
+        menuGrid.getChildren().clear();
+        int column = 0;
+        int row = 1;
+
+        for (SnacksItemData snacksItemData : snacksListData) {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/MenuFXML/Snacks.fxml"));
+                AnchorPane pane = loader.load();
+
+                // Access the controller and set the data
+                SnacksController snacksController = loader.getController();
+
+                snacksController.setSnacksItemData(snacksItemData);
+
+                if (column == 1) {
+                    column = 0;
+                    ++row;
+                }
+
+                menuGrid.add(pane, column++, row);
+                GridPane.setMargin(pane, new Insets(20));
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void refreshExtrasGrid() throws SQLException {
+        menuGrid.getChildren().clear();
+        int column = 0;
+        int row = 1;
+
+        for (ExtrasItemData extrasItemData : extrasListData) {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/MenuFXML/Extras.fxml"));
+                AnchorPane pane = loader.load();
+
+                // Access the controller and set the data
+                ExtrasController extrasController = loader.getController();
+
+                extrasController.setExtrasItemData(extrasItemData);
 
                 if (column == 1) {
                     column = 0;
