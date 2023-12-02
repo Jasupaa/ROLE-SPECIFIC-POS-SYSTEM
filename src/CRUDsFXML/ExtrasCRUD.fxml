@@ -4,39 +4,27 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.FruitDrinkCRUDController">
+<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.ExtrasCRUDController">
    <children>
-      <TableView fx:id="fruitDrinkTV" layoutX="39.0" layoutY="51.0" prefHeight="350.0" prefWidth="285.0">
+      <TableView fx:id="extrasTV" layoutX="39.0" layoutY="51.0" prefHeight="350.0" prefWidth="285.0">
         <columns>
-          <TableColumn fx:id="itemMT" prefWidth="91.20001220703125" text="Item" />
-          <TableColumn fx:id="smallMT" prefWidth="36.0" text="S" />
-            <TableColumn fx:id="medMT" prefWidth="36.79998779296875" text="M" />
-            <TableColumn fx:id="largeMT" prefWidth="35.20001220703125" text="L" />
-            <TableColumn fx:id="fruitfFlavorMT" prefWidth="84.00002441406252" text="Fruit Flavor" />
-            <TableColumn fx:id="sinkersMT" prefWidth="84.00002441406252" text="Sinkers" />
+          <TableColumn fx:id="itemMT" prefWidth="160.79998779296875" text="Item" />
+          <TableColumn fx:id="priceMT" prefWidth="124.800048828125" text="Price" />
         </columns>
       </TableView>
       <TextField fx:id="txtItemName" layoutX="609.0" layoutY="94.0" prefHeight="26.0" prefWidth="200.0" promptText="Eg. Classic Milktea" />
-      <TextField fx:id="txtSmallPrice" layoutX="720.0" layoutY="128.0" prefHeight="26.0" prefWidth="88.0" promptText="P 0.00" />
-      <TextField fx:id="txtMediumPrice" layoutX="720.0" layoutY="163.0" prefHeight="26.0" prefWidth="88.0" promptText="P 0.00" />
-      <TextField fx:id="txtLargePrice" layoutX="720.0" layoutY="198.0" prefHeight="26.0" prefWidth="88.0" promptText="P 0.00" />
-      <TextArea fx:id="txtFruitFlavor" layoutX="612.0" layoutY="234.0" prefHeight="58.0" prefWidth="200.0" promptText="Eg. Strawberry, Chocolate" />
+      <TextField fx:id="txtPrice" layoutX="611.0" layoutY="138.0" prefHeight="26.0" prefWidth="88.0" promptText="P 0.00" />
       <Button fx:id="addBTN" layoutX="766.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Add" />
       <Label layoutX="533.0" layoutY="98.0" text="Item Name" />
-      <Label layoutX="533.0" layoutY="143.0" text="Size Prices" />
-      <Label layoutX="667.0" layoutY="132.0" text="Small" />
-      <Label layoutX="667.0" layoutY="167.0" text="Medium" />
-      <Label layoutX="666.0" layoutY="202.0" text="Large" />
-      <Label layoutX="538.0" layoutY="250.0" text="Fruit Flavor" />
+      <Label layoutX="563.0" layoutY="142.0" text="Price" />
       <ImageView fitHeight="18.0" fitWidth="209.0" layoutX="353.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Pictures/Add_FruitDrink.png" />
+            <Image url="@../Pictures/Add_Extras.png" />
          </image>
       </ImageView>
       <AnchorPane layoutX="353.0" layoutY="90.0" prefHeight="152.0" prefWidth="138.0" styleClass="containerglass" stylesheets="@../CSS/AdminCSS.css">
@@ -53,7 +41,5 @@
       <Button fx:id="addBTN1" layoutX="717.0" layoutY="375.0" mnemonicParsing="false" onAction="#clearInput" text="Clear" />
       <Button fx:id="updtBTN" layoutX="655.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Update" />
       <Button fx:id="dltBtn" layoutX="598.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Delete" />
-      <TextArea fx:id="txtSinkers" layoutX="612.0" layoutY="302.0" prefHeight="58.0" prefWidth="200.0" promptText="Eg. Strawberry, Chocolate" />
-      <Label layoutX="552.0" layoutY="322.0" text="Sinkers" />
    </children>
 </AnchorPane>

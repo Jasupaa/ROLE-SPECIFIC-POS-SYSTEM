@@ -139,6 +139,14 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private volatile boolean stop = false;
     private LocalDate currentDate = LocalDate.now();
+    
+   
+    
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+        
+        empName.setText(employeeName);
+    }
 
     private ObservableList<MilkteaItemData> milkteaListData = FXCollections.observableArrayList();
 
@@ -358,9 +366,9 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
-
+                Integer itemID = result.getInt("item_ID");
                 // Create a MilkteaItemData object and add it to the list
-                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice, image);
+                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice, image, itemID);
                 listData.add(milkteaItemData);
 
             }
@@ -596,6 +604,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
     }
 
     private void refreshMenuGrid() throws SQLException {
+        
         menuGrid.getChildren().clear();
         int column = 0;
         int row = 1;

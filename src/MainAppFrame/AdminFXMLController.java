@@ -171,6 +171,99 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Handle the exception (e.g., show an error dialog)
         }
     }
+    
+    @FXML
+    private void handleFruitDrinkButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/FruitDrinkCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+    
+    
+    @FXML
+    private void handleCoffeeButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/CoffeeCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+    
+    
+    @FXML
+    private void handleRiceMealsButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/RiceMealsCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+    
+    @FXML
+    private void handleSnacksButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/SnacksCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+    
+    @FXML
+    private void handleExtrasButtonClick(ActionEvent event) {
+        try {
+            // Load the MilkteaCRUDFXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/ExtrasCRUD.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the MilkteaCRUDFXML
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+    
 
     @FXML
     private void handleFrappeButtonClick(ActionEvent event) {
