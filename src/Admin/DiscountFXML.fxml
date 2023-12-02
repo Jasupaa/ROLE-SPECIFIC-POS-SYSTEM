@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="Admin.DiscountFXMLController">
+   <children>
+      <TableView layoutX="19.0" layoutY="68.0" prefHeight="333.0" prefWidth="811.0">
+        <columns>
+          <TableColumn prefWidth="105.33333969116211" text="Code" />
+            <TableColumn prefWidth="97.99996948242188" text="Discount" />
+            <TableColumn prefWidth="255.0" text="Description" />
+            <TableColumn prefWidth="175.0" text="Created At" />
+            <TableColumn prefWidth="175.0" text="Valid At" />
+        </columns>
+      </TableView>
+      <Button layoutX="651.0" layoutY="23.0" mnemonicParsing="false" prefHeight="15.0" prefWidth="172.0" text="+ Add Coupon" />
+      <Button fx:id="DelBtn" layoutX="732.0" layoutY="413.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Delete" />
+      <Button fx:id="EditBtn" layoutX="620.0" layoutY="413.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Edit" />
+   </children>
+</AnchorPane>
