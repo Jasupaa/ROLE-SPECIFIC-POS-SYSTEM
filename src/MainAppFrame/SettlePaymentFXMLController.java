@@ -226,6 +226,9 @@ public class SettlePaymentFXMLController implements Initializable {
         }
     }
 
+
+    
+
     @FXML
     void discEnterButton(ActionEvent event) {
 

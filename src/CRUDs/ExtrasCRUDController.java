@@ -263,7 +263,7 @@ public class ExtrasCRUDController implements Initializable {
     private ObservableList<ExtrasItemData> fetchDataFromDatabase() {
         ObservableList<ExtrasItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name,price FROM extras_items";
+        String sql = "SELECT item_id, item_name, price, image FROM extras_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
