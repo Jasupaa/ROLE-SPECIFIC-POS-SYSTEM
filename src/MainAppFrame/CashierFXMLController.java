@@ -271,7 +271,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             settlePaymentController.setExistingCashierController(this, employeeName, employeeId);
 
             // Set the order type
-            settlePaymentController.setOrderType("Take Out");
+            settlePaymentController.setOrderType("Dine In");
 
             settlePaymentStage.show();
             blurPane.setVisible(true);

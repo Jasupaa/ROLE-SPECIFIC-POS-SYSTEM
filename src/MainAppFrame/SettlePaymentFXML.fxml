@@ -18,58 +18,58 @@
          <children>
             <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="434.0" prefWidth="330.0" style="-fx-border-radius: 5px;">
                <children>
-                  <Pane layoutX="159.0" layoutY="14.0" prefHeight="472.0" prefWidth="392.0" style="-fx-background-color: #111315; -fx-border-color: #FFFFFF; -fx-border-style: dashed; -fx-border-radius: 5px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Pane layoutX="159.0" layoutY="14.0" prefHeight="472.0" prefWidth="392.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #FFFFFF; -fx-border-style: dashed; -fx-border-radius: 5px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <AnchorPane prefHeight="420.0" prefWidth="330.0" style="-fx-border-radius: 5px;">
+                        <AnchorPane prefHeight="434.0" prefWidth="330.0" style="-fx-border-radius: 5px;">
                            <children>
-                              <ImageView fitHeight="68.0" fitWidth="95.0" layoutX="118.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
-                                 <image>
-                                    <Image url="@../Pictures/Splashscreen%20(1).png" />
-                                 </image>
-                              </ImageView>
-                              <TableView fx:id="tableView" layoutX="15.0" layoutY="123.0" prefHeight="196.0" prefWidth="300.0" style="-fx-background-color: transparent;">
+                              <TableView fx:id="tableView" layoutX="15.0" layoutY="123.0" prefHeight="180.0" prefWidth="300.0" style="-fx-background-color: transparent;">
                                  <columns>
                                     <TableColumn fx:id="Product" prefWidth="169.60003662109375" text="Product" />
                                     <TableColumn fx:id="Quantity" prefWidth="68.7999267578125" text="Quantity" />
                                     <TableColumn fx:id="Price" prefWidth="58.4000244140625" text="Price" />
                                  </columns>
                               </TableView>
-                              <Label layoutX="15.0" layoutY="98.0" text="Served By:" textFill="#d4d4d4" />
-                              <Label layoutX="17.0" layoutY="312.0" text="SUBTOTAL:" textFill="#d4d4d4" />
-                              <Label layoutX="17.0" layoutY="329.0" text="DISCOUNT:" textFill="#d4d4d4" />
-                              <Label layoutX="17.0" layoutY="349.0" text="TOTAL:" textFill="#d4d4d4" />
-                              <Label fx:id="handlerName" layoutX="74.0" layoutY="97.0" text="Serrano" textFill="WHITE">
+                              <Label layoutX="15.0" layoutY="98.0" text="Served By:" />
+                              <Label layoutX="17.0" layoutY="312.0" text="SUBTOTAL:" />
+                              <Label layoutX="17.0" layoutY="329.0" text="DISCOUNT:" />
+                              <Label layoutX="17.0" layoutY="349.0" text="TOTAL:" />
+                              <Label fx:id="handlerName" layoutX="74.0" layoutY="97.0" text="Serrano">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="subTotal" layoutX="266.0" layoutY="311.0" text="Subtotal" textFill="WHITE">
+                              <Label fx:id="subTotal" layoutX="265.0" layoutY="311.0" text="Subtotal">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="discount" layoutX="264.0" layoutY="328.0" text="Discount" textFill="WHITE">
+                              <Label fx:id="discount" layoutX="264.0" layoutY="328.0" text="Discount">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="total" layoutX="264.0" layoutY="348.0" text="Total" textFill="WHITE">
+                              <Label fx:id="itmTotalTxtLbl" layoutX="264.0" layoutY="348.0" text="Total">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="17.0" layoutY="373.0" text="CASH:" textFill="#d4d4d4" />
-                              <Label layoutX="16.0" layoutY="392.0" text="CHANGE DUE:" textFill="#d4d4d4" />
-                              <Label fx:id="cash" layoutX="264.0" layoutY="372.0" text="Cash" textFill="WHITE">
+                              <Label layoutX="17.0" layoutY="373.0" text="CASH:" />
+                              <Label layoutX="16.0" layoutY="392.0" text="CHANGE DUE:" />
+                              <Label fx:id="cash" layoutX="264.0" layoutY="372.0" text="Cash">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="change" layoutX="263.0" layoutY="391.0" text="Change" textFill="WHITE">
+                              <Label fx:id="change" layoutX="263.0" layoutY="391.0" text="Change">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
+                              <ImageView fitHeight="68.0" fitWidth="95.0" layoutX="118.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                 <image>
+                                    <Image url="@../Pictures/Splashscreen%20(2).png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </AnchorPane>
                      </children>

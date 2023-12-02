@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
+<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
     <children>
       <ScrollPane fx:id="receiptScrollPane" layoutX="211.0" layoutY="151.0" prefHeight="450.0" prefWidth="449.0" styleClass="scrollPane" stylesheets="@../CSS/CashierCSS.css" AnchorPane.topAnchor="151.0">
          <content>
@@ -30,7 +30,7 @@
          </padding></ScrollPane>
       <Pane layoutX="705.0" prefHeight="660.0" prefWidth="442.0" styleClass="panedesign" stylesheets="@../CSS/CashierCSS.css">
          <children>
-            <Button fx:id="takeOrderButton" layoutX="231.0" layoutY="561.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
+            <Button fx:id="takeOrderButton" layoutX="231.0" layoutY="561.0" mnemonicParsing="false" onAction="#takeOutOrder" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
                      <image>

@@ -32,6 +32,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import ClassFiles.ControllerManager;
+import javafx.scene.control.Label;
 
 /**
  * FXML Controller class
@@ -81,11 +82,18 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     private Button printButton;
+    
+    @FXML
+    private Label handlerName;
 
     private CashierFXMLController existingCashierController;
 
     private String empName;
     private int empId;
+    
+    private String employeeName;
+    
+    private int employeeId;
 
     public void setExistingCashierController(CashierFXMLController cashierController, String employeeName, int employeeId) {
         this.existingCashierController = cashierController;
@@ -408,4 +416,20 @@ public class SettlePaymentFXMLController implements Initializable {
         }); 
 
     }
+    
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+
+        handlerName.setText(employeeName);
+    }
+    
+    public void setEmployee(String employeeName) {
+        this.employeeName = employeeName;
+        this.employeeId = employeeId;
+
+        handlerName.setText(employeeName);
+    }
+    
+    
+    
 }
