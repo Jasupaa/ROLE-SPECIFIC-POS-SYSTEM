@@ -12,7 +12,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="479.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuController.MenuController">
    <children>
-      <Pane prefHeight="480.0" prefWidth="393.0" styleClass="containerColor" stylesheets="@../CSS/CashierCSS.css">
+      <Pane prefHeight="480.0" prefWidth="393.0" styleClass="containerColorMT" stylesheets="@../CSS/CashierCSS.css">
          <children>
             <Spinner fx:id="spinnerQuantity" layoutX="133.0" layoutY="195.0" prefHeight="25.0" prefWidth="130.0" />
             <Button fx:id="confirmButton1" layoutX="246.0" layoutY="415.0" mnemonicParsing="false" onAction="#confirmButton1" text="Confirm" />

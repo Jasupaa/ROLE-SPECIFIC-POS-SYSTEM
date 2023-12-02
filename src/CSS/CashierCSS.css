@@ -31,18 +31,38 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0.5, 2, 2);
 }
 
-.containerColor {
-    -fx-background-color: #99C8E2;
+.containerColorMT {
+    -fx-background-color: #D68383;
     -fx-background-radius: 10px;
 }
 
 .containerColorFD {
-    -fx-background-color: #B6B7F1;
+    -fx-background-color: #798BBA;
+    -fx-background-radius: 10px;
+}
+
+.containerColorFR {
+    -fx-background-color: #77B77F;
+    -fx-background-radius: 10px;
+}
+
+.containerColorCF {
+    -fx-background-color: #B0814B;
     -fx-background-radius: 10px;
 }
 
 .containerColorRM {
-    -fx-background-color: #DFC3CD;
+    -fx-background-color: #8C8989;
+    -fx-background-radius: 10px;
+}
+
+.containerColorSN {
+    -fx-background-color: #D7C66E;
+    -fx-background-radius: 10px;
+}
+
+.containerColorEX {
+    -fx-background-color: #54B885;
     -fx-background-radius: 10px;
 }
 

@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="447.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CoffeeController">
+<AnchorPane id="AnchorPane" prefHeight="447.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CoffeeController">
    <children>
-      <Pane prefHeight="453.0" prefWidth="393.0" styleClass="containerColorFD" stylesheets="@../CSS/CashierCSS.css">
+      <Pane prefHeight="453.0" prefWidth="393.0" styleClass="containerColorCF" stylesheets="@../CSS/CashierCSS.css">
          <children>
             <Spinner fx:id="spinnerQuantity" layoutX="133.0" layoutY="195.0" prefHeight="25.0" prefWidth="130.0" />
             <Button fx:id="confirmButton1" layoutX="246.0" layoutY="387.0" mnemonicParsing="false" text="Confirm" />

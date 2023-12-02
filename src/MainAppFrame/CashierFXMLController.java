@@ -157,7 +157,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         this.menuMilkteaAndFrappeListData = dataList;
     }
 
-   
     private String employeeName;
     private int employeeId;
 
@@ -280,7 +279,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             // Handle exceptions accordingly
         }
     }
-    
+
     @FXML
     void takeOrder(ActionEvent event) {
         try {
@@ -347,12 +346,20 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
         thread.start();
     }
-    
+
     @FXML
     private void getMenu1(ActionEvent event) throws SQLException {
         milkteaListData.clear();
         milkteaListData.addAll(menuGetData());
-        
+
+        refreshMenuGrid();
+    }
+
+    @FXML
+    private void getMenu1() throws SQLException {
+        milkteaListData.clear();
+        milkteaListData.addAll(menuGetData());
+
         refreshMenuGrid();
     }
 
@@ -792,8 +799,12 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
 
+        try {
+            getMenu1();
+        } catch (SQLException ex) {
+            Logger.getLogger(CashierFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         try {
             refreshMenuGrid();
         } catch (SQLException ex) {
