@@ -19,7 +19,7 @@
       <Text layoutX="259.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description" />
       <Text layoutX="260.0" layoutY="250.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Created At" />
       <Text layoutX="382.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Valid Until" />
-      <Button fx:id="CreateBtn" layoutX="262.0" layoutY="309.0" mnemonicParsing="false" onAction="#handleCreateButtonAction" prefHeight="26.0" prefWidth="66.0" text="Create" />
+      <Button fx:id="EditBtn" layoutX="262.0" layoutY="309.0" mnemonicParsing="false" onAction="#updateCreateButtonAction" prefHeight="26.0" prefWidth="66.0" text="Edit" />
       <Button fx:id="CLRBtn" layoutX="337.0" layoutY="309.0" mnemonicParsing="false" onAction="#handleClearButtonAction" prefHeight="26.0" prefWidth="66.0" text="Clear" />
       <Pane prefHeight="400.0" prefWidth="205.0" styleClass="CRUDPaneBG" stylesheets="@../CSS/AdminCSS.css" />
       <Text layoutX="259.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Coupon Details" wrappingWidth="195.99997558593736">
