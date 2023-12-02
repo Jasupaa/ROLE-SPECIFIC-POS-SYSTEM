@@ -138,7 +138,7 @@ public class FruitDrinkCRUDController implements Initializable {
     /* ito yung para sa paginsert sa database, magvavary siya sa kung ano lang yung kinukuha sa CRUD */
     @FXML
     private void handleAddButtonClick(ActionEvent event) throws IOException {
-
+ FruitDrinkItemData selectedItem = fruitDrinkTV.getSelectionModel().getSelectedItem();
         try (Connection connection = CRUDDatabase.getConnection()) {
             /* gumawa ako bagong database class kasi bagong database gagamitin natin */
             if (connection != null) {
@@ -152,11 +152,46 @@ public class FruitDrinkCRUDController implements Initializable {
 
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
-                insertFruitDrinkItem(connection, itemName, smallPrice, mediumPrice, largePrice, fruitFlavor, sinkers,imageInputStream);
-
+               
                 // Call the method to insert data into the database
                 Button clickedButton = (Button) event.getSource();
                 String buttonId = clickedButton.getId();
+                
+                switch (buttonId) {
+                case "addBTN" -> {
+           
+                    insertFruitDrinkItem(connection, itemName,smallPrice, mediumPrice, largePrice,fruitFlavor, sinkers , imageInputStream);
+                    System.out.println("Data inserted.");
+                    }
+                case "updtBTN" -> {
+                    if (selectedItem != null) {
+                        int itemID = selectedItem.getItemID();
+                          selectedItem.setItemID(itemID);
+                        updateFruitDrinkItem(connection, itemName,smallPrice, mediumPrice, largePrice,fruitFlavor, sinkers , imageInputStream, itemID);
+                        System.out.println("Data updated.");
+                    } else {
+                        System.out.println("No item selected for update.");
+                    }           }
+                case "dltBtn" -> {
+                
+                
+               if (selectedItem != null) {
+                        // Display confirmation dialog before deletion
+                        boolean confirmDelete = showDeleteConfirmation();
+                        if (confirmDelete) {
+                            int itemID = selectedItem.getItemID();
+                            deleteFruitDrinkItem(connection, itemID);
+                            System.out.println("Data deleted.");
+                        } else {
+                            System.out.println("Deletion canceled.");
+                        }
+                    } else {
+                        System.out.println("No item selected for deletion.");
+                    }
+                }
+            
+                
+            }
 
                 clearTextFields();
                 displayMilktea();
@@ -241,7 +276,7 @@ public class FruitDrinkCRUDController implements Initializable {
         }
     }
 
-    private void deleteMilkteaItem(Connection connection, int itemID) {
+    private void deleteFruitDrinkItem(Connection connection, int itemID) {
         String sql = "DELETE FROM fruitdrink_items WHERE item_ID = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {

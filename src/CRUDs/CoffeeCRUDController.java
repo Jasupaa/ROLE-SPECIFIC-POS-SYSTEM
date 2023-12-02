@@ -146,13 +146,45 @@ public class CoffeeCRUDController implements Initializable {
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
 
-                // Call the method to insert data into the database
-                insertCoffeeItem(connection, itemName, type, smallPrice, mediumPrice, largePrice, imageInputStream);
-
+               
                 Button clickedButton = (Button) event.getSource();
                 String buttonId = clickedButton.getId();
 
+                switch (buttonId) {
+                case "addBTN" -> {
+           
+                    insertCoffeeItem(connection, itemName,type , smallPrice, mediumPrice, largePrice, imageInputStream);
+                    System.out.println("Data inserted.");
+                    }
+                case "updtBTN" -> {
+                    if (selectedItem != null) {
+                        int itemID = selectedItem.getItemID();
+                          selectedItem.setItemID(itemID);
+                        updateCoffeeItem(connection, itemName,type, smallPrice, mediumPrice, largePrice, imageInputStream, itemID);
+                        System.out.println("Data updated.");
+                    } else {
+                        System.out.println("No item selected for update.");
+                    }           }
+                case "dltBtn" -> {
                 
+                
+               if (selectedItem != null) {
+                        // Display confirmation dialog before deletion
+                        boolean confirmDelete = showDeleteConfirmation();
+                        if (confirmDelete) {
+                            int itemID = selectedItem.getItemID();
+                            deleteCoffeeItem(connection, itemID);
+                            System.out.println("Data deleted.");
+                        } else {
+                            System.out.println("Deletion canceled.");
+                        }
+                    } else {
+                        System.out.println("No item selected for deletion.");
+                    }
+                }
+            
+                
+            }
 
                 clearTextFields();
                 displayCoffee();
@@ -234,8 +266,8 @@ public class CoffeeCRUDController implements Initializable {
         }
     }
 
-    private void deleteMilkteaItem(Connection connection, int itemID) {
-        String sql = "DELETE FROM milktea_items WHERE item_ID = ?";
+    private void deleteCoffeeItem(Connection connection, int itemID) {
+        String sql = "DELETE FROM coffee_items WHERE item_ID = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, itemID);

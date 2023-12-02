@@ -125,13 +125,44 @@ public class RiceMealsCRUDController implements Initializable{
                 
               
       
-                // Call the method to insert data into the database
-              insertRiceMealsItem(connection, itemName, price,imageInputStream);
-
              Button clickedButton = (Button) event.getSource();
             String buttonId = clickedButton.getId();
 
+            switch (buttonId) {
+                case "addBTN" -> {
+           
+                    insertRiceMealsItem(connection, itemName,price, imageInputStream);
+                    System.out.println("Data inserted.");
+                    }
+                case "updtBTN" -> {
+                    if (selectedItem != null) {
+                        int itemID = selectedItem.getItemID();
+                          selectedItem.setItemID(itemID);
+                        updateRiceMealsItem(connection, itemName, price, imageInputStream, itemID);
+                        System.out.println("Data updated.");
+                    } else {
+                        System.out.println("No item selected for update.");
+                    }           }
+                case "dltBtn" -> {
+                
+                
+               if (selectedItem != null) {
+                        // Display confirmation dialog before deletion
+                        boolean confirmDelete = showDeleteConfirmation();
+                        if (confirmDelete) {
+                            int itemID = selectedItem.getItemID();
+                            deleteRiceMealsItem(connection, itemID);
+                            System.out.println("Data deleted.");
+                        } else {
+                            System.out.println("Deletion canceled.");
+                        }
+                    } else {
+                        System.out.println("No item selected for deletion.");
+                    }
+                }
             
+                
+            }
 
                 clearTextFields();
                 displayRiceMeals();

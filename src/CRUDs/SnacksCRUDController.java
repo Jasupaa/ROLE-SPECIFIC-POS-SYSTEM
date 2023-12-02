@@ -127,11 +127,45 @@ public class SnacksCRUDController implements Initializable{
                 
               
       
-                // Call the method to insert data into the database
-              insertSnacksItem(connection, itemName, price,imageInputStream);
 
              Button clickedButton = (Button) event.getSource();
             String buttonId = clickedButton.getId();
+            
+            switch (buttonId) {
+                case "addBTN" -> {
+           
+                    insertSnacksItem(connection, itemName, price,imageInputStream);
+                    System.out.println("Data inserted.");
+                    }
+                case "updtBTN" -> {
+                    if (selectedItem != null) {
+                        int itemID = selectedItem.getItemID();
+                          selectedItem.setItemID(itemID);
+                        updateSnacksItem(connection, itemName, price, imageInputStream, itemID);
+                        System.out.println("Data updated.");
+                    } else {
+                        System.out.println("No item selected for update.");
+                    }           }
+                case "dltBtn" -> {
+                
+                
+               if (selectedItem != null) {
+                        // Display confirmation dialog before deletion
+                        boolean confirmDelete = showDeleteConfirmation();
+                        if (confirmDelete) {
+                            int itemID = selectedItem.getItemID();
+                            deleteSnacksItem(connection, itemID);
+                            System.out.println("Data deleted.");
+                        } else {
+                            System.out.println("Deletion canceled.");
+                        }
+                    } else {
+                        System.out.println("No item selected for deletion.");
+                    }
+                }
+            
+                
+            }
 
            
 

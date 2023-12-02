@@ -123,12 +123,45 @@ public class ExtrasCRUDController implements Initializable {
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
 
-                // Call the method to insert data into the database
-                insertExtrasItem(connection, itemName, price, imageInputStream);
-
                 Button clickedButton = (Button) event.getSource();
                 String buttonId = clickedButton.getId();
 
+                 switch (buttonId) {
+                case "addBTN" -> {
+           
+                    insertExtrasItem(connection, itemName, price,imageInputStream);
+                    System.out.println("Data inserted.");
+                    }
+                case "updtBTN" -> {
+                    if (selectedItem != null) {
+                        int itemID = selectedItem.getItemID();
+                          selectedItem.setItemID(itemID);
+                        updateExtrasItem(connection, itemName, price, imageInputStream, itemID);
+                        System.out.println("Data updated.");
+                    } else {
+                        System.out.println("No item selected for update.");
+                    }           }
+                case "dltBtn" -> {
+                
+                
+               if (selectedItem != null) {
+                        // Display confirmation dialog before deletion
+                        boolean confirmDelete = showDeleteConfirmation();
+                        if (confirmDelete) {
+                            int itemID = selectedItem.getItemID();
+                            deleteExtrasItem(connection, itemID);
+                            System.out.println("Data deleted.");
+                        } else {
+                            System.out.println("Deletion canceled.");
+                        }
+                    } else {
+                        System.out.println("No item selected for deletion.");
+                    }
+                }
+            
+                
+            }
+                
                 clearTextFields();
                 displayExtras();
 
