@@ -263,7 +263,7 @@ public class SnacksCRUDController implements Initializable {
     private ObservableList<SnacksItemData> fetchDataFromDatabase() {
         ObservableList<SnacksItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name,price FROM snacks_items";
+        String sql = "SELECT item_id, item_name ,price, image FROM snacks_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 

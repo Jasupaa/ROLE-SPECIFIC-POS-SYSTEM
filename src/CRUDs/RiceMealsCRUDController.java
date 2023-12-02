@@ -3,6 +3,8 @@ package CRUDs;
 
 import ClassFiles.RiceMealsItemData;
 import Databases.CRUDDatabase;
+import MainAppFrame.CashierFXMLController;
+import MainAppFrame.database;
 import java.sql.Blob;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -11,6 +13,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,14 +29,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -75,7 +79,7 @@ public class RiceMealsCRUDController implements Initializable {
 
     private Image selectedImage;
 
-    private ObservableList<RiceMealsItemData> riceMealsItemData = FXCollections.observableArrayList();
+    private ObservableList<RiceMealsItemData> ricemealsItemData = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -264,7 +268,7 @@ public class RiceMealsCRUDController implements Initializable {
     private ObservableList<RiceMealsItemData> fetchDataFromDatabase() {
         ObservableList<RiceMealsItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name,price FROM ricemeals_items";
+        String sql = "SELECT item_id, item_name, price, image FROM ricemeals_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
@@ -278,7 +282,7 @@ public class RiceMealsCRUDController implements Initializable {
                  InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
 
    
-               
+   
 
                 RiceMealsItemData riceMealsItemData = new RiceMealsItemData(itemName, price);
                 riceMealsItemData.setItemID(itemID);
