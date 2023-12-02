@@ -51,8 +51,8 @@
       </AnchorPane>
       <Button fx:id="attachimageBTN" layoutX="378.0" layoutY="256.0" mnemonicParsing="false" onAction="#onAttachImageButtonClick" text="Attach Image" />
       <Button fx:id="addBTN1" layoutX="717.0" layoutY="375.0" mnemonicParsing="false" onAction="#clearInput" text="Clear" />
-      <Button layoutX="655.0" layoutY="375.0" mnemonicParsing="false" text="Update" />
-      <Button layoutX="598.0" layoutY="375.0" mnemonicParsing="false" text="Delete" />
+      <Button fx:id= "updtBTN" onAction="#handleAddButtonClick" layoutX="655.0" layoutY="375.0" mnemonicParsing="false" text="Update" />
+      <Button fx:id = "dltBtn" onAction="#handleAddButtonClick" layoutX="598.0" layoutY="375.0" mnemonicParsing="false" text="Delete" />
    </children>
    <padding>
       <Insets bottom="50.0" />

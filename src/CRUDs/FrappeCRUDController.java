@@ -5,9 +5,8 @@
 package CRUDs;
 
 import ClassFiles.FrappeItemData;
-import ClassFiles.FruitDrinkItemData;
-import ClassFiles.MilkteaItemData;
 import Databases.CRUDDatabase;
+import java.sql.Blob;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,15 +26,21 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
+import java.io.InputStream;
+import java.sql.Blob;
+
 
 public class FrappeCRUDController implements Initializable {
 
@@ -46,6 +52,9 @@ public class FrappeCRUDController implements Initializable {
 
     @FXML
     private Button attachimageBTN;
+      
+    @FXML
+    private Button dltBtn;
 
     @FXML
     private ImageView iconIV;
@@ -79,6 +88,10 @@ public class FrappeCRUDController implements Initializable {
 
     @FXML
     private TextField txtSmallPrice;
+     
+    private Blob image;
+    
+    private InputStream imageInputStream;
 
     private Image selectedImage;
 
@@ -86,7 +99,7 @@ public class FrappeCRUDController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        displayMilktea();
+        displayFrappe();
     }
 
     /* ito yung action event para sa attach image button */
@@ -131,7 +144,7 @@ public class FrappeCRUDController implements Initializable {
                 System.out.println("Data inserted.");
 
                 clearTextFields();
-                displayMilktea();
+                displayFrappe();
 
                 // Optionally, you can update your TableView or perform other actions after insertion
             } else {
@@ -176,19 +189,27 @@ public class FrappeCRUDController implements Initializable {
     private ObservableList<FrappeItemData> fetchDataFromDatabase() {
         ObservableList<FrappeItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_name, small_price, medium_price, large_price FROM frappe_items";
+        String sql = "SELECT item_id, item_name, small_price, medium_price, large_price, image FROM frappe_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
             while (result.next()) {
+                int itemID = result.getInt("item_id");
                 String itemName = result.getString("item_name");
                 Integer smallPrice = result.getInt("small_price");
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
+                
+                  Blob imageBlob = result.getBlob("image");
+                
+              InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
 
-                // Create a MilkteaItemData object and add it to the list
                 FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice);
+           
+
+
                 listData.add(frappeItemData);
+
             }
 
         } catch (SQLException e) {
@@ -199,7 +220,7 @@ public class FrappeCRUDController implements Initializable {
     }
 
     /* ito pangdisplay din */
-    private void displayMilktea() {
+    private void displayFrappe() {
         // Set up the PropertyValueFactory for each column
         itemMT.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         smallMT.setCellValueFactory(new PropertyValueFactory<>("smallPrice"));
@@ -225,5 +246,41 @@ public class FrappeCRUDController implements Initializable {
         itemIV.setImage(null);
         iconIV.setVisible(true);
     }
+ private void handleTableView() {
 
+        FrappeItemData selectedItem = frappeTV.getSelectionModel().getSelectedItem();
+
+        if (selectedItem != null) {
+            txtItemName.setText(selectedItem.getItemName());
+
+            txtSmallPrice.setText(String.valueOf(selectedItem.getSmallPrice()));
+            txtMediumPrice.setText(String.valueOf(selectedItem.getMediumPrice()));
+            txtLargePrice.setText(String.valueOf(selectedItem.getLargePrice()));
+
+            Blob imageBlob = selectedItem.getImage();
+              try {
+  
+    InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
+
+    
+
+  
+    if (imageInputStream != null) {
+        Image selectedItemImage = new Image(imageInputStream);
+        itemIV.setImage(selectedItemImage);
+        iconIV.setVisible(false);
+    } else {
+       
+        itemIV.setImage(null);
+        iconIV.setVisible(true);
+    }
+} catch (SQLException e) {
+    e.printStackTrace();
+   
+}
+        }
+             
+          
+}
+               
 }

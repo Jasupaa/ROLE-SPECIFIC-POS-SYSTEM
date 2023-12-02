@@ -24,6 +24,12 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import ClassFiles.ControllerManager;
+import ClassFiles.FruitDrinkItemData;
+import ClassFiles.MilkteaItemData;
+import Databases.CRUDDatabase;
+import java.io.ByteArrayInputStream;
+import java.sql.Blob;
+import java.sql.ResultSet;
 
 /**
  *
@@ -55,18 +61,16 @@ public class FruitDrinkController {
     @FXML
     private Label foodLabel;
 
-    @FXML
-
     private boolean askmeRadioSelected = false;
 
     private CashierFXMLController existingCashierController;
+
+    private FruitDrinkItemData fruitDrinkItemData;
 
     public void initialize() {
         // Initialize your combo boxes with data
 
         initializeSizeComboBox();
-        initializeFruitfComboBox();
-        initializeSinkersComboBox();
 
         // Set the default value to "None" for all ComboBoxes
         sizeComboBox.setValue("None");
@@ -92,12 +96,37 @@ public class FruitDrinkController {
         this.existingCashierController = cashierController;
     }
 
+    public void setFruitDrinkItemData(FruitDrinkItemData fruitDrinkItemData) throws SQLException {
+        // Set data to components
+        this.fruitDrinkItemData = fruitDrinkItemData;
 
+        // Assuming you have a method in MilkteaItemData to get the image name or title
+        String itemName = fruitDrinkItemData.getItemName();
+
+        String sinkers = fruitDrinkItemData.getSinkers();
+        String fruitf = fruitDrinkItemData.getFruitFlavor();
+
+        // Set data to corresponding components
+        foodLabel.setText(itemName);
+        sinkersComboBox.getItems().clear();
+        sinkersComboBox.getItems().addAll(sinkers.split(", "));
+
+        fruitfComboBox.getItems().clear();
+        fruitfComboBox.getItems().addAll(fruitf.split(", "));
+
+        /* para doon sa image */
+        Blob imageBlob = fruitDrinkItemData.getImage();
+        byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+        Image image = new Image(bis, 129, 173, false, true);
+        foodImg.setImage(image);
+
+    }
 
     private void insertOrderToDatabase(int customer_id, String menuName, Integer selectedQuantity, String selectedSize, String selectedfruit, String selectedsinker, boolean askmeRadioSelected) {
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO fruit_drink (customer_id, date_time, item_name, quantity, size, fruit_flavor,sinkers, ask_me, size_price, final_price) VALUES (?, NOW(),?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO fruit_drink (customer_id, date_time, item_name, quantity, size, fruit_flavor, sinkers, ask_me, size_price, final_price) VALUES (?, NOW(),?, ?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
@@ -124,61 +153,6 @@ public class FruitDrinkController {
         }
     }
 
-    /*
-    stmt.setInt(1, customer_id);
-                stmt.setString(2, menuName);
-                stmt.setInt(3, selectedQuantity);
-                stmt.setString(4, selectedSize);
-                stmt.setBoolean(7, askmeRadioSelected);
-
-    
-    
-     */
- /*  public void confirmButton1(ActionEvent event) {
-    if (menuData != null) {
-        String menuName = menuData.getName();
-        String selectedAddon = addonsComboBox.getValue();
-        String selectedSize = sizeComboBox.getValue();
-        String selectedSugarLevel = sugarlevelComboBox.getValue();
-        Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
-
-
-                stmt.setInt(8, sizePrice);
-
-
-             
-
-                stmt.executeUpdate();
-            }
-        } else {
-            System.out.println("Failed to establish a database connection.");
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-
-
-    @FXML
-public void confirmButton1(ActionEvent event) {
-    if (menuData != null) {
-        
-
-        // Reset the ComboBoxes to "None"
-        sizeComboBox.setValue("None");
-        fruitfComboBox.setValue("None");
-        sinkersComboBox.setValue("None");
-
-        // Reset the Spinner to the default value (e.g., 0)
-        spinnerQuantity.getValueFactory().setValue(0);
-
-        // Reset the radio button
-        askmeRadioHead.setSelected(false);
-        askmeRadioSelected = false;
-    }
-        
-    }
-     */
     @FXML
     public void confirmButton1(ActionEvent event) {
 
@@ -188,9 +162,8 @@ public void confirmButton1(ActionEvent event) {
             existingCashierController = cashierController;
         }
 
-        
-
-
+        if (fruitDrinkItemData != null) {
+            String menuName = fruitDrinkItemData.getItemName();
             String selectedfruit = fruitfComboBox.getValue();
             String selectedSize = sizeComboBox.getValue();
             String selectedsinker = sinkersComboBox.getValue();
@@ -208,7 +181,7 @@ public void confirmButton1(ActionEvent event) {
                 } else {
                     System.out.println("Cashier controller not available.");
                 }
-                String menuName = null;
+
                 insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedfruit, selectedsinker, askmeRadioSelected);
                 System.out.println("Data inserted into the database.");
             }
@@ -232,7 +205,7 @@ public void confirmButton1(ActionEvent event) {
                 System.out.println("Cashier controller not available.");
             }
         }
-    
+    }
 
     private void initializeSizeComboBox() {
         // Populate the sizeComboBox with items
@@ -245,52 +218,22 @@ public void confirmButton1(ActionEvent event) {
         sizeComboBox.setItems(sizes);
     }
 
-    private void initializeFruitfComboBox() {
-        // Populate the sugarlevelComboBox with items
-        ObservableList<String> fruitfList = FXCollections.observableArrayList(
-                "None",
-                "Lychee",
-                "Strawberry",
-                "Blueberry",
-                "Mango",
-                "Lemon"
-        );
-        fruitfComboBox.setItems(fruitfList);
-    }
-
-    private void initializeSinkersComboBox() {
-        // Populate the sugarlevelComboBox with items
-        ObservableList<String> sinkerList = FXCollections.observableArrayList(
-                "None",
-                "Nata De Coco",
-                "Fruit Jelly",
-                "Strawberry Popping Bobba",
-                "Mango Popping Bobba",
-                "Blueberry Popping Bobba",
-                "Lychee Popping Bobba",
-                "Yogurt Popping Bobba"
-        );
-        sinkersComboBox.setItems(sinkerList);
-    }
-
     private int calculateSizePrice(String selectedSize) {
-        switch (selectedSize) {
-            case "Small":
-                return 39;
-            case "Medium":
-                return 69;
-            case "Large":
-                return 79; // Return 0 if "None" is selected
+        try (Connection conn = CRUDDatabase.getConnection()) {
+            if (conn != null) {
+                String sql = "SELECT " + selectedSize.toLowerCase() + "_price FROM fruitdrink_items WHERE item_name = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setString(1, foodLabel.getText());  // Assuming foodLabel is the label displaying the food name
+                    ResultSet resultSet = stmt.executeQuery();
+                    if (resultSet.next()) {
+                        return resultSet.getInt(selectedSize.toLowerCase() + "_price");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return 0; // Return 0 if an unknown size is selected
-    }
-
-    private int calculateAddonsPrice(String selectedAddon) {
-        switch (selectedAddon) {
-            case "Cream Cheese":
-                return 20;
-        }
-        return 0; // Return 0 if an unknown addon is selected
+        return 0;
     }
 
 }

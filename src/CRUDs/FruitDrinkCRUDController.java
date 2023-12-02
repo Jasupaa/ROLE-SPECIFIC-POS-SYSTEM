@@ -106,7 +106,7 @@ public class FruitDrinkCRUDController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        displayMilktea();
+        displayFruitDrink();
 
         fruitDrinkTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
@@ -195,7 +195,7 @@ public class FruitDrinkCRUDController implements Initializable {
             }
 
                 clearTextFields();
-                displayMilktea();
+                displayFruitDrink();
 
                 // Optionally, you can update your TableView or perform other actions after insertion
             } else {
@@ -304,7 +304,7 @@ public class FruitDrinkCRUDController implements Initializable {
     private ObservableList<FruitDrinkItemData> fetchDataFromDatabase() {
         ObservableList<FruitDrinkItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name, small_price, medium_price, large_price, fruit_flavor, sinkers FROM fruitdrink_items";
+        String sql = "SELECT item_id, item_name, small_price, medium_price, large_price, fruit_flavor, sinkers, image FROM fruitdrink_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
@@ -340,7 +340,7 @@ public class FruitDrinkCRUDController implements Initializable {
     }
 
     /* ito pangdisplay din */
-    private void displayMilktea() {
+    private void displayFruitDrink() {
         // Set up the PropertyValueFactory for each column
         itemMT.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         fruitfFlavorMT.setCellValueFactory(new PropertyValueFactory<>("fruitFlavor"));

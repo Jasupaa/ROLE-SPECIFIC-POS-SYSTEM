@@ -8,7 +8,7 @@
    <children>
       <ImageView fitHeight="227.0" fitWidth="363.0" layoutX="96.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/Group%2044.png" />
+            <Image url="@../Pictures/Group%2044.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="30.0" fitWidth="53.0" layoutX="249.0" layoutY="284.0" pickOnBounds="true" preserveRatio="true">
