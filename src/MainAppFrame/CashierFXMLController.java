@@ -157,7 +157,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         this.menuMilkteaAndFrappeListData = dataList;
     }
 
-    //////////
+   
     private String employeeName;
     private int employeeId;
 
