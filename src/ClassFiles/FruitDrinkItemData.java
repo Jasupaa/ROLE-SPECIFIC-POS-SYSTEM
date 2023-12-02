@@ -6,7 +6,6 @@ package ClassFiles;
 
 import com.mysql.cj.jdbc.Blob;
 
-
 public class FruitDrinkItemData {
 
     private String itemName;
@@ -17,8 +16,7 @@ public class FruitDrinkItemData {
     private String sinkers;
     private Blob image;
     private Integer itemID;
-    
-    
+
     public FruitDrinkItemData(String itemName, Integer smallPrice, Integer mediumPrice, Integer largePrice, String fruitFlavor, String sinkers, Blob image, Integer itemID) {
         this.itemName = itemName;
         this.smallPrice = smallPrice;
@@ -37,14 +35,8 @@ public class FruitDrinkItemData {
         this.largePrice = largePrice;
         this.fruitFlavor = fruitFlavor;
         this.sinkers = sinkers;
-       
+
     }
-    
-    
-    
-    
-    
-    
 
     public String getItemName() {
         return itemName;

@@ -34,7 +34,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 
-public class RiceMealsCRUDController implements Initializable{
+public class RiceMealsCRUDController implements Initializable {
 
     @FXML
     private Button addBTN;
@@ -72,21 +72,19 @@ public class RiceMealsCRUDController implements Initializable{
     @FXML
     private Button updtBTN;
 
-   
-    
-     private Image selectedImage;
+    private Image selectedImage;
 
     private ObservableList<RiceMealsItemData> riceMealsItemData = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         displayRiceMeals();
-        
-          ricemealsTV.setOnMouseClicked(event -> {
-        if (event.getClickCount() == 1) { 
-            handleTableView();
-        }
-    });
+
+        ricemealsTV.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                handleTableView();
+            }
+        });
     }
 
     /* ito yung action event para sa attach image button */
@@ -109,29 +107,59 @@ public class RiceMealsCRUDController implements Initializable{
             iconIV.setVisible(false);
         }
     }
-    
+
     /* ito yung para sa paginsert sa database, magvavary siya sa kung ano lang yung kinukuha sa CRUD */
     @FXML
     private void handleAddButtonClick(ActionEvent event) throws IOException {
-        
-         RiceMealsItemData selectedItem = ricemealsTV.getSelectionModel().getSelectedItem();
-        try (Connection connection = CRUDDatabase.getConnection()) { /* gumawa ako bagong database class kasi bagong database gagamitin natin */
-            if (connection != null) {                                /* para sa mga CRUD para di nakakalito tignan sa sample_database */
+
+        RiceMealsItemData selectedItem = ricemealsTV.getSelectionModel().getSelectedItem();
+        try (Connection connection = CRUDDatabase.getConnection()) {
+            /* gumawa ako bagong database class kasi bagong database gagamitin natin */
+            if (connection != null) {
+                /* para sa mga CRUD para di nakakalito tignan sa sample_database */
                 String itemName = txtItemName.getText();
                 String price = txtPrice.getText();
 
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
-                
-              
-      
-                // Call the method to insert data into the database
-              insertRiceMealsItem(connection, itemName, price,imageInputStream);
 
-             Button clickedButton = (Button) event.getSource();
-            String buttonId = clickedButton.getId();
+                Button clickedButton = (Button) event.getSource();
+                String buttonId = clickedButton.getId();
 
-            
+                switch (buttonId) {
+                    case "addBTN" -> {
+
+                        insertRiceMealsItem(connection, itemName, price, imageInputStream);
+                        System.out.println("Data inserted.");
+                    }
+                    case "updtBTN" -> {
+                        if (selectedItem != null) {
+                            int itemID = selectedItem.getItemID();
+                            selectedItem.setItemID(itemID);
+                            updateRiceMealsItem(connection, itemName, price, imageInputStream, itemID);
+                            System.out.println("Data updated.");
+                        } else {
+                            System.out.println("No item selected for update.");
+                        }
+                    }
+                    case "dltBtn" -> {
+
+                        if (selectedItem != null) {
+                            // Display confirmation dialog before deletion
+                            boolean confirmDelete = showDeleteConfirmation();
+                            if (confirmDelete) {
+                                int itemID = selectedItem.getItemID();
+                                deleteRiceMealsItem(connection, itemID);
+                                System.out.println("Data deleted.");
+                            } else {
+                                System.out.println("Deletion canceled.");
+                            }
+                        } else {
+                            System.out.println("No item selected for deletion.");
+                        }
+                    }
+
+                }
 
                 clearTextFields();
                 displayRiceMeals();
@@ -145,14 +173,14 @@ public class RiceMealsCRUDController implements Initializable{
             // Handle the exception (e.g., show an error dialog)
         }
     }
- 
+
     /* ewan ko ano 'to para ata possible na mastore sa database yung image */
     private InputStream convertImageToInputStream(Image image) throws IOException {
         // Convert Image to InputStream
-          if (image == null) {
-        return null; // or handle the case accordingly
-    }
-          
+        if (image == null) {
+            return null; // or handle the case accordingly
+        }
+
         BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage, "png", outputStream);
@@ -161,7 +189,7 @@ public class RiceMealsCRUDController implements Initializable{
 
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
-    */
+     */
     private void insertRiceMealsItem(Connection connection, String itemName, String price, InputStream image) {
         String sql = "INSERT INTO ricemeals_items (item_name,price, image) VALUES (?, ?, ?)";
 
@@ -178,61 +206,59 @@ public class RiceMealsCRUDController implements Initializable{
         }
     }
 
-     private void updateRiceMealsItem(Connection connection, String itemName,String price, InputStream image, int itemID) {
-    String sql;
-
-    if (image != null) {
-        
-        sql = "UPDATE ricemeals_items SET item_name=?, price=?, image=? WHERE item_ID=?";
-    } else {
-        
-        sql = "UPDATE ricemeals_items SET item_name=?, price=? WHERE item_ID=?";
-    }
-
-    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-        preparedStatement.setString(1, itemName);
-        preparedStatement.setString(2, price);
-
+    private void updateRiceMealsItem(Connection connection, String itemName, String price, InputStream image, int itemID) {
+        String sql;
 
         if (image != null) {
-            preparedStatement.setBlob(3, image); // Use setBlob for InputStream
-            preparedStatement.setInt(4, itemID);
+
+            sql = "UPDATE ricemeals_items SET item_name=?, price=?, image=? WHERE item_ID=?";
         } else {
-            preparedStatement.setInt(6, itemID);
+
+            sql = "UPDATE ricemeals_items SET item_name=?, price=? WHERE item_ID=?";
         }
 
-        preparedStatement.executeUpdate();
-       
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, itemName);
+            preparedStatement.setString(2, price);
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-      
-    }
-}
-     
-      private void deleteRiceMealsItem(Connection connection, int itemID) {
-       String sql = "DELETE FROM ricemeals_items WHERE item_ID = ?";
+            if (image != null) {
+                preparedStatement.setBlob(3, image); // Use setBlob for InputStream
+                preparedStatement.setInt(4, itemID);
+            } else {
+                preparedStatement.setInt(6, itemID);
+            }
 
-    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-        preparedStatement.setInt(1, itemID);
-        preparedStatement.executeUpdate();
-        System.out.println("Data deleted.");
-    } catch (SQLException e) {
-        e.printStackTrace();
-        // Handle the exception (e.g., show an error dialog)
-    }
-    }
-      
-      private boolean showDeleteConfirmation() {
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setTitle("Confirmation Dialog");
-    alert.setHeaderText("Delete Item");
-    alert.setContentText("Are you sure you want to delete the selected item?");
+            preparedStatement.executeUpdate();
 
-    Optional<ButtonType> result = alert.showAndWait();
-    return result.isPresent() && result.get() == ButtonType.OK;
-}
-      
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    private void deleteRiceMealsItem(Connection connection, int itemID) {
+        String sql = "DELETE FROM ricemeals_items WHERE item_ID = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, itemID);
+            preparedStatement.executeUpdate();
+            System.out.println("Data deleted.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the exception (e.g., show an error dialog)
+        }
+    }
+
+    private boolean showDeleteConfirmation() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Delete Item");
+        alert.setContentText("Are you sure you want to delete the selected item?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
     /* ito para sa pagdisplay sa tableview */
     private ObservableList<RiceMealsItemData> fetchDataFromDatabase() {
         ObservableList<RiceMealsItemData> listData = FXCollections.observableArrayList();
@@ -242,17 +268,15 @@ public class RiceMealsCRUDController implements Initializable{
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
             while (result.next()) {
-                 int itemID = result.getInt("item_id");
+                int itemID = result.getInt("item_id");
                 String itemName = result.getString("item_name");
                 Integer price = result.getInt("price");
-   
-               
 
                 RiceMealsItemData riceMealsItemData = new RiceMealsItemData(itemName, price);
                 riceMealsItemData.setItemID(itemID);
-                
+
                 listData.add(riceMealsItemData);
-                
+
             }
 
         } catch (SQLException e) {
@@ -286,41 +310,32 @@ public class RiceMealsCRUDController implements Initializable{
         iconIV.setVisible(true);
     }
 
-    private void handleTableView(){
-        
-         RiceMealsItemData selectedItem = ricemealsTV.getSelectionModel().getSelectedItem();
-         
-           if (selectedItem != null) {
-        txtItemName.setText(selectedItem.getItemName());
+    private void handleTableView() {
 
-      
+        RiceMealsItemData selectedItem = ricemealsTV.getSelectionModel().getSelectedItem();
 
-        txtPrice.setText(String.valueOf(selectedItem.getPrice()));
+        if (selectedItem != null) {
+            txtItemName.setText(selectedItem.getItemName());
 
+            txtPrice.setText(String.valueOf(selectedItem.getPrice()));
 
-           Blob imageBlob = selectedItem.getImage();
-        if (imageBlob != null) {
-            try (InputStream inputStream = imageBlob.getBinaryStream()) {
-                Image selectedItemImage = new Image(inputStream);
-                itemIV.setImage(selectedItemImage);
-                iconIV.setVisible(false);
-            } catch (SQLException | IOException e) {
-                e.printStackTrace();
-               
+            Blob imageBlob = selectedItem.getImage();
+            if (imageBlob != null) {
+                try (InputStream inputStream = imageBlob.getBinaryStream()) {
+                    Image selectedItemImage = new Image(inputStream);
+                    itemIV.setImage(selectedItemImage);
+                    iconIV.setVisible(false);
+                } catch (SQLException | IOException e) {
+                    e.printStackTrace();
+
+                }
+            } else {
+
+                itemIV.setImage(null);
+                iconIV.setVisible(true);
             }
-        } else {
-           
-            itemIV.setImage(null);
-            iconIV.setVisible(true);
+
         }
-        
-}
- }
-    
-    
-    
-    
-    
-    
-    
+    }
+
 }
