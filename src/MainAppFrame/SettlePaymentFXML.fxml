@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: white; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.SettlePaymentFXMLController">
+<AnchorPane id="AnchorPane" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: white; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.SettlePaymentFXMLController">
    <children>
       <Pane layoutX="513.0" layoutY="87.0">
          <children>
@@ -117,7 +117,7 @@
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="change" text="Change">
+                              <Label fx:id="changeLbl" text="Change">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
