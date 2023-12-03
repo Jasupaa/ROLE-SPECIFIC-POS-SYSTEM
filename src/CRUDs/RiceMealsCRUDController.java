@@ -84,6 +84,8 @@ public class RiceMealsCRUDController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         displayRiceMeals();
+         restrictLetter(txtPrice);
+        
 
         ricemealsTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
@@ -133,19 +135,32 @@ public class RiceMealsCRUDController implements Initializable {
 
                 switch (buttonId) {
                     case "addBTN" -> {
-
-                        insertRiceMealsItem(connection, itemName, price, imageInputStream);
-                        System.out.println("Data inserted.");
+                    if (!isProductAlreadyExists(connection, itemName)) {
+                    insertRiceMealsItem(connection, itemName, price, imageInputStream);
+                    System.out.println("Data inserted.");
+                     clearTextFields();
+                } else {
+                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                    System.out.println("Product already exists.");
+                    return; 
+                }
+                       
                     }
                     case "updtBTN" -> {
-                        if (selectedItem != null) {
-                            int itemID = selectedItem.getItemID();
-                            selectedItem.setItemID(itemID);
+                         if (selectedItem != null) {
+                int itemID = selectedItem.getItemID();
+                if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
+                     selectedItem.setItemID(itemID);
                             updateRiceMealsItem(connection, itemName, price, imageInputStream, itemID);
                             System.out.println("Data updated.");
-                        } else {
-                            System.out.println("No item selected for update.");
+                     clearTextFields();
+                } else {
+                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                    System.out.println("Product already exists.");
+                    return; 
+                     
                         }
+                    }
                     }
                     case "dltBtn" -> {
 
@@ -359,7 +374,61 @@ public class RiceMealsCRUDController implements Initializable {
         
 }
  }
-    
+     public void restrictLetter(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                textField.setText(oldValue);
+            }
+        });
+    }
+     
+    private boolean isProductAlreadyExists(Connection connection, String itemName) {
+        String sql = "SELECT COUNT(*) FROM ricemeals_items WHERE item_name = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, itemName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+ private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
+    String sql = "SELECT COUNT(*) FROM ricemeals_items WHERE item_name = ? AND item_id != ?";
+
+    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        preparedStatement.setString(1, itemName);
+        preparedStatement.setInt(2, itemID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            int count = resultSet.getInt(1);
+            return count > 0;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
+
+
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    } 
     
     
     

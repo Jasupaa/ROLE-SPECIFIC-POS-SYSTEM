@@ -98,6 +98,9 @@ public class CoffeeCRUDController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         displayCoffee();
+        restrictLetter(txtLargePrice);
+        restrictLetter(txtMediumPrice);
+        restrictLetter(txtSmallPrice);
 
         coffeeTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
@@ -143,26 +146,41 @@ public class CoffeeCRUDController implements Initializable {
                 String largePrice = txtLargePrice.getText();
 
                 // Convert Image to InputStream for database storage
-                InputStream imageInputStream = convertImageToInputStream(selectedImage);
+                 InputStream imageInputStream = (selectedImage != null) ? convertImageToInputStream(selectedImage) : null;
 
                 Button clickedButton = (Button) event.getSource();
                 String buttonId = clickedButton.getId();
 
                 switch (buttonId) {
                     case "addBTN" -> {
-
+                        if (!isProductAlreadyExists(connection, itemName)) {
                         insertCoffeeItem(connection, itemName, type, smallPrice, mediumPrice, largePrice, imageInputStream);
                         System.out.println("Data inserted.");
+                        clearTextFields();
+                } else {
+                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                    System.out.println("Product already exists.");
+                    return; 
+                }
+
+                       
                     }
                     case "updtBTN" -> {
                         if (selectedItem != null) {
-                            int itemID = selectedItem.getItemID();
-                            selectedItem.setItemID(itemID);
-                            updateCoffeeItem(connection, itemName, type, smallPrice, mediumPrice, largePrice, imageInputStream, itemID);
-                            System.out.println("Data updated.");
-                        } else {
-                            System.out.println("No item selected for update.");
-                        }
+                int itemID = selectedItem.getItemID();
+               if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
+                    selectedItem.setItemID(itemID);
+                     updateCoffeeItem(connection, itemName, type, smallPrice, mediumPrice, largePrice, imageInputStream, itemID);
+                     System.out.println("Data updated.");
+                     clearTextFields();
+                } else {
+                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                    System.out.println("Product already exists.");
+                    return; 
+                }
+            } else {
+                System.out.println("No item selected for update.");
+            }
                     }
                     case "dltBtn" -> {
 
@@ -302,7 +320,7 @@ public class CoffeeCRUDController implements Initializable {
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
                 
-                java.sql.Blob imageBlob = result.getBlob("image");
+                Blob imageBlob = result.getBlob("image");
 
             // Convert Blob to InputStream
                 InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
@@ -366,24 +384,83 @@ public class CoffeeCRUDController implements Initializable {
             txtMediumPrice.setText(String.valueOf(selectedItem.getMediumPrice()));
             txtLargePrice.setText(String.valueOf(selectedItem.getLargePrice()));
 
-            java.sql.Blob imageBlob = selectedItem.getImage();
-            if (imageBlob != null) {
-                try (InputStream inputStream = imageBlob.getBinaryStream()) {
-                    Image selectedItemImage = new Image(inputStream);
+               Blob imageBlob = selectedItem.getImage();
+
+            try {
+
+                InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
+
+                selectedItem.setImageInputStream(imageInputStream);
+
+                if (imageInputStream != null) {
+                    Image selectedItemImage = new Image(imageInputStream);
                     itemIV.setImage(selectedItemImage);
                     iconIV.setVisible(false);
-                } catch (SQLException | IOException e) {
-                    e.printStackTrace();
+                } else {
 
+                    itemIV.setImage(null);
+                    iconIV.setVisible(true);
                 }
-            } else {
+            } catch (SQLException e) {
+                e.printStackTrace();
 
-                itemIV.setImage(null);
-                iconIV.setVisible(true);
             }
 
         }
     }
+     public void restrictLetter(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                textField.setText(oldValue);
+            }
+        });
+    }
+     
+     
+    private boolean isProductAlreadyExists(Connection connection, String itemName) {
+        String sql = "SELECT COUNT(*) FROM coffee_items WHERE item_name = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, itemName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+  private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
+    String sql = "SELECT COUNT(*) FROM coffee_items WHERE item_name = ? AND item_id != ?";
+
+    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        preparedStatement.setString(1, itemName);
+        preparedStatement.setInt(2, itemID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            int count = resultSet.getInt(1);
+            return count > 0;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    } 
 }
 
 

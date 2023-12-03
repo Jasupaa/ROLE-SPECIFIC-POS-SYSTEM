@@ -21,9 +21,9 @@ import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import ClassFiles.ControllerManager;
 import ClassFiles.FrappeItemData;
-import ClassFiles.MilkteaItemData;
+
 import Databases.CRUDDatabase;
-import com.mysql.cj.jdbc.Blob;
+import java.sql.Blob;
 import java.io.ByteArrayInputStream;
 import java.sql.ResultSet;
 

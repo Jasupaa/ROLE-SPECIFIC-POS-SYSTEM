@@ -79,6 +79,8 @@ public class SnacksCRUDController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         displaySnacks();
+         restrictLetter(txtPrice);
+        
 
         snacksTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
@@ -128,20 +130,36 @@ public class SnacksCRUDController implements Initializable {
 
                 switch (buttonId) {
                     case "addBTN" -> {
-
+                     if (!isProductAlreadyExists(connection, itemName)) {
                         insertSnacksItem(connection, itemName, price, imageInputStream);
                         System.out.println("Data inserted.");
+                        clearTextFields();
+                        } else {
+                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                    System.out.println("Product already exists.");
+                    return;
+
+                    }
                     }
                     case "updtBTN" -> {
-                        if (selectedItem != null) {
-                            int itemID = selectedItem.getItemID();
-                            selectedItem.setItemID(itemID);
-                            updateSnacksItem(connection, itemName, price, imageInputStream, itemID);
-                            System.out.println("Data updated.");
-                        } else {
-                            System.out.println("No item selected for update.");
-                        }
-                    }
+                            if (selectedItem != null) {
+                int itemID = selectedItem.getItemID();
+               if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
+                    selectedItem.setItemID(itemID);
+                     updateSnacksItem(connection, itemName, price, imageInputStream, itemID);
+                     System.out.println("Data updated.");
+                     clearTextFields();
+                } else {
+                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                    System.out.println("Product already exists.");
+                    return; 
+                }
+            } else {
+                System.out.println("No item selected for update.");
+            }
+                }
+            
+            
                     case "dltBtn" -> {
 
                         if (selectedItem != null) {
@@ -172,8 +190,8 @@ public class SnacksCRUDController implements Initializable {
             e.printStackTrace();
             // Handle the exception (e.g., show an error dialog)
         }
+    
     }
-
     /* ewan ko ano 'to para ata possible na mastore sa database yung image */
     private InputStream convertImageToInputStream(Image image) throws IOException {
         // Convert Image to InputStream
@@ -351,4 +369,61 @@ public class SnacksCRUDController implements Initializable {
 }
         
 }
-    }}
+    }
+     public void restrictLetter(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                textField.setText(oldValue);
+            }
+        });
+    }
+     
+        private boolean isProductAlreadyExists(Connection connection, String itemName) {
+        String sql = "SELECT COUNT(*) FROM snacks_items WHERE item_name = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, itemName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
+    String sql = "SELECT COUNT(*) FROM snacks_items WHERE item_name = ? AND item_id != ?";
+
+    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        preparedStatement.setString(1, itemName);
+        preparedStatement.setInt(2, itemID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            int count = resultSet.getInt(1);
+            return count > 0;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    } 
+    
+
+
+}

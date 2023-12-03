@@ -4,7 +4,8 @@
  */
 package ClassFiles;
 
-import com.mysql.cj.jdbc.Blob;
+import java.sql.Blob;
+import java.io.InputStream;
 
 /**
  *
@@ -17,13 +18,16 @@ public class FrappeItemData {
     private Integer mediumPrice;
     private Integer largePrice;
     private Blob image;
+    private Integer itemID;
+    private InputStream imageInputStream;
 
-    public FrappeItemData(String itemName, Integer smallPrice, Integer mediumPrice, Integer largePrice, Blob image) {
+    public FrappeItemData(String itemName, Integer smallPrice, Integer mediumPrice, Integer largePrice, Blob image, int itemID) {
         this.itemName = itemName;
         this.smallPrice = smallPrice;
         this.mediumPrice = mediumPrice;
         this.largePrice = largePrice;
         this.image = image;
+         this.itemID = itemID;
     }
 
     public FrappeItemData(String itemName, Integer smallPrice, Integer mediumPrice, Integer largePrice) {
@@ -71,6 +75,20 @@ public class FrappeItemData {
 
     public void setImage(Blob image) {
         this.image = image;
+    }
+     public Integer getItemID() {
+        return itemID;
+    }
+
+    public void setItemID(Integer itemID) {
+        this.itemID = itemID;
+    }
+    
+    public InputStream getImageInputStream() {
+        return imageInputStream;
+    }
+     public void setImageInputStream(InputStream imageInputStream) {
+        this.imageInputStream = imageInputStream;
     }
 
 }

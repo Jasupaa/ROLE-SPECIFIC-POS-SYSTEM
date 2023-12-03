@@ -566,9 +566,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
+                Integer itemID = result.getInt("itemID");
 
                 // Create a MilkteaItemData object and add it to the list
-                FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice, image);
+                FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice, image, itemID);
                 listData.add(frappeItemData);
 
             }
