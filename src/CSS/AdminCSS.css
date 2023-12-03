@@ -43,3 +43,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-border-color: #ffffff;
     -fx-background-radius: 10px;
 }
+
+
+.pink {
+    -fx-background-color: rgba(213,127,127,1);
+    -fx-background-radius: 10;
+    -fx-min-width: 207;
+    -fx-min-width: 207;
+    -fx-min-height: 72;
+    -fx-min-height: 72;
+    -fx-border-radius: 10;
+    -fx-border-color: #A4A4A4;
+    -fx-border-width: 2;
+}
