@@ -12,72 +12,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.EmployeeDataFXMLController">
+<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="670.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.EmployeeDataFXMLController">
    <children>
-      <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="93.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../img/Group%201%20(1).png" />
-         </image>
-      </ImageView>
-      <VBox layoutX="77.0" layoutY="245.0" prefHeight="251.0" prefWidth="173.0">
-         <children>
-            <Button fx:id="SalesReport" alignment="BASELINE_LEFT" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="36.0" prefWidth="204.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Sales Report" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="InventoryManagement" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="176.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Inventory Management" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="EmployeeDetails" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="215.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Employee Details" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="DiscountCoupon" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="214.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Discount Coupon" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-         </children>
-      </VBox>
-      <Label layoutX="85.0" layoutY="224.0" text="DASHBOARD" textFill="#404040">
-         <font>
-            <Font size="9.0" />
-         </font>
-      </Label>
-      <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="58.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../img/icons8-log-out-96.png" />
-         </image>
-      </ImageView>
-      <Label fx:id="dateLbl" layoutX="257.0" layoutY="108.0" text="Fri 3 Nov 2003   1:57:03 PM" textFill="WHITE" />
-      <Label fx:id="timeLbl" layoutX="257.0" layoutY="229.0" text="Sales Report" textFill="#aea9a9" />
-      <ImageView fitHeight="59.0" fitWidth="455.0" layoutX="247.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../img/Group%205.png" />
-         </image>
-      </ImageView>
-      <AnchorPane layoutX="251.0" layoutY="147.0" prefHeight="59.0" prefWidth="159.0" stylesheets="@../CSS/AdminCSS.css">
-         <children>
-            <Button fx:id="sales" layoutX="-1.0" layoutY="-2.0" mnemonicParsing="false" onAction="#SalesreportButton" prefHeight="59.0" prefWidth="206.0" stylesheets="@../CSS/AdminCSS.css">
-               <styleClass>
-                  <String fx:value="asalesReportbutton" />
-                  <String fx:value="button" />
-               </styleClass></Button>
-            <Label layoutX="13.0" layoutY="10.0" prefHeight="21.0" prefWidth="118.0" text="Sales Report" textFill="WHITE">
-               <font>
-                  <Font size="16.0" />
-               </font></Label>
-            <Label layoutX="5.0" layoutY="22.0" prefHeight="36.0" prefWidth="133.0" text="See what’s happening" textFill="WHITE" />
-         </children>
-      </AnchorPane>
-      <Label fx:id="timeLbl1" layoutX="647.0" layoutY="229.0" text="Products Sold" textFill="#aea9a9" />
-      <AnchorPane layoutX="647.0" layoutY="260.0" prefHeight="320.0" prefWidth="365.0" styleClass="employeeButton" stylesheets="@../CSS/AdminCSS.css" />
-      <AnchorPane layoutX="257.0" layoutY="260.0" prefHeight="148.0" prefWidth="365.0" styleClass="employeeButton" stylesheets="@../CSS/AdminCSS.css" />
-      <Label fx:id="timeLbl2" layoutX="257.0" layoutY="420.0" text="Sales Report" textFill="#aea9a9" />
       <AnchorPane fx:id="AdminPane1" layoutX="10.0" layoutY="10.0" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css">
          <children>
             <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="93.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true">
@@ -125,9 +61,9 @@
                   <Image url="@../Pictures/Employees.png" />
                </image>
             </ImageView>
-            <AnchorPane layoutX="841.0" layoutY="155.0" prefHeight="52.0" prefWidth="173.0" stylesheets="@../CSS/AdminCSS.css">
+            <AnchorPane layoutX="652.0" layoutY="155.0" prefHeight="61.0" prefWidth="374.0" stylesheets="@../CSS/AdminCSS.css">
                <children>
-                  <Button fx:id="addEmployee" layoutX="27.0" layoutY="23.0" mnemonicParsing="false" onAction="#addEmployeeButton" prefHeight="30.0" prefWidth="146.0" stylesheets="@../CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
+                  <Button fx:id="addEmployee" layoutX="14.0" layoutY="22.0" mnemonicParsing="false" onAction="#addEmployeeButton" prefHeight="30.0" prefWidth="146.0" stylesheets="@../CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
                      <styleClass>
                         <String fx:value="asalesReportbutton" />
                         <String fx:value="button" />
@@ -136,14 +72,18 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <ImageView fx:id="Removeicon" fitHeight="15.0" fitWidth="15.0" layoutX="134.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                  <Button fx:id="removeEmployee" layoutX="171.0" layoutY="23.0" mnemonicParsing="false" onAction="#removeEmployeeAction" prefHeight="30.0" prefWidth="146.0" stylesheets="@../CSS/AdminCSS.css" text="- Remove Employee" textFill="WHITE">
+                     <styleClass>
+                        <String fx:value="asalesReportbutton" />
+                        <String fx:value="button" />
+                     </styleClass>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <ImageView fx:id="editpic" accessibleRole="BUTTON" fitHeight="50.0" fitWidth="50.0" layoutX="319.0" layoutY="18.0" onInputMethodTextChanged="#handleMousePressed" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../ROLE-SPECIFIC-POS-SYSTEM-master/src/img/Editicon.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fx:id="Removeicon" fitHeight="15.0" fitWidth="15.0" layoutX="153.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../ROLE-SPECIFIC-POS-SYSTEM-master/src/img/trashicon.png" />
+                        <Image url="@../../../ROLE-SPECIFIC-POS-SYSTEM-master/src/img/editpic.png" />
                      </image>
                   </ImageView>
                </children>
@@ -157,11 +97,10 @@
                   <TableColumn fx:id="empEmail" prefWidth="115.0" text="E-mail" />
                   <TableColumn fx:id="empContact" prefWidth="112.0" text="Contact No." />
                   <TableColumn fx:id="empRole" prefWidth="90.0" text="Role" />
-                  <TableColumn prefWidth="100.0" text="Actions" />
-                  <TableColumn fx:id="empFirstName1" prefWidth="101.0" text="FirstName" />
+                  <TableColumn fx:id="actioncol" prefWidth="100.0" text="Actions" />
               </columns>
             </TableView>
-            <Pane fx:id="blurPane" layoutY="4.0" prefHeight="652.0" prefWidth="1136.0" styleClass="card" stylesheets="@../CSS/CashierCSS.css" visible="false" />
+            <Pane fx:id="blurPane" layoutY="4.0" prefHeight="652.0" prefWidth="1136.0" styleClass="card" stylesheets="@../CSS/CashierCSS.css" />
          </children>
       </AnchorPane>
    </children>

@@ -368,7 +368,7 @@ private void handleEditButtonAction(ActionEvent event) {
 
             // Access the DiscountCrudController to set the fields
           DiscountCRUDController discountCrudController = loader.getController();
-
+          discountCrudController.setAdminController(this);
 
             // Pass the selected discount to the DiscountCrudController
             discountCrudController.setDiscount(selectedDiscount);
