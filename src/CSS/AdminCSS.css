@@ -56,3 +56,60 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-border-color: #A4A4A4;
     -fx-border-width: 2;
 }
+
+
+.salesReporttext {
+    
+    -fx-font-family: 'Inter'; 
+    -fx-font-size: 24; 
+    -fx-font-weight: bold;
+    -fx-fill: #ffffff;
+    -fx-min-width: 376;
+    -fx-max-width: 376;
+    -fx-min-height: 23;
+    -fx-max-height: 23;
+}
+
+
+.date {
+    -fx-font-family: 'Inter'; 
+    -fx-font-size: 12; 
+    -fx-font-weight: normal;
+    -fx-fill: #ffffff;
+    -fx-min-width: 262;
+    -fx-max-width: 262;
+    -fx-min-height: 27;
+    -fx-max-height: 27;
+}
+
+.line {
+    -fx-stroke: #565656;  
+    -fx-stroke-opacity: 0.27
+}
+
+
+.salesPerformance {
+    
+    -fx-font-family: 'Inter'; 
+    -fx-font-size: 12; 
+    -fx-font-weight: normal;
+    -fx-fill: #595959;
+    -fx-min-width: 224;
+    -fx-max-width: 224;
+    -fx-min-height: 17;
+    -fx-max-height: 17;
+    
+}
+
+.smallpink {
+    
+    -fx-background-color: #AD6C6C;
+    -fx-background-radius: 10;
+    -fx-min-width: 100;
+    -fx-min-width: 100;
+    -fx-min-height: 17;
+    -fx-min-height: 17;
+    -fx-border-color: #FFFFF;
+    -fx-border-width: 5;
+    
+}
