@@ -106,22 +106,22 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="getMenu4" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="137.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Coffee" textFill="WHITE">
+            <Button fx:id="getMenu4" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#getMenu4" prefHeight="36.0" prefWidth="137.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Coffee" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="getMenu5" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="137.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Rice Meal" textFill="WHITE">
+            <Button fx:id="getMenu5" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#getMenu5" prefHeight="36.0" prefWidth="137.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Rice Meal" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="getMenu6" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="137.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Snacks" textFill="WHITE">
+            <Button fx:id="getMenu6" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#getMenu6" prefHeight="36.0" prefWidth="137.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Snacks" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="getMenu7" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Extras" textFill="WHITE">
+            <Button fx:id="getMenu7" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#getMenu7" prefHeight="36.0" prefWidth="136.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Extras" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>

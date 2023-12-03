@@ -27,6 +27,25 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-scale-y: 1;
 }
 
+.buttonNavigation {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10px; /* Set the background radius */
+    -fx-border-color: transparent;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.buttonNavigation:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.containerglass {
+    -fx-background-color: #fff;
+    -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,.3), 8,0,0,0);
+    -fx-background-radius: 8px;
+}
+
 .buttonActions {
     -fx-background-color: #111315;
 }

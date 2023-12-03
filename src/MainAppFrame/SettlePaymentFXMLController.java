@@ -35,14 +35,20 @@ import javafx.util.Duration;
 import ClassFiles.ControllerManager;
 import ClassFiles.ItemData;
 import ClassFiles.OrderCardData;
+import MenuController.CoffeeController;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.print.PrinterJob;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 
 /**
  * FXML Controller class
@@ -122,6 +128,9 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     private TableView<ItemData> receiptTV;
+
+    @FXML
+    private AnchorPane yourAnchorPane;
 
     private CashierFXMLController existingCashierController;
 
@@ -204,79 +213,61 @@ public class SettlePaymentFXMLController implements Initializable {
     }
 
     @FXML
-    void printButton(ActionEvent event) {
-        // Get the existing SettlePayment stage
-        Stage settlePaymentStage = existingCashierController.getSettlePaymentStage();
-
-        // Close the SettlePayment stage
-        if (settlePaymentStage != null) {
-            settlePaymentStage.close();
-        }
-
+    void printButton(ActionEvent event) throws SQLException {
+        // Load the CashierConfirmationFXML file invisibly
         try {
-            // Load the CashierConfirmationFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CashierConfirmationFXML.fxml"));
-            loader.setController(this); // Make sure to set the controller
             Parent root = loader.load();
+            CashierConfirmationFXMLController controller = loader.getController();
+            controller.setupTableView(); // Make sure to call the setupTableView method
 
             // Create a new stage for the CashierConfirmationFXML
             Stage cashierConfirm = new Stage();
-
-            // Set stage properties to make it transparent and non-resizable
             cashierConfirm.initStyle(StageStyle.TRANSPARENT);
             cashierConfirm.setResizable(false);
 
             // Set the scene fill to transparent
-            Scene scene = new Scene(root);
-            scene.setFill(Color.TRANSPARENT);
+            Scene cashierConfirmationScene = new Scene(root);
+            cashierConfirmationScene.setFill(Color.TRANSPARENT);
 
             // Set the scene to the stage
-            cashierConfirm.setScene(scene);
+            cashierConfirm.setScene(cashierConfirmationScene);
 
-            // Set event handler for the hidden event
-            cashierConfirm.setOnHidden(e -> {
-                try {
-                    // Load the CashierFXML file
-                    FXMLLoader cashierLoader = new FXMLLoader(getClass().getResource("CashierFXML.fxml"));
-                    Parent cashierRoot = cashierLoader.load();
+            // Hide the stage
+            cashierConfirm.hide();
 
-                    // Set the scene for the CashierFXML
-                    Scene cashierScene = new Scene(cashierRoot);
-
-                    // Get the stage of the current scene (assuming your CashierFXML is already loaded)
-                    Stage currentStage = (Stage) root.getScene().getWindow();
-
-                    // Set the scene to the current stage (returning to CashierFXML)
-                    currentStage.setScene(cashierScene);
-
-                    // Set the pane visibility to false
-                    CashierFXMLController cashierController = cashierLoader.getController();
-                    if (existingCashierController == null && cashierController != null) {
-                        existingCashierController = cashierController;
-                    }
-                    existingCashierController.getMyPane().setVisible(false);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    // Handle exceptions accordingly
-                }
-            });
-
-            cashierConfirm.show();
-
-            // Create a PauseTransition to wait for 5 seconds
-            PauseTransition pause = new PauseTransition(Duration.seconds(5));
-            pause.setOnFinished(e -> {
-                // Close the CashierConfirmation stage after 5 seconds
-                cashierConfirm.close();
-            });
-
-            // Start the PauseTransition
-            pause.play();
-
+            // Trigger the print job
+            triggerPrintJob(root);
         } catch (IOException e) {
             e.printStackTrace();
             // Handle exceptions accordingly
         }
+    }
+
+    private void triggerPrintJob(Parent root) {
+        // Create PrinterJob
+        PrinterJob printerJob = PrinterJob.createPrinterJob();
+
+        if (printerJob != null && printerJob.showPrintDialog(null)) {
+            // Set the content for printing
+            boolean success = printerJob.printPage(root);
+            if (success) {
+                printerJob.endJob();
+            } else {
+                showPrintErrorAlert();
+            }
+        } else {
+            showPrintErrorAlert();
+        }
+    }
+
+    private void showPrintErrorAlert() {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Print Error");
+        alert.setHeaderText(null);
+        alert.setContentText("There was an error while trying to print.");
+
+        alert.showAndWait();
     }
 
     @FXML
@@ -433,14 +424,17 @@ public class SettlePaymentFXMLController implements Initializable {
 
     /**
      * Initializes the controller class.
-     * 
-     * 
+     *
+     *
      */
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        setupTableView();
+
+        try {
+            setupTableView();
+        } catch (SQLException ex) {
+            Logger.getLogger(SettlePaymentFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         changeTxtLbl.setDisable(true);
         calculateCustomTotal();
         calculateTotal();
@@ -550,70 +544,53 @@ public class SettlePaymentFXMLController implements Initializable {
         return -1; // Return -1 if the discount code is not found
     }
 
-    private ObservableList<ItemData> fetchOrderDetails() {
+    private ObservableList<ItemData> fetchOrderDetails() throws SQLException {
         ObservableList<ItemData> orderDetailsList = FXCollections.observableArrayList();
 
         CashierFXMLController cashierController = ControllerManager.getCashierController();
         int currentCustomerID = cashierController.getCurrentCustomerID();
-        
+
         if (currentCustomerID != -1) {
-        try (Connection conn = database.getConnection()) {
-            if (conn != null) {
-                // Fetch emp_name and date_time from the invoice table
-                String invoiceQuery = "SELECT emp_name, date_time FROM invoice WHERE customer_id = ?";
+            try (Connection conn = database.getConnection()) {
+                if (conn != null) {
+                    // Fetch orders from each table based on customer_id
+                    String[] tables = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
 
-                
-                try (PreparedStatement invoiceStmt = conn.prepareStatement(invoiceQuery)) {
-                    invoiceStmt.setInt(1, currentCustomerID);
+                    for (String table : tables) {
+                        String orderQuery = "SELECT * FROM " + table + " WHERE customer_id = ?";
 
-                    try (ResultSet invoiceRs = invoiceStmt.executeQuery()) {
-                        if (invoiceRs.next()) {
-                            String empName = invoiceRs.getString("emp_name");
-                            String dateTime = invoiceRs.getString("date_time");
+                        try (PreparedStatement orderStmt = conn.prepareStatement(orderQuery)) {
+                            orderStmt.setInt(1, currentCustomerID);
 
-                            // Fetch orders from each table based on customer_id
-                            String[] tables = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
+                            try (ResultSet orderRs = orderStmt.executeQuery()) {
+                                while (orderRs.next()) {
+                                    // Extract relevant order details (adjust as needed)
+                                    int orderId = orderRs.getInt("order_id");
+                                    String productName = orderRs.getString("item_name");
+                                    double finalPrice = orderRs.getDouble("final_price");
+                                    int quantity = orderRs.getInt("quantity");
 
-                            for (String table : tables) {
-                                String orderQuery = "SELECT * FROM " + table + " WHERE customer_id = ?";
+                                    // Create an ItemData instance with the fetched data
+                                    ItemData itemData = new ItemData(orderId, productName, finalPrice, quantity);
 
-                                try (PreparedStatement orderStmt = conn.prepareStatement(orderQuery)) {
-                                    orderStmt.setInt(1, currentCustomerID);
-
-                                    try (ResultSet orderRs = orderStmt.executeQuery()) {
-                                        while (orderRs.next()) {
-                                            // Extract relevant order details (adjust as needed)
-                                            int orderId = orderRs.getInt("order_id");
-                                            String productName = orderRs.getString("item_name");
-                                            double finalPrice = orderRs.getDouble("final_price");
-                                            int quantity = orderRs.getInt("quantity");
-
-                                            // Create an ItemData instance with the fetched data
-                                            ItemData itemData = new ItemData(orderId, productName, finalPrice, quantity);
-
-                                            // Add the ItemData to the list
-                                            orderDetailsList.add(itemData);
-                                        }
-                                    }
+                                    // Add the ItemData to the list
+                                    orderDetailsList.add(itemData);
                                 }
                             }
-
-                            // Update the table view with the fetched data
                         }
                     }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Handle database-related exceptions
-        }
 
-        
-    }
+                    // Update the table view with the fetched data
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle database-related exceptions
+            }
+        }
         return orderDetailsList;
     }
 
-    public void setupTableView() {
+    private void setupTableView() throws SQLException {
         receiptProduct.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getItemName()));
         receiptPrice.setCellValueFactory(f -> new SimpleDoubleProperty(f.getValue().getItemPrice()).asObject());
         receiptQuantity.setCellValueFactory(f -> new SimpleIntegerProperty(f.getValue().getItemQuantity()).asObject());

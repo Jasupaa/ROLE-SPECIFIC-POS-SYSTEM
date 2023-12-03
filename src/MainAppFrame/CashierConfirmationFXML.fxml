@@ -1,85 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Line?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="692.0" prefWidth="456.0" style="-fx-border-radius: 5px;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Pane layoutX="159.0" layoutY="14.0" prefHeight="472.0" prefWidth="392.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #FFFFFF; -fx-border-style: dashed; -fx-border-radius: 5px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane fx:id="yourAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="456.0" style="-fx-border-radius: 5px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierConfirmationFXMLController">   <children>
+      <AnchorPane prefHeight="719.0" prefWidth="456.0" style="-fx-border-radius: 5px;">
          <children>
-            <AnchorPane prefHeight="692.0" prefWidth="456.0" style="-fx-border-radius: 5px;">
+            <ImageView fitHeight="68.0" fitWidth="102.0" layoutX="176.0" layoutY="39.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+               <image>
+                  <Image url="@../Pictures/Splashscreen%20(2).png" />
+               </image>
+            </ImageView>
+            <TableView fx:id="receiptTV2" layoutX="40.0" layoutY="214.0" prefWidth="378.0">
+               <columns>
+                  <TableColumn fx:id="receiptProduct" prefWidth="209.5999641418457" text="Product" />
+                  <TableColumn fx:id="receiptQuantity2" prefWidth="54.4000244140625" text="Qty" />
+                  <TableColumn fx:id="receiptPrice2" prefWidth="113.5999755859375" text="Price" />
+               </columns>
+            </TableView>
+            <VBox layoutX="278.0" layoutY="630.0" spacing="1.5">
                <children>
-                  <ImageView fitHeight="97.0" fitWidth="121.0" layoutX="168.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
-                     <image>
-                        <Image url="@../Pictures/Splashscreen%20(1).png" />
-                     </image>
-                  </ImageView>
-                  <TableView fx:id="tableView" layoutX="17.0" layoutY="163.0" prefHeight="202.0" prefWidth="423.0">
-                     <columns>
-                        <TableColumn fx:id="Product" prefWidth="237.5999755859375" text="Product" />
-                        <TableColumn fx:id="Quantity" prefWidth="90.39996337890625" text="Quantity" />
-                        <TableColumn fx:id="Price" prefWidth="93.60003662109375" text="Price" />
-                     </columns>
-                  </TableView>
-                  <Label layoutX="17.0" layoutY="137.0" text="Served By:" textFill="#d4d4d4" />
-                  <Label layoutX="17.0" layoutY="376.0" text="SUBTOTAL:" textFill="#d4d4d4" />
-                  <Label layoutX="17.0" layoutY="393.0" text="DISCOUNT:" textFill="#d4d4d4" />
-                  <Label layoutX="17.0" layoutY="411.0" text="TOTAL:" textFill="#d4d4d4" />
-                  <Label layoutX="17.0" layoutY="437.0" text="CASH:" textFill="#d4d4d4" />
-                  <Label layoutX="17.0" layoutY="454.0" text="CHANGE DUE:" textFill="#d4d4d4" />
-                  <Line endX="100.0" layoutX="227.0" layoutY="632.0" startX="-100.0" stroke="WHITE" strokeLineJoin="ROUND" />
-                  <Label fx:id="dateLbl" layoutX="153.0" layoutY="646.0" text="DATE: _______" textFill="WHITE" />
-                  <Label fx:id="timeLbl" layoutX="240.0" layoutY="645.0" text="TIME: ______" textFill="WHITE" />
-                  <Label fx:id="orderNo" layoutX="169.0" layoutY="498.0" text="ORDER #" textFill="WHITE">
-                     <font>
-                        <Font size="30.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="orderType" layoutX="145.0" layoutY="544.0" text="ORDER TYPE" textFill="WHITE">
-                     <font>
-                        <Font size="30.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="handlerName" layoutX="76.0" layoutY="136.0" text="Serrano" textFill="WHITE">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="subTotal" layoutX="388.0" layoutY="372.0" text="Subtotal" textFill="WHITE">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="discount" layoutX="388.0" layoutY="386.0" text="Discount" textFill="WHITE">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="total" layoutX="388.0" layoutY="400.0" text="Total" textFill="WHITE">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="cash" layoutX="388.0" layoutY="433.0" text="Cash" textFill="WHITE">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="change" layoutX="388.0" layoutY="447.0" text="Change" textFill="WHITE">
+                  <Label text="SUBTOTAL:" textFill="#282828" />
+                  <Label text="DISCOUNT:" textFill="#282828" />
+                  <Label text="TOTAL:" textFill="#282828" />
+                  <Label text="CASH:" textFill="#282828" />
+                  <Label text="CHANGE DUE:" textFill="#282828" />
+               </children>
+            </VBox>
+            <HBox alignment="CENTER_LEFT" layoutX="118.0" layoutY="189.0">
+               <children>
+                  <Label fx:id="handlerName" text="Serrano" textFill="#282828">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
                </children>
-            </AnchorPane>
+            </HBox>
+            <VBox layoutX="365.0" layoutY="628.0">
+               <children>
+                  <Label fx:id="subTotal" text="Subtotal" textFill="#333333">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="discount" text="Discount" textFill="#333333">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="total" text="Total" textFill="#333333">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="cash" text="Cash" textFill="#333333">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="change" text="Change" textFill="#333333">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <ImageView fitHeight="36.0" fitWidth="178.0" layoutX="140.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/Address%20(1).png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="18.0" fitWidth="70.0" layoutX="40.0" layoutY="194.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/Served_By.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="12.0" fitWidth="110.0" layoutX="170.0" layoutY="156.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/Number.png" />
+               </image>
+            </ImageView>
+            <HBox alignment="CENTER_RIGHT" layoutX="358.0" layoutY="189.0">
+               <children>
+                  <Label fx:id="handlerName1" text="Date Time" textFill="#282828">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
          </children>
-      </Pane>
+         <padding>
+            <Insets bottom="50.0" />
+         </padding>
+      </AnchorPane>
    </children>
 </AnchorPane>
