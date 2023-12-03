@@ -4,6 +4,7 @@
  */
 package MainAppFrame;
 
+import ClassFiles.CoffeeItemData;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -32,6 +33,13 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import ClassFiles.ControllerManager;
+import ClassFiles.ItemData;
+import ClassFiles.OrderCardData;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -48,15 +56,6 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     private ImageView CloseButton;
-
-    @FXML
-    private TableColumn<?, ?> Price;
-
-    @FXML
-    private TableColumn<?, ?> Product;
-
-    @FXML
-    private TableColumn<?, ?> Quantity;
 
     @FXML
     private TextField appldDscTxtLbl;
@@ -81,7 +80,7 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     private Label customTotalLabel;
-    
+
     @FXML
     private TextField discCodeTxtLbl;
 
@@ -113,20 +112,31 @@ public class SettlePaymentFXMLController implements Initializable {
     private Label subTotal;
 
     @FXML
-    private TableView<?> tableView;
+    private TableColumn<ItemData, Double> receiptPrice;
+
+    @FXML
+    private TableColumn<ItemData, String> receiptProduct;
+
+    @FXML
+    private TableColumn<ItemData, Integer> receiptQuantity;
+
+    @FXML
+    private TableView<ItemData> receiptTV;
 
     private CashierFXMLController existingCashierController;
 
+    private ObservableList<ItemData> menuMilkteaAndFrappeListData;
+
     private String empName;
-    
+
     private int empId;
-    
+
     private String employeeName;
-    
+
     private int employeeId;
-    
+
     private String originalTotal;
-    
+
     private double changeValue = 0.0;
 
     public void setExistingCashierController(CashierFXMLController cashierController, String employeeName, int employeeId) {
@@ -141,13 +151,13 @@ public class SettlePaymentFXMLController implements Initializable {
 
     public void setOrderType(String orderType) {
         ordertypeTxtField.setText(orderType);
-        ordertypeTxtField.setEditable(false); // Disable the TextField
+        ordertypeTxtField.setEditable(false); // Disable the TextFiel
     }
 
     @FXML
     void confirmButton(ActionEvent event) {
         CashierFXMLController cashierController = ControllerManager.getCashierController();
-        
+
         if (existingCashierController == null && cashierController != null) {
             existingCashierController = cashierController;
         }
@@ -269,55 +279,51 @@ public class SettlePaymentFXMLController implements Initializable {
         }
     }
 
-
-    
-
     @FXML
     void discEnterButton(ActionEvent event) {
 
         String discountCode = discCodeTxtLbl.getText();
         if (discountCode != null && !discountCode.isEmpty()) {
-    double discountPercent = getDiscountValueFromDatabase(discountCode);
-    if (discountPercent != -1) {
-        // Calculate discounted amount based on the percent
-        double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1)); // Remove the ₱ sign
-        double discountAmount = (discountPercent / 100) * totalAmount;
+            double discountPercent = getDiscountValueFromDatabase(discountCode);
+            if (discountPercent != -1) {
+                // Calculate discounted amount based on the percent
+                double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1)); // Remove the ₱ sign
+                double discountAmount = (discountPercent / 100) * totalAmount;
 
-        // Display the corresponding discount value with a percent sign
-        if (discountPercent == 0) {
-            discTxtLbl.setText("No discount applied.");
-            // If the discount is 0, set appldDscLbl to "-₱0.00"
-            appldDscLbl.setText("-₱0.00");
-            // Retain the original total in newTotalTxtLbl
-            newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
+                // Display the corresponding discount value with a percent sign
+                if (discountPercent == 0) {
+                    discTxtLbl.setText("No discount applied.");
+                    // If the discount is 0, set appldDscLbl to "-₱0.00"
+                    appldDscLbl.setText("-₱0.00");
+                    // Retain the original total in newTotalTxtLbl
+                    newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
+                } else {
+                    discTxtLbl.setText(String.format("%.2f%%", discountPercent));
+
+                    // Display the discounted amount in newTotalTxtLbl with a minus sign
+                    newTotalTxtLbl.setText(String.format("₱%.2f", totalAmount - discountAmount));
+
+                    // Display the original total in itmTotalTxtLbl
+                    itmTotalTxtLbl.setText(String.format("₱%.2f", totalAmount));
+
+                    // Display the discount amount in appldDscLbl with a minus sign
+                    appldDscLbl.setText(String.format("-₱%.2f", discountAmount));
+                }
+            } else {
+                // Handle the case when the discount code is not found
+                if (discountCode.equals("0")) {
+                    // If the discount code is explicitly set to 0, treat it as a valid input
+                    appldDscLbl.setText("-₱0.00");
+                    newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
+                } else {
+                    discTxtLbl.setText("Invalid!");
+                }
+            }
         } else {
-            discTxtLbl.setText(String.format("%.2f%%", discountPercent));
-
-            // Display the discounted amount in newTotalTxtLbl with a minus sign
-            newTotalTxtLbl.setText(String.format("₱%.2f", totalAmount - discountAmount));
-
-            // Display the original total in itmTotalTxtLbl
-            itmTotalTxtLbl.setText(String.format("₱%.2f", totalAmount));
-
-            // Display the discount amount in appldDscLbl with a minus sign
-            appldDscLbl.setText(String.format("-₱%.2f", discountAmount));
-        }
-    } else {
-        // Handle the case when the discount code is not found
-        if (discountCode.equals("0")) {
-            // If the discount code is explicitly set to 0, treat it as a valid input
-            appldDscLbl.setText("-₱0.00");
-            newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
-        } else {
-            discTxtLbl.setText("Invalid!");
-        }
-    }
-}
- else {
             // Handle the case when the discount code is empty
             discTxtLbl.setText("Enter a Discount Code");
         }
-    
+
     }
 
     private double getDiscountValueFromDatabase(String discountCode) {
@@ -375,41 +381,42 @@ public class SettlePaymentFXMLController implements Initializable {
     }
 
     @FXML
-void cashEnterButton(ActionEvent event) {
-    String cashEntered = cashTxtLbl.getText();
+    void cashEnterButton(ActionEvent event) {
+        String cashEntered = cashTxtLbl.getText();
 
-    if (!cashEntered.isEmpty()) {
-        try {
-            // Parse the cash entered by the user
-            double cashAmount = Double.parseDouble(cashEntered);
+        if (!cashEntered.isEmpty()) {
+            try {
+                // Parse the cash entered by the user
+                double cashAmount = Double.parseDouble(cashEntered);
 
-            // Parse the new total amount only if it's not empty and properly initialized
-            double newTotalAmount = parseNewTotalAmount();
+                // Parse the new total amount only if it's not empty and properly initialized
+                double newTotalAmount = parseNewTotalAmount();
 
-            // Calculate the change
-            double change = cashAmount - newTotalAmount;
+                // Calculate the change
+                double change = cashAmount - newTotalAmount;
 
-            // Display the change in the changeTxtLbl with a minus sign
-            changeTxtLbl.setText(String.format("₱%.2f", change));
+                // Display the change in the changeTxtLbl with a minus sign
+                changeTxtLbl.setText(String.format("₱%.2f", change));
 
-            // Update the class-level variable with the calculated change
-            changeValue = change;
+                // Update the class-level variable with the calculated change
+                changeValue = change;
 
-        } catch (NumberFormatException e) {
-            // Handle the case when the user enters non-numeric or invalid input for cash
-            changeTxtLbl.setText("Invalid Cash Amount");
+            } catch (NumberFormatException e) {
+                // Handle the case when the user enters non-numeric or invalid input for cash
+                changeTxtLbl.setText("Invalid Cash Amount");
+            }
+        } else {
+            // Handle the case when the cashTxtLbl is empty
+            changeTxtLbl.setText("Enter Cash Amount");
         }
-    } else {
-        // Handle the case when the cashTxtLbl is empty
-        changeTxtLbl.setText("Enter Cash Amount");
     }
-}
 
-private double parseNewTotalAmount() {
-    String newTotalText = newTotalTxtLbl.getText();
-    return newTotalText.isEmpty() ? 0.0 : Double.parseDouble(newTotalText.substring(1));
-}
-/*
+    private double parseNewTotalAmount() {
+        String newTotalText = newTotalTxtLbl.getText();
+        return newTotalText.isEmpty() ? 0.0 : Double.parseDouble(newTotalText.substring(1));
+    }
+
+    /*
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -426,9 +433,14 @@ private double parseNewTotalAmount() {
 
     /**
      * Initializes the controller class.
+     * 
+     * 
      */
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        setupTableView();
         changeTxtLbl.setDisable(true);
         calculateCustomTotal();
         calculateTotal();
@@ -461,65 +473,63 @@ private double parseNewTotalAmount() {
                 // Consume the event to prevent it from propagating
                 event.consume();
             }
-        }); 
+        });
 
     }
-    
+
     public void setEmployeeName(String employeeName) {
         this.employeeName = employeeName;
 
         handlerName.setText(employeeName);
     }
-    
+
     public void setEmployee(String employeeName) {
         this.employeeName = employeeName;
         this.employeeId = employeeId;
 
         handlerName.setText(employeeName);
     }
-    
-    
-    
+
     private void calculateCustomTotal() {
-    CashierFXMLController cashierController = ControllerManager.getCashierController();
-    int currentCustomerID = cashierController.getCurrentCustomerID();
+        CashierFXMLController cashierController = ControllerManager.getCashierController();
+        int currentCustomerID = cashierController.getCurrentCustomerID();
 
-    if (currentCustomerID != -1) {
-        try (Connection conn = database.getConnection()) {
-            if (conn != null) {
-                String[] tables = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
+        if (currentCustomerID != -1) {
+            try (Connection conn = database.getConnection()) {
+                if (conn != null) {
+                    String[] tables = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
 
-                double total = 0.0;
-                double discountAmount = 0.0;
+                    double total = 0.0;
+                    double discountAmount = 0.0;
 
-                for (String table : tables) {
-                    String sql = "SELECT final_price FROM " + table + " WHERE customer_id = ?";
-                    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                        stmt.setInt(1, currentCustomerID);
-                        try (ResultSet rs = stmt.executeQuery()) {
-                            while (rs.next()) {
-                                total += rs.getDouble("final_price");
+                    for (String table : tables) {
+                        String sql = "SELECT final_price FROM " + table + " WHERE customer_id = ?";
+                        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                            stmt.setInt(1, currentCustomerID);
+                            try (ResultSet rs = stmt.executeQuery()) {
+                                while (rs.next()) {
+                                    total += rs.getDouble("final_price");
+                                }
                             }
                         }
                     }
+
+                    // Retrieve discount amount based on the discount code (replace "YOUR_DISCOUNT_CODE" with the actual discount code)
+                    String discountCode = "YOUR_DISCOUNT_CODE";
+                    discountAmount = getDiscountAmountFromDatabase(discountCode);
+
+                    // Update the label text with the calculated total and discount amount
+                    customTotalLabel.setText(String.format("₱%.2f", total));
+                    appldDscLbl.setText(discountAmount >= 0 ? String.format("₱%.2f", discountAmount) : "₱0.00");
                 }
-
-                // Retrieve discount amount based on the discount code (replace "YOUR_DISCOUNT_CODE" with the actual discount code)
-                String discountCode = "YOUR_DISCOUNT_CODE";
-                discountAmount = getDiscountAmountFromDatabase(discountCode);
-
-                // Update the label text with the calculated total and discount amount
-                customTotalLabel.setText(String.format("₱%.2f", total));
-                appldDscLbl.setText(discountAmount >= 0 ? String.format("₱%.2f", discountAmount) : "₱0.00");
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else {
+            // Handle the case when there is no customer ID
+            customTotalLabel.setText("No Customer ID");
         }
-    } else {
-        // Handle the case when there is no customer ID
-        customTotalLabel.setText("No Customer ID");
     }
-}
 
     private double getDiscountAmountFromDatabase(String discountCode) {
         try (Connection conn = database.getConnection()) {
@@ -539,10 +549,77 @@ private double parseNewTotalAmount() {
         }
         return -1; // Return -1 if the discount code is not found
     }
-    
 
-    
+    private ObservableList<ItemData> fetchOrderDetails() {
+        ObservableList<ItemData> orderDetailsList = FXCollections.observableArrayList();
+
+        CashierFXMLController cashierController = ControllerManager.getCashierController();
+        int currentCustomerID = cashierController.getCurrentCustomerID();
+        
+        if (currentCustomerID != -1) {
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                // Fetch emp_name and date_time from the invoice table
+                String invoiceQuery = "SELECT emp_name, date_time FROM invoice WHERE customer_id = ?";
+
+                
+                try (PreparedStatement invoiceStmt = conn.prepareStatement(invoiceQuery)) {
+                    invoiceStmt.setInt(1, currentCustomerID);
+
+                    try (ResultSet invoiceRs = invoiceStmt.executeQuery()) {
+                        if (invoiceRs.next()) {
+                            String empName = invoiceRs.getString("emp_name");
+                            String dateTime = invoiceRs.getString("date_time");
+
+                            // Fetch orders from each table based on customer_id
+                            String[] tables = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
+
+                            for (String table : tables) {
+                                String orderQuery = "SELECT * FROM " + table + " WHERE customer_id = ?";
+
+                                try (PreparedStatement orderStmt = conn.prepareStatement(orderQuery)) {
+                                    orderStmt.setInt(1, currentCustomerID);
+
+                                    try (ResultSet orderRs = orderStmt.executeQuery()) {
+                                        while (orderRs.next()) {
+                                            // Extract relevant order details (adjust as needed)
+                                            int orderId = orderRs.getInt("order_id");
+                                            String productName = orderRs.getString("item_name");
+                                            double finalPrice = orderRs.getDouble("final_price");
+                                            int quantity = orderRs.getInt("quantity");
+
+                                            // Create an ItemData instance with the fetched data
+                                            ItemData itemData = new ItemData(orderId, productName, finalPrice, quantity);
+
+                                            // Add the ItemData to the list
+                                            orderDetailsList.add(itemData);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Update the table view with the fetched data
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database-related exceptions
+        }
+
+        
+    }
+        return orderDetailsList;
+    }
+
+    public void setupTableView() {
+        receiptProduct.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getItemName()));
+        receiptPrice.setCellValueFactory(f -> new SimpleDoubleProperty(f.getValue().getItemPrice()).asObject());
+        receiptQuantity.setCellValueFactory(f -> new SimpleIntegerProperty(f.getValue().getItemQuantity()).asObject());
+
+        // Bind the TableView to the combined ObservableList
+        receiptTV.setItems(fetchOrderDetails());
+    }
+
 }
-    
-    
-

@@ -1,14 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package ClassFiles;
 
-/**
- *
- * @author John Paul Uy
- */
 import javafx.beans.property.*;
 
 public class ItemData {
@@ -16,22 +7,26 @@ public class ItemData {
     private final StringProperty itemName;
     private final DoubleProperty itemPrice;
     private final IntegerProperty itemQuantity;
+    private final StringProperty employeeName;
+    private final StringProperty dateTime;
 
     public ItemData(int orderID, String itemName, double itemPrice, int itemQuantity) {
         this.orderID = new SimpleIntegerProperty(orderID);
         this.itemName = new SimpleStringProperty(itemName);
         this.itemPrice = new SimpleDoubleProperty(itemPrice);
         this.itemQuantity = new SimpleIntegerProperty(itemQuantity);
+        this.employeeName = new SimpleStringProperty("");
+        this.dateTime = new SimpleStringProperty("");
     }
 
-    public Integer getorderID() {
+    public Integer getOrderID() {
         return orderID.get();
     }
 
-    public void setorderID(int orderid) {
-        orderID.set(orderid);
-    }    
-    
+    public void setOrderID(int orderID) {
+        this.orderID.set(orderID);
+    }
+
     public String getItemName() {
         return itemName.get();
     }
@@ -56,6 +51,22 @@ public class ItemData {
         itemQuantity.set(quantity);
     }
 
+    public String getEmployeeName() {
+        return employeeName.get();
+    }
+
+    public void setEmployeeName(String name) {
+        employeeName.set(name);
+    }
+
+    public String getDateTime() {
+        return dateTime.get();
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime.set(dateTime);
+    }
+
     public StringProperty itemNameProperty() {
         return itemName;
     }
@@ -68,6 +79,11 @@ public class ItemData {
         return itemQuantity;
     }
 
+    public StringProperty employeeNameProperty() {
+        return employeeName;
+    }
+
+    public StringProperty dateTimeProperty() {
+        return dateTime;
+    }
 }
-
-

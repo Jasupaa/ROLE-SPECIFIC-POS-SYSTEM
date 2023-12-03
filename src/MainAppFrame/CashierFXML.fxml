@@ -13,10 +13,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
+<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
     <children>
       <ScrollPane fx:id="receiptScrollPane" layoutX="211.0" layoutY="151.0" prefHeight="450.0" prefWidth="449.0" styleClass="scrollPane" stylesheets="@../CSS/CashierCSS.css" AnchorPane.topAnchor="151.0">
          <content>
@@ -29,9 +28,9 @@
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding></ScrollPane>
-      <Pane layoutX="705.0" prefHeight="660.0" prefWidth="442.0" stylesheets="@../CSS/CashierCSS.css">
+      <Pane layoutX="705.0" prefHeight="660.0" prefWidth="442.0" styleClass="panedesign" stylesheets="@../CSS/CashierCSS.css">
          <children>
-            <Button fx:id="takeOrderButton" layoutX="231.0" layoutY="561.0" mnemonicParsing="false" onAction="#takeOrder" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
+            <Button fx:id="takeOrderButton" layoutX="231.0" layoutY="561.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -83,7 +82,6 @@
                   <Label fx:id="customerLabel" text="Label" textFill="WHITE" />
                </children>
             </VBox>
-            <Line id="line" endX="541.0723876953125" endY="-239.79873657226562" layoutX="-234.0" layoutY="570.0" rotate="90.0" startX="-45.35309600830078" startY="-240.43594360351562" stroke="#4b4949" strokeLineCap="ROUND" style="-fx-border-style: dotted;" />
          </children>
       </Pane>
       <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="48.0" layoutY="570.0" pickOnBounds="true" preserveRatio="true">

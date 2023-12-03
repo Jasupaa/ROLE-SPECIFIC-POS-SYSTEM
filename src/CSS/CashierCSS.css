@@ -27,6 +27,12 @@
     -fx-background-radius: 10px;
 }
 
+.receiptdesign {
+    -fx-border-style: dotted;
+    -fx-border-width: 2px;
+    -fx-border-color: #D9D9D9;
+}
+
 .imageviewShadow {
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0.5, 2, 2);
 }

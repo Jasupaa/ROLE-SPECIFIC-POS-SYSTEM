@@ -9,14 +9,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.FrappeCRUDController">
+<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.FrappeCRUDController">
    <children>
       <TableView fx:id="frappeTV" layoutX="39.0" layoutY="51.0" prefHeight="350.0" prefWidth="285.0">
         <columns>
-          <TableColumn fx:id="itemMT" prefWidth="91.20001220703125" text="Item" />
-          <TableColumn fx:id="smallMT" prefWidth="36.0" text="S" />
-            <TableColumn fx:id="medMT" prefWidth="36.79998779296875" text="M" />
-            <TableColumn fx:id="largeMT" prefWidth="35.20001220703125" text="L" />
+          <TableColumn fx:id="itemMT" prefWidth="140.80001831054688" text="Item" />
+          <TableColumn fx:id="smallMT" minWidth="0.0" prefWidth="50.39996337890625" text="S" />
+            <TableColumn fx:id="medMT" prefWidth="46.4000244140625" text="M" />
+            <TableColumn fx:id="largeMT" prefWidth="51.199951171875" text="L" />
         </columns>
       </TableView>
       <TextField fx:id="txtItemName" layoutX="609.0" layoutY="94.0" prefHeight="26.0" prefWidth="200.0" promptText="Eg. Caramel Latte" />

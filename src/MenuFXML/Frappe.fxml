@@ -10,12 +10,12 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="447.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuController.FrappeController">
+<AnchorPane id="AnchorPane" prefHeight="447.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuController.FrappeController">
    <children>
       <Pane prefHeight="455.0" prefWidth="393.0" styleClass="containerColorFR" stylesheets="@../CSS/CashierCSS.css">
          <children>
             <Spinner fx:id="spinnerQuantity" layoutX="133.0" layoutY="195.0" prefHeight="25.0" prefWidth="130.0" />
-            <Button fx:id="confirmButton1" layoutX="246.0" layoutY="387.0" mnemonicParsing="false" text="Confirm" />
+            <Button fx:id="confirmButton1" layoutX="246.0" layoutY="387.0" mnemonicParsing="false" onAction="#confirmButton1" text="Confirm" />
             <Label layoutX="91.0" layoutY="242.0" text="Size" textFill="#111315" />
             <ComboBox fx:id="sizeComboBox" layoutX="189.0" layoutY="238.0" prefHeight="26.0" prefWidth="111.0" />
             <Label layoutX="91.0" layoutY="309.0" text="Sugar Level" textFill="#111315" />

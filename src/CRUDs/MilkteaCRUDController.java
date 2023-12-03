@@ -251,7 +251,7 @@ public class MilkteaCRUDController implements Initializable {
                 preparedStatement.setBlob(6, image); // Use setBlob for InputStream
                 preparedStatement.setInt(7, itemID);
             } else {
-                preparedStatement.setInt(6, itemID);
+                preparedStatement.setInt(8, itemID);
             }
 
             preparedStatement.executeUpdate();

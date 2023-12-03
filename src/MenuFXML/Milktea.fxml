@@ -27,7 +27,7 @@
             <RadioButton fx:id="askmeRadioHead" layoutX="286.0" layoutY="384.0" mnemonicParsing="false" onAction="#askmeRadioHeadSelected" prefHeight="18.0" prefWidth="19.0" />
             <VBox alignment="CENTER" layoutX="41.0" layoutY="39.0" prefHeight="147.0" prefWidth="313.0">
                <children>
-                  <ImageView fx:id="foodImg" fitHeight="119.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="foodImg" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true" />
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
                         <Label fx:id="foodLabel" text="Label" textFill="#111315" wrapText="true" />
