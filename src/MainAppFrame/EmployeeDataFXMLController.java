@@ -45,6 +45,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 import ClassFiles.EmployeeData;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -114,6 +115,14 @@ public class EmployeeDataFXMLController implements Initializable {
     private Pane blurPane;
     
     private Stage addEmployeeStage;
+    @FXML
+    private Button removeEmployee;
+    @FXML
+    private ImageView editpic;
+    @FXML
+    private TableColumn<?, ?> empPic;
+    @FXML
+    private TableColumn<?, ?> actioncol;
     @FXML
     private void addEmployeeButton(ActionEvent event) {
         try {
@@ -190,9 +199,41 @@ public class EmployeeDataFXMLController implements Initializable {
         });
 
     }    
+       //di ko alam kung gumagana pina check ko kay laira -nan
 
-    @FXML
-    private void SalesreportButton(ActionEvent event) {
+    private static class employeeTable {
+
+        public employeeTable() {
+        }
     }
     
+    public class YourControllerClass {
+    
+    @FXML
+    private TableView<employeeTable> tableView; // Make sure to match this ID with your FXML TableView ID
+    @FXML
+    private Button removeEmployee; // Make sure to match this ID with your FXML Delete Button ID
+
+    private ObservableList<employeeTable> data;
+
+    // Initialize method (optional)
+    public void initialize() {
+        // Initialize your TableView and data here
+    }
+
+    // Other methods...
+
+    @FXML
+    private void removeEmployeeAction() {
+        // Get the selected item
+        employeeTable selectedPerson = tableView.getSelectionModel().getSelectedItem();
+
+        if (selectedPerson != null) {
+            // Remove the selected item from the data
+            data.remove(selectedPerson);
+        }
+    }
+
+    // Other methods...
+    }
 }
