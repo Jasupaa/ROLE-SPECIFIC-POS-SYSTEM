@@ -41,8 +41,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javafx.collections.FXCollections;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-
+import javafx.scene.image.Image;
 
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
@@ -50,7 +49,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private Button AddCoup;
-      
+
     @FXML
     private AnchorPane AdminPane;
 
@@ -101,7 +100,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private Button milkteaBTN;
-    
+
     @FXML
     private TableView<Discount> discountTableView;
 
@@ -120,14 +119,25 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     @FXML
     private TableColumn<Discount, LocalDate> validAtColumn;
 
+    @FXML
+    private ImageView salesIV;
+
+    @FXML
+    private ImageView empIV;
+
+    @FXML
+    private ImageView disIV;
+
+    @FXML
+    private ImageView menuIV;
+
     private ObservableList<Discount> discounts;
-    
+
     @FXML
     private Button DelBtn;
 
     @FXML
     private Button EditBtn;
-    
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -174,14 +184,61 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         thread.start();
     }
 
+    @FXML
+    private void handleMouseEnter(MouseEvent event) {
+        // Handle mouse enter (hover in)
+        salesIV.setVisible(false);
+    }
+
+    @FXML
+    private void handleMouseExit(MouseEvent event) {
+        // Handle mouse exit (hover out)
+        salesIV.setVisible(true);
+    }
+
+    @FXML
+    private void handleMouseEnter1(MouseEvent event) {
+        // Handle mouse enter (hover in)
+        menuIV.setVisible(false);
+    }
+
+    @FXML
+    private void handleMouseExit1(MouseEvent event) {
+        // Handle mouse exit (hover out)
+        menuIV.setVisible(true);
+    }
+
+    @FXML
+    private void handleMouseEnter2(MouseEvent event) {
+        // Handle mouse enter (hover in)
+        empIV.setVisible(false);
+    }
+
+    @FXML
+    private void handleMouseExit2(MouseEvent event) {
+        // Handle mouse exit (hover out)
+        empIV.setVisible(true);
+    }
+
+    @FXML
+    private void handleMouseEnter3(MouseEvent event) {
+        // Handle mouse enter (hover in)
+        disIV.setVisible(false);
+    }
+
+    @FXML
+    private void handleMouseExit3(MouseEvent event) {
+        // Handle mouse exit (hover out)
+        disIV.setVisible(true);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-       
+
         discounts = FXCollections.observableArrayList();
         setupDiscountColumns();
         loadDataFromDatabase();
-        
+
         milkteaBTN.setStyle("-fx-background-color: #111315; -fx-background-radius: 20px");
         DateLabel();
         Timenow();
@@ -222,7 +279,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Handle the exception (e.g., show an error dialog)
         }
     }
-    
+
     @FXML
     private void handleFruitDrinkButtonClick(ActionEvent event) {
         try {
@@ -240,8 +297,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Handle the exception (e.g., show an error dialog)
         }
     }
-    
-    
+
     @FXML
     private void handleCoffeeButtonClick(ActionEvent event) {
         try {
@@ -259,8 +315,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Handle the exception (e.g., show an error dialog)
         }
     }
-    
-    
+
     @FXML
     private void handleRiceMealsButtonClick(ActionEvent event) {
         try {
@@ -278,7 +333,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Handle the exception (e.g., show an error dialog)
         }
     }
-    
+
     @FXML
     private void handleSnacksButtonClick(ActionEvent event) {
         try {
@@ -296,7 +351,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Handle the exception (e.g., show an error dialog)
         }
     }
-    
+
     @FXML
     private void handleExtrasButtonClick(ActionEvent event) {
         try {
@@ -314,7 +369,6 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Handle the exception (e.g., show an error dialog)
         }
     }
-    
 
     @FXML
     private void handleFrappeButtonClick(ActionEvent event) {
@@ -333,63 +387,64 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Handle the exception (e.g., show an error dialog)
         }
     }
-    
- @FXML
-private void handleDiscountButtonClick(ActionEvent event) {
-    try {
-        // Load the DiscountCrud.fxml file
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/DiscountCrud.fxml"));
-        Parent root = loader.load();
 
-        // Create a new stage for the DiscountCrud.fxml
-        Stage stage = new Stage();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-
-        // Access the DiscountCRUDController and set the reference to AdminFXMLController
-        DiscountCRUDController discountCrudController = loader.getController();
-        discountCrudController.setAdminController(this);
-
-        stage.show();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
-@FXML
-private void handleEditButtonAction(ActionEvent event) {
-    // Get the selected discount from the TableView
-    Discount selectedDiscount = discountTableView.getSelectionModel().getSelectedItem();
-
-    if (selectedDiscount != null) {
+    @FXML
+    private void handleDiscountButtonClick(ActionEvent event) {
         try {
             // Load the DiscountCrud.fxml file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/DiscountEdit.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/DiscountCrud.fxml"));
             Parent root = loader.load();
-
-            // Access the DiscountCrudController to set the fields
-          DiscountCRUDController discountCrudController = loader.getController();
-          discountCrudController.setAdminController(this);
-
-            // Pass the selected discount to the DiscountCrudController
-            discountCrudController.setDiscount(selectedDiscount);
 
             // Create a new stage for the DiscountCrud.fxml
             Stage stage = new Stage();
             Scene scene = new Scene(root);
             stage.setScene(scene);
+
+            // Access the DiscountCRUDController and set the reference to AdminFXMLController
+            DiscountCRUDController discountCrudController = loader.getController();
+            discountCrudController.setAdminController(this);
+
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the exception (e.g., show an error dialog)
         }
-    } else {
-        // Prompt the user to select a discount
-        // You can show an alert or any other form of user notification
-        System.out.println("Please select a discount to edit.");
     }
-}
-    
-      private void loadDataFromDatabase() {
+
+    @FXML
+    private void handleEditButtonAction(ActionEvent event) {
+        // Get the selected discount from the TableView
+        Discount selectedDiscount = discountTableView.getSelectionModel().getSelectedItem();
+
+        if (selectedDiscount != null) {
+            try {
+                // Load the DiscountCrud.fxml file
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/DiscountEdit.fxml"));
+                Parent root = loader.load();
+
+                // Access the DiscountCrudController to set the fields
+                DiscountCRUDController discountCrudController = loader.getController();
+                discountCrudController.setAdminController(this);
+
+                // Pass the selected discount to the DiscountCrudController
+                discountCrudController.setDiscount(selectedDiscount);
+
+                // Create a new stage for the DiscountCrud.fxml
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Handle the exception (e.g., show an error dialog)
+            }
+        } else {
+            // Prompt the user to select a discount
+            // You can show an alert or any other form of user notification
+            System.out.println("Please select a discount to edit.");
+        }
+    }
+
+    private void loadDataFromDatabase() {
         List<Discount> discountList = fetchDiscountsFromDatabase();
         discounts.clear();
         discounts.addAll(discountList);
@@ -397,78 +452,77 @@ private void handleEditButtonAction(ActionEvent event) {
     }
 
     private ObservableList<Discount> fetchDiscountsFromDatabase() {
-    ObservableList<Discount> discounts = FXCollections.observableArrayList();
+        ObservableList<Discount> discounts = FXCollections.observableArrayList();
 
-    String sql = "SELECT id, disc_code, disc_value, Desc_coup, Date_created, Date_valid FROM discount";
+        String sql = "SELECT id, disc_code, disc_value, Desc_coup, Date_created, Date_valid FROM discount";
 
-    try (Connection connection = database.getConnection(); // Assuming your database class is named 'database'
-         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-         ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (Connection connection = database.getConnection(); // Assuming your database class is named 'database'
+                 PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
 
-        while (resultSet.next()) {
-            int id = resultSet.getInt("id");
-            String discCode = resultSet.getString("disc_code");
-            double discValue = resultSet.getDouble("disc_value");
-            String descCoup = resultSet.getString("Desc_coup");
-             java.sql.Date dateCreatedSql = resultSet.getDate("Date_created");
-            LocalDate dateCreated = (dateCreatedSql != null) ? dateCreatedSql.toLocalDate() : null;
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String discCode = resultSet.getString("disc_code");
+                double discValue = resultSet.getDouble("disc_value");
+                String descCoup = resultSet.getString("Desc_coup");
+                java.sql.Date dateCreatedSql = resultSet.getDate("Date_created");
+                LocalDate dateCreated = (dateCreatedSql != null) ? dateCreatedSql.toLocalDate() : null;
 
-            // Convert java.sql.Date to LocalDate
-            java.sql.Date dateValidSql = resultSet.getDate("Date_valid");
-            LocalDate dateValid = (dateValidSql != null) ? dateValidSql.toLocalDate() : null;
+                // Convert java.sql.Date to LocalDate
+                java.sql.Date dateValidSql = resultSet.getDate("Date_valid");
+                LocalDate dateValid = (dateValidSql != null) ? dateValidSql.toLocalDate() : null;
 
-            Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid);
-            discounts.add(discount);
+                Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid);
+                discounts.add(discount);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return discounts;
     }
 
-    return discounts;
-}
-   
-private void setupDiscountColumns() {
-    codeColumn.setCellValueFactory(new PropertyValueFactory<>("discCode"));
-    discountColumn.setCellValueFactory(new PropertyValueFactory<>("discValue"));
-    descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("descCoup"));
-    createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
-    validAtColumn.setCellValueFactory(new PropertyValueFactory<>("dateValid"));
-}
+    private void setupDiscountColumns() {
+        codeColumn.setCellValueFactory(new PropertyValueFactory<>("discCode"));
+        discountColumn.setCellValueFactory(new PropertyValueFactory<>("discValue"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("descCoup"));
+        createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
+        validAtColumn.setCellValueFactory(new PropertyValueFactory<>("dateValid"));
+    }
 
-private void deleteDiscountFromDatabase(String discCode) {
-    try (Connection connection = database.getConnection();
-         PreparedStatement preparedStatement = connection.prepareStatement(
-                 "DELETE FROM discount WHERE disc_code = ?")) {
+    private void deleteDiscountFromDatabase(String discCode) {
+        try (Connection connection = database.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(
+                "DELETE FROM discount WHERE disc_code = ?")) {
 
-        preparedStatement.setString(1, discCode);
+            preparedStatement.setString(1, discCode);
 
-        int affectedRows = preparedStatement.executeUpdate();
+            int affectedRows = preparedStatement.executeUpdate();
 
-        if (affectedRows > 0) {
-            System.out.println("Discount successfully deleted from the database.");
+            if (affectedRows > 0) {
+                System.out.println("Discount successfully deleted from the database.");
+            } else {
+                System.out.println("Failed to delete discount from the database. The discount with disc_code '" + discCode + "' may not exist.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteButtonAction(ActionEvent event) {
+        Discount selectedDiscount = discountTableView.getSelectionModel().getSelectedItem();
+
+        if (selectedDiscount != null) {
+            String discCode = selectedDiscount.getDiscCode();
+            deleteDiscountFromDatabase(discCode);
+            refreshTableView(); // Refresh the table view after deletion
         } else {
-            System.out.println("Failed to delete discount from the database. The discount with disc_code '" + discCode + "' may not exist.");
+            System.out.println("Please select a discount to delete.");
         }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
-}
-@FXML
-private void handleDeleteButtonAction(ActionEvent event) {
-    Discount selectedDiscount = discountTableView.getSelectionModel().getSelectedItem();
 
-    if (selectedDiscount != null) {
-        String discCode = selectedDiscount.getDiscCode();
-        deleteDiscountFromDatabase(discCode);
-        refreshTableView(); // Refresh the table view after deletion
-    } else {
-        System.out.println("Please select a discount to delete.");
-    }
-}
-
- public void refreshTableView() {
+    public void refreshTableView() {
         loadDataFromDatabase();
     }
 
@@ -524,7 +578,7 @@ private void handleDeleteButtonAction(ActionEvent event) {
             invManage.setVisible(false);
             empDetails.setVisible(false);
             disCoup.setVisible(true);
-refreshTableView();
+            refreshTableView();
         }
 
     }

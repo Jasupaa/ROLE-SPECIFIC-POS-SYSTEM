@@ -69,6 +69,7 @@ import MenuController.FruitDrinkController;
 import MenuController.MenuController;
 import MenuController.SnacksController;
 import com.mysql.cj.jdbc.Blob;
+import javafx.scene.image.Image;
 
 public class CashierFXMLController implements Initializable, ControllerInterface {
 
@@ -145,6 +146,9 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     @FXML
     private Label empName;
+
+    @FXML
+    private ImageView salesImageView;
 
     private Stage settlePaymentStage;
 
@@ -1165,9 +1169,11 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         }
     }
 
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        // The rest of your initialize method...
         try {
             getMenu1();
         } catch (SQLException ex) {

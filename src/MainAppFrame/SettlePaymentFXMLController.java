@@ -598,5 +598,7 @@ public class SettlePaymentFXMLController implements Initializable {
         // Bind the TableView to the combined ObservableList
         receiptTV.setItems(fetchOrderDetails());
     }
+    
+    
 
 }
