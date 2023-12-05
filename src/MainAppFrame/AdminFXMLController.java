@@ -40,8 +40,13 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javafx.collections.FXCollections;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+
+import ClassFiles.EmployeeData;
+import ClassFiles.Role;
+import java.sql.Statement;
 
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
@@ -88,6 +93,40 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private Button salesRepBTN;
+    
+    @FXML
+    private Button archiBTN;
+    
+    @FXML
+    private AnchorPane archives;
+    
+    @FXML
+    private Button editEmp;
+    
+    @FXML
+    private TableView<EmployeeData> employeeTable1;
+
+     @FXML
+    private TableColumn<EmployeeData, Integer> emp_id1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empFirstName1;
+    
+    @FXML
+    private TableColumn<EmployeeData, String> empLastName1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empEmail1;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> empContact1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> emp_role1;
+    @FXML
+    private TableColumn<EmployeeData, Integer> pin_code1;
+    @FXML
+    private TableColumn<EmployeeData, String> empStatus1;
 
     @FXML
     private Label timeLbl;
@@ -147,6 +186,54 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private Label Products;
+    @FXML
+    private Button addEmployee;
+    
+    @FXML
+    private AnchorPane editEmployee;
+
+    @FXML
+    private Button editButton;
+
+    @FXML
+    private Button removeEmployee;
+    
+    @FXML
+    private TextField FirstNameTxtLbl;
+    @FXML
+    private TextField LastNameTxtLbl;
+    @FXML
+    private TextField ContactTxtLbl;
+    @FXML
+    private TextField emailTxtLbl;
+    
+    @FXML
+    private TableView<EmployeeData> employeeTable;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> emp_id;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empFirstName;
+    
+    @FXML
+    private TableColumn<EmployeeData, String> empLastName;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empEmail;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> empContact;
+
+    @FXML
+    private TableColumn<EmployeeData, String> emp_role;
+    @FXML
+    private TableColumn<EmployeeData, Integer> pin_code;
+    @FXML
+    private TableColumn<EmployeeData, String> empStatus;
+    @FXML
+    private Button removeEmp;
+    
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -241,9 +328,31 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         disIV.setVisible(true);
     }
 
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+    employeeDataList = FXCollections.observableArrayList();
+
+   
+    if (employeeDataList.isEmpty()) {
+        emp_id.setCellValueFactory(new PropertyValueFactory<>("emp_id"));
+        empFirstName.setCellValueFactory(new PropertyValueFactory<>("empFirstName"));
+        empLastName.setCellValueFactory(new PropertyValueFactory<>("empLastName"));
+        empStatus.setCellValueFactory(new PropertyValueFactory<>("empStatus"));
+        empContact.setCellValueFactory(new PropertyValueFactory<>("empContact"));
+        empEmail.setCellValueFactory(new PropertyValueFactory<>("empEmail"));
+        emp_role.setCellValueFactory(new PropertyValueFactory<>("emp_role"));
+        pin_code.setCellValueFactory(new PropertyValueFactory<>("pin_code"));
+        
+        fetchExistingDataFromDatabase();
+
+        // Update the TableView
+        updateEmployeeTable();
+        employeeTable.setItems(employeeDataList);
+        employeeTable1.setItems(employeeDataList);
+
+    }
         updateTotalDailySalesLabel();
         updateTotalDailyProductsSoldLabel();
         updateTotalDailyCustomersLabel();
@@ -400,6 +509,81 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Handle the exception (e.g., show an error dialog)
         }
     }
+     public void updateEmployeeTable() {
+    for (EmployeeData employee : employeeDataList) {
+        System.out.println("Employee ID: " + employee.getEmp_id() + ", Status: " + employee.getStatus());
+    }
+    employeeTable.setItems(employeeDataList);
+    employeeTable.refresh();
+}
+
+    public void addEmployee(EmployeeData employee) {
+    employeeTable.getItems().add(employee);
+    System.out.println("Adding employee: " + employee.getEmpFirstName());
+    employeeDataList.add(employee);
+    employeeTable.setItems(employeeDataList);
+    }
+
+
+    @FXML
+    private void openAddEmployeeDialog() {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEmployee.fxml"));
+        Parent root = loader.load();
+        AddEmployeeFXMLController addEmployeeController = loader.getController();
+        addEmployeeController.setParentController(this);
+        Stage stage = new Stage();
+        stage.setTitle("Add Employee");
+        stage.setScene(new Scene(root));
+        stage.show();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    }
+    private ObservableList<EmployeeData> employeeDataList = FXCollections.observableArrayList();
+    
+    private void fetchExistingDataFromDatabase() {
+    try (Connection connection = database.getConnection();
+         Statement statement = connection.createStatement();
+         ResultSet resultSet = statement.executeQuery("SELECT * FROM employees")) {
+
+        while (resultSet.next()) {
+            EmployeeData employee = new EmployeeData(
+                    resultSet.getInt("emp_id"),
+                    resultSet.getInt("pin_code"),
+                    resultSet.getString("empFirstName"),
+                    resultSet.getString("empLastName"),
+                    resultSet.getString("empEmail"),
+                    resultSet.getLong("empContact"), 
+                    resultSet.getString("emp_role")
+            );
+
+            
+            employee.setEmpStatus(resultSet.getString("empStatus"));
+            System.out.println("Employee ID: " + employee.getEmp_id() + ", Status: " + employee.getStatus());
+            employeeDataList.add(employee);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        
+    }}
+    
+   @FXML
+    private void removeEmployee() {
+        // Get the selected employee from the employeeTable in EmployeeDetails
+        EmployeeData selectedEmployee = employeeTable.getSelectionModel().getSelectedItem();
+
+        if (selectedEmployee != null) {
+            // Remove the selected employee from the shared data list
+            employeeDataList.remove(selectedEmployee);
+
+            // Add the selected employee to the employeeTable1 in Archives
+            employeeTable1.getItems().add(selectedEmployee);
+        }
+    }
+
+
+
 
     @FXML
     private void handleDiscountButtonClick(ActionEvent event) {
@@ -633,6 +817,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             invManage.setVisible(false);
             empDetails.setVisible(false);
             disCoup.setVisible(false);
+            archives.setVisible(false);
 
         } else if (clickedButton == salesRepBTN) {
             home.setVisible(false);
@@ -640,6 +825,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             invManage.setVisible(false);
             empDetails.setVisible(false);
             disCoup.setVisible(false);
+            archives.setVisible(false);
 
         } else if (clickedButton == salesRepBTN) {
             home.setVisible(false);
@@ -647,6 +833,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             invManage.setVisible(false);
             empDetails.setVisible(false);
             disCoup.setVisible(false);
+            archives.setVisible(false);
 
         } else if (clickedButton == invManageBTN) {
             home.setVisible(false);
@@ -654,6 +841,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             invManage.setVisible(true);
             empDetails.setVisible(false);
             disCoup.setVisible(false);
+            archives.setVisible(false);
 
         } else if (clickedButton == empDetailsBTN) {
             home.setVisible(false);
@@ -661,6 +849,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             invManage.setVisible(false);
             empDetails.setVisible(true);
             disCoup.setVisible(false);
+            archives.setVisible(false);
 
         } else if (clickedButton == disCoupBTN) {
             home.setVisible(false);
@@ -668,8 +857,17 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             invManage.setVisible(false);
             empDetails.setVisible(false);
             disCoup.setVisible(true);
+            archives.setVisible(false);
+            refreshTableView();
+        
+        } else if (clickedButton == archiBTN) {
+            home.setVisible(false);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+            archives.setVisible(true);
             refreshTableView();
         }
 
-    }
-}
+    }}

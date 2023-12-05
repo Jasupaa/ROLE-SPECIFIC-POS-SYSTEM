@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AdminFXMLController">
+<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AdminFXMLController">
     <children>
         <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="93.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -46,6 +46,11 @@
                         <Font size="14.0" />
                     </font>
                 </Button>
+            <Button fx:id="archiBTN" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="154.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="36.0" prefWidth="214.0" styleClass="buttonMenu" stylesheets="@../CSS/CashierCSS.css" text="Archives" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
             </children>
         </VBox>
         <Label layoutX="85.0" layoutY="224.0" text="DASHBOARD" textFill="#404040">
@@ -67,7 +72,7 @@
         </ImageView>
         <AnchorPane layoutX="251.0" layoutY="148.0" prefHeight="450.0" prefWidth="830.0">
             <children>
-            <AnchorPane fx:id="home" onDragDetected="#SwitchForm" prefHeight="450.4" prefWidth="830.4" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="home" onDragDetected="#SwitchForm" prefHeight="450.4" prefWidth="830.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <ImageView fx:id="salesReportIV11" fitHeight="199.0" fitWidth="205.0" layoutX="260.0" layoutY="238.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
                      <image>
@@ -147,36 +152,37 @@
                   <Button fx:id="EditBtn" layoutX="534.0" layoutY="417.0" mnemonicParsing="false" onAction="#handleEditButtonAction" prefHeight="25.0" prefWidth="142.0" text="Edit" />
                </children>
                 </AnchorPane>
-                <AnchorPane fx:id="empDetails" layoutY="-1.0" prefHeight="450.0" prefWidth="817.0" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
+                <AnchorPane fx:id="empDetails" layoutY="-1.0" prefHeight="468.0" prefWidth="894.0" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="69.0" AnchorPane.topAnchor="-1.0">
                <children>
-                  <Button fx:id="addEmployee" layoutX="620.0" layoutY="59.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
+                  <Button fx:id="addEmployee" layoutX="515.0" layoutY="50.0" mnemonicParsing="false" onAction="#openAddEmployeeDialog" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <TableView fx:id="employeeTable" layoutX="46.0" layoutY="101.0" prefHeight="320.0" prefWidth="769.0" style="-fx-background-color: #111315;">
-                     <columns>
-                        <TableColumn fx:id="emp_id" prefWidth="46.0" text="ID" />
-                        <TableColumn fx:id="empFirstName" prefWidth="101.0" text="FirstName" />
-                        <TableColumn fx:id="empContact" prefWidth="123.0" text="Contact No." />
-                        <TableColumn fx:id="empEmail" prefWidth="156.0" text="E-mail" />
-                        <TableColumn fx:id="emp_role" prefWidth="101.0" text="Role" />
-                        <TableColumn fx:id="pin_code" prefWidth="94.0" text="PinCode" />
-                        <TableColumn fx:id="empLastName" prefWidth="106.0" text="LastName" />
-                     </columns>
-                  </TableView>
-                  <Button fx:id="addEmployee1" layoutX="467.0" layoutY="59.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/CSS/AdminCSS.css" text="- Remove Employee" textFill="WHITE">
+                  <Button fx:id="removeEmp" layoutX="668.0" layoutY="50.0" mnemonicParsing="false" onAction="#removeEmployee" prefHeight="30.0" prefWidth="146.0" styleClass="buttonPink" stylesheets="@../CSS/AdminCSS.css" text="- Remove Employee" textFill="WHITE">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <ImageView fitHeight="36.0" fitWidth="46.0" layoutX="770.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="36.0" fitWidth="46.0" layoutX="822.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/editEmployee.png" />
                      </image>
                   </ImageView>
+                  <TableView fx:id="employeeTable" layoutY="92.0" prefHeight="320.0" prefWidth="864.0" style="-fx-background-color: #111315;">
+                     <columns>
+                        <TableColumn fx:id="emp_id" prefWidth="46.0" text="ID" />
+                        <TableColumn fx:id="empFirstName" prefWidth="117.0" text="FirstName" />
+                        <TableColumn fx:id="empLastName" prefWidth="124.0" text="LastName" />
+                        <TableColumn fx:id="empStatus" prefWidth="114.0" text="Status" />
+                        <TableColumn fx:id="empContact" prefWidth="139.0" text="Contact No." />
+                        <TableColumn fx:id="empEmail" prefWidth="163.0" text="E-mail" />
+                        <TableColumn fx:id="emp_role" prefWidth="82.0" text="Role" />
+                        <TableColumn fx:id="pin_code" prefWidth="78.0" text="Pin Code" />
+                     </columns>
+                  </TableView>
                </children></AnchorPane>
-                <AnchorPane fx:id="invManage" prefHeight="450.4" prefWidth="830.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <AnchorPane fx:id="invManage" prefHeight="450.4" prefWidth="830.4" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Button fx:id="milkteaBTN" layoutX="31.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleMilkteaButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>
@@ -293,6 +299,27 @@
                      </children>
                   </HBox>
                </children></AnchorPane>
+            <AnchorPane fx:id="archives" layoutX="10.0" layoutY="9.0" prefHeight="468.0" prefWidth="894.0" visible="false">
+               <children>
+                  <Button fx:id="editEmp" layoutX="718.0" layoutY="49.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../CSS/AdminCSS.css" text="Edit Employee" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <TableView fx:id="employeeTable1" layoutY="92.0" prefHeight="320.0" prefWidth="864.0" style="-fx-background-color: #111315;">
+                     <columns>
+                        <TableColumn fx:id="emp_id1" prefWidth="46.0" text="ID" />
+                        <TableColumn fx:id="empFirstName1" prefWidth="117.0" text="FirstName" />
+                        <TableColumn fx:id="empLastName1" prefWidth="124.0" text="LastName" />
+                        <TableColumn fx:id="empStatus1" prefWidth="114.0" text="Status" />
+                        <TableColumn fx:id="empContact1" prefWidth="139.0" text="Contact No." />
+                        <TableColumn fx:id="empEmail1" prefWidth="163.0" text="E-mail" />
+                        <TableColumn fx:id="emp_role1" prefWidth="82.0" text="Role" />
+                        <TableColumn fx:id="pin_code1" prefWidth="78.0" text="Pin Code" />
+                     </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
             </children>
         </AnchorPane>
     </children>
