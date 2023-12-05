@@ -33,7 +33,7 @@
       </ImageView>
         <AnchorPane layoutX="251.0" layoutY="148.0" prefHeight="450.0" prefWidth="830.0">
             <children>
-            <AnchorPane fx:id="home" layoutX="-218.0" layoutY="-5.0" onDragDetected="#SwitchForm" prefHeight="475.0" prefWidth="1058.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-218.0" AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-5.0">
+            <AnchorPane fx:id="home" layoutX="-218.0" layoutY="-5.0" onDragDetected="#SwitchForm" prefHeight="475.0" prefWidth="1058.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-218.0" AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-5.0">
                <children>
                   <Pane layoutX="30.0" layoutY="26.0">
                      <children>
@@ -176,31 +176,29 @@
             </AnchorPane>
                 <AnchorPane fx:id="salesRep" layoutX="-192.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1022.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-192.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
                <children>
-                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="545.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../../New%20Folder/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/pink%20rectangle.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="97.0" fitWidth="213.0" layoutX="545.0" layoutY="190.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../../New%20Folder/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/black%20rectangle%202.png" />
-                     </image>
-                  </ImageView>
+                  <AnchorPane layoutX="787.0" layoutY="70.0" />
+                  <Pane layoutX="267.0" layoutY="107.0">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Pictures/Group%20164.png" />
+                           </image>
+                        </ImageView>
+                        <HBox layoutX="117.0" layoutY="44.0">
+                           <children>
+                              <Label fx:id="Products" text="- - -" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </Pane>
+                  <ImageView fitHeight="97.0" fitWidth="213.0" layoutX="545.0" layoutY="190.0" pickOnBounds="true" preserveRatio="true" />
                   <HBox alignment="CENTER_LEFT" layoutX="149.0" layoutY="47.0" prefHeight="18.0" prefWidth="64.0">
                      <children>
                         <Label fx:id="Daily" text="Revenue" textFill="WHITE" visible="false" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="397.0" layoutY="46.0" prefHeight="18.0" prefWidth="70.0">
-                     <children>
-                        <Label fx:id="Products" text="Orders" textFill="WHITE" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="645.0" layoutY="45.0">
-                     <children>
-                        <Label fx:id="Customer" text="Customer" textFill="WHITE" />
-                     </children>
-                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="397.0" layoutY="46.0" prefHeight="18.0" prefWidth="70.0" />
+                  <HBox alignment="CENTER_LEFT" layoutX="645.0" layoutY="45.0" />
                   <Button fx:id="SRhomeBTN" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>
                         <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
@@ -210,93 +208,132 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <Pane layoutX="47.0" layoutY="106.0">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Pictures/Group%20163.png" />
+                           </image>
+                        </ImageView>
+                        <HBox layoutX="108.0" layoutY="44.0">
+                           <children>
+                              <Label fx:id="Daily" text="0.00" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </Pane>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="49.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Pictures/Sales%20Report.png" />
+                     </image>
+                  </ImageView>
+                  <Pane layoutX="488.0" layoutY="107.0">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Pictures/Group%20165.png" />
+                           </image>
+                        </ImageView>
+                        <Label fx:id="Customer" layoutX="108.0" layoutY="43.0" text="- - -" textFill="WHITE" />
+                     </children>
+                  </Pane>
                </children>
             </AnchorPane>
-                <AnchorPane fx:id="invManage" prefHeight="450.4" prefWidth="830.4" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <AnchorPane fx:id="invManage" layoutX="-192.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1022.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-192.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
                <children>
-                  <Button fx:id="milkteaBTN" layoutX="31.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleMilkteaButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                  <Pane layoutX="181.0" layoutY="147.0">
+                     <children>
+                        <Button fx:id="milkteaBTN" mnemonicParsing="false" onAction="#handleMilkteaButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                           <graphic>
+                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
+                                 <image>
+                                    <Image url="@../Pictures/Milktea_Label.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="192.0" mnemonicParsing="false" onAction="#handleFruitDrinkButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                           <graphic>
+                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Pictures/Fruit_Drink_Label%20(1).png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="384.0" mnemonicParsing="false" onAction="#handleFrappeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                           <graphic>
+                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Pictures/Frappe_Label.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="576.0" mnemonicParsing="false" onAction="#handleCoffeeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                           <graphic>
+                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Pictures/Coffee_Label.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutY="182.0" mnemonicParsing="false" onAction="#handleRiceMealsButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                           <graphic>
+                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Pictures/Rice_Meal_Label.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="192.0" layoutY="182.0" mnemonicParsing="false" onAction="#handleSnacksButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                           <graphic>
+                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Pictures/Snacks_Label.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="384.0" layoutY="182.0" mnemonicParsing="false" onAction="#handleExtrasButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                           <graphic>
+                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Pictures/Extras_Label.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="576.0" layoutY="182.0" mnemonicParsing="false" onAction="#handleExtrasButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                           <graphic>
+                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Pictures/Group%20152%20(1).png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </Pane>
+                  <Button fx:id="MLhomeBTN" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
                      <graphic>
-                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
+                        <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../Pictures/Milktea_Label.png" />
+                              <Image url="@../Pictures/Group%205_1.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button layoutX="223.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleFruitDrinkButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Fruit_Drink_Label%20(1).png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button layoutX="415.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleFrappeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Frappe_Label.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button layoutX="607.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleCoffeeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Coffee_Label.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button layoutX="31.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleRiceMealsButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Rice_Meal_Label.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button layoutX="223.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleSnacksButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Snacks_Label.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button layoutX="415.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleExtrasButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Extras_Label.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Line endX="601.2000732421875" layoutX="187.0" layoutY="40.0" opacity="0.11" startX="-37.20001220703125" stroke="WHITE" />
-                  <Label layoutX="42.0" layoutY="31.0" text="No. of Items">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="120.0" layoutY="32.0" prefHeight="18.0" prefWidth="19.0" text="Label" />
-                  <Button layoutX="607.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleExtrasButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Group%20152%20(1).png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="MLhomeBTN" mnemonicParsing="false" onAction="#SwitchForm" text="Home" />
+                  <ImageView fitHeight="17.0" fitWidth="178.0" layoutX="59.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Pictures/1.png" />
+                     </image>
+                  </ImageView>
                </children>
                 </AnchorPane>
-                <AnchorPane fx:id="empDetails" layoutY="-1.0" prefHeight="450.0" prefWidth="817.0" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
+                <AnchorPane fx:id="empDetails" layoutX="-182.0" layoutY="-96.0" prefHeight="560.0" prefWidth="1012.0" style="-fx-background-color: #111315;" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-182.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-96.0">
                <children>
                   <Button fx:id="addEmployee" layoutX="620.0" layoutY="59.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
                      <font>
@@ -324,7 +361,15 @@
                         <Image url="@../../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/editEmployee.png" />
                      </image>
                   </ImageView>
-                  <Button fx:id="EMPhomeBTN" mnemonicParsing="false" onAction="#SwitchForm" text="Home" />
+                  <Button fx:id="EMPhomeBTN" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
+                     <graphic>
+                        <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Pictures/Group%205_1.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </children>
             </AnchorPane>
                 <AnchorPane fx:id="disCoup" prefHeight="450.4" prefWidth="830.4" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
