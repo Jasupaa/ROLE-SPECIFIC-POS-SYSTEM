@@ -632,12 +632,12 @@ public class SettlePaymentFXMLController implements Initializable {
             Parent keypadRoot = loader.load();
             KeypadFXMLController keypadController = loader.getController();
             keypadController.setTargetTextField(targetTextField);
-
+ 
             // Create a new stage for the keypad
             Stage keypadStage = new Stage();
             keypadStage.initStyle(StageStyle.UNDECORATED);
             keypadStage.setResizable(false);
-
+    
             // Set the scene fill to transparent
             Scene keypadScene = new Scene(keypadRoot);
             keypadScene.setFill(Color.TRANSPARENT);
@@ -650,8 +650,4 @@ public class SettlePaymentFXMLController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             // Handle exceptions accordingly
-        }
-    }*/
-
-    
 }

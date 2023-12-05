@@ -118,6 +118,9 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private TableColumn<Discount, LocalDate> validAtColumn;
+    
+    @FXML
+    private TableColumn<Discount, Integer> UsageColumn;
 
     @FXML
     private ImageView salesIV;
@@ -467,7 +470,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private ObservableList<Discount> fetchDiscountsFromDatabase() {
         ObservableList<Discount> discounts = FXCollections.observableArrayList();
 
-        String sql = "SELECT id, disc_code, disc_value, Desc_coup, Date_created, Date_valid FROM discount";
+        String sql = "SELECT * FROM discount WHERE Date_valid >= CURRENT_DATE AND limit_usage > 0";
 
         try (Connection connection = database.getConnection(); // Assuming your database class is named 'database'
                  PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -479,12 +482,13 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
                 String descCoup = resultSet.getString("Desc_coup");
                 java.sql.Date dateCreatedSql = resultSet.getDate("Date_created");
                 LocalDate dateCreated = (dateCreatedSql != null) ? dateCreatedSql.toLocalDate() : null;
+                int usageLim = resultSet.getInt("limit_usage");
 
                 // Convert java.sql.Date to LocalDate
                 java.sql.Date dateValidSql = resultSet.getDate("Date_valid");
                 LocalDate dateValid = (dateValidSql != null) ? dateValidSql.toLocalDate() : null;
 
-                Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid);
+                Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid, usageLim );
                 discounts.add(discount);
             }
 
@@ -578,6 +582,9 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("descCoup"));
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
         validAtColumn.setCellValueFactory(new PropertyValueFactory<>("dateValid"));
+        UsageColumn.setCellValueFactory(new PropertyValueFactory<>("usageLim"));
+
+
     }
 
     private void deleteDiscountFromDatabase(String discCode) {
