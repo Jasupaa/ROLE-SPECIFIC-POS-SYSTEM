@@ -149,6 +149,24 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private Label Products;
 
     @FXML
+    private Label topOneLBL;
+
+    @FXML
+    private Label topOneQTY;
+
+    @FXML
+    private Label topThreeLBL;
+
+    @FXML
+    private Label topThreeQTY;
+
+    @FXML
+    private Label topTwoLBL;
+
+    @FXML
+    private Label topTwoQTY;
+
+    @FXML
     private void handleMousePressed(MouseEvent event) {
         xOffset = event.getSceneX();
         yOffset = event.getSceneY();
