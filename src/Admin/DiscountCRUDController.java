@@ -71,6 +71,9 @@ public class DiscountCRUDController implements Initializable {
     @FXML
     private TextField disCript;
     
+    @FXML
+    private TextField Limit;
+    
     
     
     private int id;
@@ -118,6 +121,7 @@ public class DiscountCRUDController implements Initializable {
         String descCoup = disCript.getText();
         LocalDate dateCreated = LocalDate.now();
         LocalDate dateValid = DatePicker.getValue();
+        int usageLim =  Integer.parseInt(Limit.getText());
         
         if (isDiscountCodeExists(discCode, id)) {
         showAlert("Discount Code Exists", "The discount code already exists. Please use a different code.");
@@ -125,7 +129,7 @@ public class DiscountCRUDController implements Initializable {
     }
 
         // Call a method to insert data into the database
-        insertDiscountIntoDatabase(discCode, discValue, descCoup, dateCreated, dateValid);
+        insertDiscountIntoDatabase(discCode, discValue, descCoup, dateCreated, dateValid, usageLim);
         
           adminController.refreshTableView();
           
@@ -139,6 +143,7 @@ public class DiscountCRUDController implements Initializable {
         String descCoup = disCript.getText();
         LocalDate dateCreated = LocalDate.now();
         LocalDate dateValid = DatePicker.getValue();
+        int usageLim =  Integer.parseInt(Limit.getText());
         
          if (isDiscountCodeExists(discCode, id)) {
         showAlert("Discount Code Exists", "The discount code already exists. Please use a different code.");
@@ -146,21 +151,22 @@ public class DiscountCRUDController implements Initializable {
          }
         
         // Call a method to insert data into the database
-        updateDiscountIntoDatabase(discCode, discValue, descCoup, dateCreated, dateValid);
+        updateDiscountIntoDatabase(discCode, discValue, descCoup, dateCreated, dateValid, usageLim);
         
           adminController.refreshTableView();
     }
     
-    private void insertDiscountIntoDatabase(String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid) {
+    private void insertDiscountIntoDatabase(String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid, int usageLim) {
         try (Connection connection = database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO discount (disc_code, disc_value, Desc_coup, Date_created, Date_valid) VALUES (?, ?, ?, ?, ?)")) {
+                     "INSERT INTO discount (disc_code, disc_value, Desc_coup, Date_created, Date_valid, limit_usage, usageLim) VALUES (?, ?, ?, ?, ?)")) {
 
             preparedStatement.setString(1, discCode);
             preparedStatement.setDouble(2, discValue);
             preparedStatement.setString(3, descCoup);
             preparedStatement.setDate(4, Date.valueOf(dateCreated));
             preparedStatement.setDate(5, Date.valueOf(dateValid));
+             preparedStatement.setInt(6, usageLim);
 
             int affectedRows = preparedStatement.executeUpdate();
 
@@ -176,18 +182,20 @@ public class DiscountCRUDController implements Initializable {
     }
     
     
-        private void updateDiscountIntoDatabase(String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid) {
+        private void updateDiscountIntoDatabase(String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid, int usageLim) {
        
         try (Connection connection = database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "UPDATE discount SET disc_Code = ?, disc_value = ?, Desc_coup = ?, Date_created = ?, Date_valid = ? WHERE id = ?")) {
+                     "UPDATE discount SET disc_Code = ?, disc_value = ?, Desc_coup = ?, Date_created = ?, Date_valid = ?, limit_usage = ? WHERE id = ?")) {
 
             preparedStatement.setString(1, discCode);
             preparedStatement.setDouble(2, discValue);
             preparedStatement.setString(3, descCoup);
             preparedStatement.setDate(4, Date.valueOf(dateCreated));
             preparedStatement.setDate(5, Date.valueOf(dateValid));
-            preparedStatement.setInt(6, id);
+            preparedStatement.setInt(6, usageLim);
+            preparedStatement.setInt(7, id);
+        
 
             int affectedRows = preparedStatement.executeUpdate();
 
