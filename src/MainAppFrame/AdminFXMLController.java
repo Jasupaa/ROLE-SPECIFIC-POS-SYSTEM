@@ -140,6 +140,15 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private Button EditBtn;
 
     @FXML
+    private Label Customer;
+
+    @FXML
+    private Label Daily;
+
+    @FXML
+    private Label Products;
+
+    @FXML
     private void handleMousePressed(MouseEvent event) {
         xOffset = event.getSceneX();
         yOffset = event.getSceneY();
@@ -234,6 +243,10 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        updateTotalDailySalesLabel();
+        updateTotalDailyProductsSoldLabel();
+        updateTotalDailyCustomersLabel();
 
         discounts = FXCollections.observableArrayList();
         setupDiscountColumns();
@@ -480,6 +493,83 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         }
 
         return discounts;
+    }
+
+    private double calculateTotalDailySales() {
+        double totalSales = 0.0;
+
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT SUM(total) AS totalSales FROM invoice"); ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                totalSales = resultSet.getDouble("totalSales");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+
+        return totalSales;
+    }
+
+    private void updateTotalDailySalesLabel() {
+        double totalSales = calculateTotalDailySales();
+        Daily.setText(String.format("%.2f", totalSales));
+    }
+
+    private int calculateTotalDailyProductsSold() {
+        int totalProductsSold = 0;
+
+        try (Connection connection = database.getConnection()) {
+            String[] tableNames = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
+
+            for (String tableName : tableNames) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT SUM(quantity) AS productsSold FROM " + tableName); ResultSet resultSet = statement.executeQuery()) {
+
+                    if (resultSet.next()) {
+                        totalProductsSold += resultSet.getInt("productsSold");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+
+        return totalProductsSold;
+    }
+
+    private void updateTotalDailyProductsSoldLabel() {
+        int totalProductsSold = calculateTotalDailyProductsSold();
+        // Adjust the label name if needed
+        Products.setText(String.valueOf(totalProductsSold));
+    }
+
+    private int calculateTotalDailyCustomers() {
+        int totalCustomers = 0;
+
+        try (Connection connection = database.getConnection()) {
+            String[] tableNames = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
+
+            for (String tableName : tableNames) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT COUNT(DISTINCT customer_id) AS uniqueCustomers FROM " + tableName); ResultSet resultSet = statement.executeQuery()) {
+
+                    if (resultSet.next()) {
+                        totalCustomers += resultSet.getInt("uniqueCustomers");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+
+        return totalCustomers;
+    }
+
+    private void updateTotalDailyCustomersLabel() {
+        int totalCustomers = calculateTotalDailyCustomers();
+        Customer.setText(String.valueOf(totalCustomers));
     }
 
     private void setupDiscountColumns() {

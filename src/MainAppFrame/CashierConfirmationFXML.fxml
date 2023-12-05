@@ -11,22 +11,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="yourAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="456.0" style="-fx-border-radius: 5px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierConfirmationFXMLController">   <children>
-      <AnchorPane prefHeight="719.0" prefWidth="456.0" style="-fx-border-radius: 5px;">
+<AnchorPane fx:id="yourAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="724.0" prefWidth="456.0" style="-fx-border-radius: 5px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierConfirmationFXMLController">   <children>
+      <AnchorPane prefHeight="750.0" prefWidth="456.0" style="-fx-border-radius: 5px;">
          <children>
-            <ImageView fitHeight="68.0" fitWidth="102.0" layoutX="176.0" layoutY="39.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+            <ImageView fitHeight="68.0" fitWidth="102.0" layoutX="178.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
                <image>
                   <Image url="@../Pictures/Splashscreen%20(2).png" />
                </image>
             </ImageView>
-            <TableView fx:id="receiptTV2" layoutX="40.0" layoutY="214.0" prefWidth="378.0">
+            <TableView fx:id="receiptTV2" layoutX="40.0" layoutY="214.0" prefHeight="324.0" prefWidth="378.0">
                <columns>
                   <TableColumn fx:id="receiptProduct" prefWidth="209.5999641418457" text="Product" />
                   <TableColumn fx:id="receiptQuantity2" prefWidth="54.4000244140625" text="Qty" />
                   <TableColumn fx:id="receiptPrice2" prefWidth="113.5999755859375" text="Price" />
                </columns>
             </TableView>
-            <VBox layoutX="278.0" layoutY="630.0" spacing="1.5">
+            <VBox layoutX="280.0" layoutY="558.0" spacing="1.5">
                <children>
                   <Label text="SUBTOTAL:" textFill="#282828" />
                   <Label text="DISCOUNT:" textFill="#282828" />
@@ -35,16 +35,12 @@
                   <Label text="CHANGE DUE:" textFill="#282828" />
                </children>
             </VBox>
-            <HBox alignment="CENTER_LEFT" layoutX="118.0" layoutY="189.0">
+            <HBox alignment="CENTER_LEFT" layoutX="107.0" layoutY="189.0">
                <children>
-                  <Label fx:id="handlerName" text="Serrano" textFill="#282828">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Label>
+                  <Label fx:id="handlerName" text="Jasper" textFill="#282828" />
                </children>
             </HBox>
-            <VBox layoutX="365.0" layoutY="628.0">
+            <VBox layoutX="367.0" layoutY="556.0">
                <children>
                   <Label fx:id="subTotal" text="Subtotal" textFill="#333333">
                      <font>
@@ -73,28 +69,24 @@
                   </Label>
                </children>
             </VBox>
-            <ImageView fitHeight="36.0" fitWidth="178.0" layoutX="140.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="36.0" fitWidth="178.0" layoutX="142.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Pictures/Address%20(1).png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="18.0" fitWidth="70.0" layoutX="40.0" layoutY="194.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="12.0" fitWidth="61.0" layoutX="40.0" layoutY="194.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Pictures/Served_By.png" />
                </image>
             </ImageView>
             <ImageView fitHeight="12.0" fitWidth="110.0" layoutX="170.0" layoutY="156.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Pictures/Number.png" />
+                  <Image url="@../../../../../Downloads/Number%20(1).png" />
                </image>
             </ImageView>
-            <HBox alignment="CENTER_RIGHT" layoutX="358.0" layoutY="189.0">
+            <HBox alignment="CENTER_RIGHT" layoutX="363.0" layoutY="189.0">
                <children>
-                  <Label fx:id="handlerName1" text="Date Time" textFill="#282828">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Label>
+                  <Label fx:id="handlerName1" text="Date Time" textFill="#282828" />
                </children>
             </HBox>
          </children>

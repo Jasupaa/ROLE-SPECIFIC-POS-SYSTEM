@@ -209,7 +209,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
         // If the maximum customer ID is 0, set customerID to 0 and increment normally
         if (maxOverallCustomerID == 0) {
-            customerID = 0;
+            customerID = 0 + 1;
         } else {
             // Increment the maximum customer ID to get the current customer ID
             customerID = maxOverallCustomerID + 1;
@@ -570,9 +570,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
+                Integer itemID = result.getInt("itemID");
 
                 // Create a MilkteaItemData object and add it to the list
-                FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice, image);
+                FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice, image, itemID);
                 listData.add(frappeItemData);
 
             }
@@ -888,23 +889,40 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private void deleteItem(ItemData item) throws SQLException {
         System.out.println("Deleting item: " + item.getItemName());
+
         String dltMTsql = "DELETE FROM milk_tea WHERE order_id = ?";
         String dltfrappesql = "DELETE FROM frappe WHERE order_id = ?";
         String dltFDsql = "DELETE FROM fruit_drink WHERE order_id = ?";
+        String dltCoffeeSql = "DELETE FROM coffee WHERE order_id = ?";
+        String dltRiceMealSql = "DELETE FROM rice_meal WHERE order_id = ?";
+        String dltSnacksSql = "DELETE FROM snacks WHERE order_id = ?";
+        String dltExtrasSql = "DELETE FROM extras WHERE order_id = ?";
 
-        try (Connection connect = database.getConnection(); PreparedStatement prepare = connect.prepareStatement(dltMTsql); PreparedStatement frapprepare = connect.prepareStatement(dltfrappesql); PreparedStatement FDprepare = connect.prepareStatement(dltFDsql)) {
+        try (Connection connect = database.getConnection(); PreparedStatement prepare = connect.prepareStatement(dltMTsql); PreparedStatement frapprepare = connect.prepareStatement(dltfrappesql); PreparedStatement FDprepare = connect.prepareStatement(dltFDsql); PreparedStatement coffeePrepare = connect.prepareStatement(dltCoffeeSql); PreparedStatement riceMealPrepare = connect.prepareStatement(dltRiceMealSql); PreparedStatement snacksPrepare = connect.prepareStatement(dltSnacksSql); PreparedStatement extrasPrepare = connect.prepareStatement(dltExtrasSql)) {
 
             prepare.setInt(1, item.getOrderID());
             frapprepare.setInt(1, item.getOrderID());
             FDprepare.setInt(1, item.getOrderID());
+            coffeePrepare.setInt(1, item.getOrderID());
+            riceMealPrepare.setInt(1, item.getOrderID());
+            snacksPrepare.setInt(1, item.getOrderID());
+            extrasPrepare.setInt(1, item.getOrderID());
 
             int rowsAffected = prepare.executeUpdate();
             int rowsAffectedFrappe = frapprepare.executeUpdate();
             int rowsAffectedFD = FDprepare.executeUpdate();
+            int rowsAffectedCoffee = coffeePrepare.executeUpdate();
+            int rowsAffectedRiceMeal = riceMealPrepare.executeUpdate();
+            int rowsAffectedSnacks = snacksPrepare.executeUpdate();
+            int rowsAffectedExtras = extrasPrepare.executeUpdate();
 
             System.out.println("Rows affected: " + rowsAffected);
             System.out.println("Rows affected (frappe): " + rowsAffectedFrappe);
             System.out.println("Rows affected (fruit_drink): " + rowsAffectedFD);
+            System.out.println("Rows affected (coffee): " + rowsAffectedCoffee);
+            System.out.println("Rows affected (rice_meal): " + rowsAffectedRiceMeal);
+            System.out.println("Rows affected (snacks): " + rowsAffectedSnacks);
+            System.out.println("Rows affected (extras): " + rowsAffectedExtras);
 
             System.out.println("SQL Parameters (order_id only): " + item.getOrderID());
         }
@@ -929,13 +947,14 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             // Iterate through unique order IDs and delete items
             for (int orderID : orderIDs) {
                 ItemData dummyItem = new ItemData(orderID, "", 0.0, 0);
-                deleteAllitems(dummyItem);
+                deleteItem(dummyItem);
             }
 
             menuMilkteaAndFrappeListData.clear(); // Clear all items from the TableView
         }
     }
 
+    /*
     private void deleteAllitems(ItemData item) throws SQLException {
 
         String deleteAllMTsql = "DELETE FROM milk_tea WHERE order_id = ?";
@@ -958,7 +977,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             System.out.println("Rows affected (delete all frappe): " + rowsAffectedFrappe);
             System.out.println("Rows affected (delete all fruit drink): " + rowsAffectedFD);
         }
-    }
+    } */
 
     private void refreshMenuGrid() throws SQLException {
 
@@ -1168,7 +1187,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             }
         }
     }
-
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

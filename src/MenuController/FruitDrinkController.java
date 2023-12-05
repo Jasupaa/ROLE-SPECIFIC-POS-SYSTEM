@@ -118,7 +118,7 @@ public class FruitDrinkController {
         Blob imageBlob = fruitDrinkItemData.getImage();
         byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
         ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
-        Image image = new Image(bis, 129, 173, false, true);
+        Image image = new Image(bis, 120, 120, false, true);
         foodImg.setImage(image);
 
     }

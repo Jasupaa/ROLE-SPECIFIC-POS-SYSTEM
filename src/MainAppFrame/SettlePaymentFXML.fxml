@@ -117,7 +117,7 @@
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="change" text="Change">
+                              <Label fx:id="changeLbl" text="Change">
                                  <font>
                                     <Font size="13.0" />
                                  </font>

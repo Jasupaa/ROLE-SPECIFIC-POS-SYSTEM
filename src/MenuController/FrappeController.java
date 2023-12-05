@@ -21,9 +21,9 @@ import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import ClassFiles.ControllerManager;
 import ClassFiles.FrappeItemData;
-import ClassFiles.MilkteaItemData;
+
 import Databases.CRUDDatabase;
-import com.mysql.cj.jdbc.Blob;
+import java.sql.Blob;
 import java.io.ByteArrayInputStream;
 import java.sql.ResultSet;
 
@@ -105,7 +105,7 @@ public class FrappeController {
         Blob imageBlob = frappeItemData.getImage();
         byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
         ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
-        Image image = new Image(bis, 129, 173, false, true);
+        Image image = new Image(bis, 120, 120, false, true);
         foodImg.setImage(image);
 
     }
