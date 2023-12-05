@@ -451,7 +451,7 @@ public class SettlePaymentFXMLController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+        restrictLetter(cashTxtLbl);
         
 
         try {
@@ -622,6 +622,13 @@ public class SettlePaymentFXMLController implements Initializable {
 
         // Bind the TableView to the combined ObservableList
         receiptTV.setItems(fetchOrderDetails());
+    }
+    public void restrictLetter(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                textField.setText(oldValue);
+            }
+        });
     }
     
     

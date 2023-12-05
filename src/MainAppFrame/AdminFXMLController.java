@@ -53,6 +53,18 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     double xOffset, yOffset;
 
     @FXML
+    private Button SRhomeBTN;
+
+    @FXML
+    private Button MLhomeBTN;
+
+    @FXML
+    private Button EMPhomeBTN;
+
+    @FXML
+    private Button DChomeBTN;
+
+    @FXML
     private Button AddCoup;
 
     @FXML
@@ -159,6 +171,9 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private TableColumn<Discount, LocalDate> validAtColumn;
 
     @FXML
+    private TableColumn<Discount, Integer> UsageColumn;
+
+    @FXML
     private ImageView salesIV;
 
     @FXML
@@ -234,6 +249,33 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     @FXML
     private Button removeEmp;
     
+
+    @FXML
+    private Label topOneLBL;
+
+    @FXML
+    private Label topOneQTY;
+
+    @FXML
+    private Label topThreeLBL;
+
+    @FXML
+    private Label topThreeQTY;
+
+    @FXML
+    private Label topTwoLBL;
+
+    @FXML
+    private Label topTwoQTY;
+
+    @FXML
+    private Label homeNOC;
+
+    @FXML
+    private Label homeREV;
+
+    @FXML
+    private Label homeTO;
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -356,6 +398,9 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         updateTotalDailySalesLabel();
         updateTotalDailyProductsSoldLabel();
         updateTotalDailyCustomersLabel();
+        updateTotalDailyCustomersHome();
+        updateTotalDailyProductsSoldHome();
+        updateTotalDailySalesHome();
 
         discounts = FXCollections.observableArrayList();
         setupDiscountColumns();
@@ -651,7 +696,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private ObservableList<Discount> fetchDiscountsFromDatabase() {
         ObservableList<Discount> discounts = FXCollections.observableArrayList();
 
-        String sql = "SELECT id, disc_code, disc_value, Desc_coup, Date_created, Date_valid FROM discount";
+        String sql = "SELECT * FROM discount WHERE Date_valid >= CURRENT_DATE AND limit_usage > 0";
 
         try (Connection connection = database.getConnection(); // Assuming your database class is named 'database'
                  PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -663,12 +708,13 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
                 String descCoup = resultSet.getString("Desc_coup");
                 java.sql.Date dateCreatedSql = resultSet.getDate("Date_created");
                 LocalDate dateCreated = (dateCreatedSql != null) ? dateCreatedSql.toLocalDate() : null;
+                int usageLim = resultSet.getInt("limit_usage");
 
                 // Convert java.sql.Date to LocalDate
                 java.sql.Date dateValidSql = resultSet.getDate("Date_valid");
                 LocalDate dateValid = (dateValidSql != null) ? dateValidSql.toLocalDate() : null;
 
-                Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid);
+                Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid, usageLim);
                 discounts.add(discount);
             }
 
@@ -756,12 +802,30 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         Customer.setText(String.valueOf(totalCustomers));
     }
 
+    private void updateTotalDailyCustomersHome() {
+        int totalCustomers = calculateTotalDailyCustomers();
+        homeNOC.setText(String.valueOf(totalCustomers));
+    }
+
+    private void updateTotalDailyProductsSoldHome() {
+        int totalProductsSold = calculateTotalDailyProductsSold();
+        // Adjust the label name if needed
+        homeTO.setText(String.valueOf(totalProductsSold));
+    }
+
+    private void updateTotalDailySalesHome() {
+        double totalSales = calculateTotalDailySales();
+        homeREV.setText(String.format("%.2f", totalSales));
+    }
+
     private void setupDiscountColumns() {
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("discCode"));
         discountColumn.setCellValueFactory(new PropertyValueFactory<>("discValue"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("descCoup"));
         createdAtColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
         validAtColumn.setCellValueFactory(new PropertyValueFactory<>("dateValid"));
+        UsageColumn.setCellValueFactory(new PropertyValueFactory<>("usageLim"));
+
     }
 
     private void deleteDiscountFromDatabase(String discCode) {
@@ -819,9 +883,30 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             disCoup.setVisible(false);
             archives.setVisible(false);
 
-        } else if (clickedButton == salesRepBTN) {
-            home.setVisible(false);
-            salesRep.setVisible(true);
+        } else if (clickedButton == SRhomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == MLhomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == EMPhomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == DChomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
             invManage.setVisible(false);
             empDetails.setVisible(false);
             disCoup.setVisible(false);
