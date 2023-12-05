@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AdminFXMLController">
+<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AdminFXMLController">
     <children>
         <Label layoutX="451.0" layoutY="77.0" text="DASHBOARD" textFill="#404040">
             <font>
@@ -159,10 +159,11 @@
                   <TableView fx:id="discountTableView" layoutX="43.0" layoutY="63.0" prefHeight="343.0" prefWidth="780.0">
                      <columns>
                         <TableColumn fx:id="codeColumn" prefWidth="105.33333969116211" text="Code" />
-                        <TableColumn fx:id="discountColumn" prefWidth="97.99996948242188" text="Discount" />
-                        <TableColumn fx:id="descriptionColumn" prefWidth="255.0" text="Description" />
-                        <TableColumn fx:id="createdAtColumn" prefWidth="175.0" text="Created At" />
-                        <TableColumn fx:id="validAtColumn" prefWidth="175.0" text="Valid At" />
+                        <TableColumn fx:id="discountColumn" prefWidth="75.33328247070312" text="Discount" />
+                        <TableColumn fx:id="descriptionColumn" prefWidth="278.00006103515625" text="Description" />
+                        <TableColumn fx:id="createdAtColumn" prefWidth="108.0" text="Created At" />
+                        <TableColumn fx:id="validAtColumn" prefWidth="108.0" text="Valid At" />
+                        <TableColumn fx:id="UsageColumn" prefWidth="104.00006103515625" text="Usage Limit" />
                      </columns>
                   </TableView>
                   <Button fx:id="AddCoup" layoutX="629.0" layoutY="26.0" mnemonicParsing="false" onAction="#handleDiscountButtonClick" prefHeight="25.0" prefWidth="193.0" text="+ Add Coupon" />

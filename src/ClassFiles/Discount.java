@@ -19,22 +19,25 @@ public class Discount {
     private LocalDate dateCreated;
     private LocalDate dateValid;
     private int id;
+    private int usageLim;
 
-    public Discount(int id, String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid) {
+    public Discount(int id, String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid, int usageLim) {
         this.discCode = discCode;
         this.discValue = discValue;
         this.descCoup = descCoup;
         this.dateCreated = dateCreated;
         this.dateValid = dateValid;
-         this.id = id;
+        this.id = id;
+        this.usageLim = usageLim;
      
     }
-     public Discount(String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid) {
+     public Discount(String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid, int usageLim) {
         this.discCode = discCode;
         this.discValue = discValue;
         this.descCoup = descCoup;
         this.dateCreated = dateCreated;
         this.dateValid = dateValid;
+        this.usageLim = usageLim;
         
      
     }
@@ -91,6 +94,15 @@ public class Discount {
     public void setId(int id) {
         this.id = id;
     }
+    
+ public int getUsageLim() {
+        return usageLim;
+    }
+  public void setUsageLim(int usageLim) {
+        this.usageLim = usageLim;
+    }
+
+    
     
 }
     
