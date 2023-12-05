@@ -167,6 +167,15 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private Label topTwoQTY;
 
     @FXML
+    private Label homeNOC;
+
+    @FXML
+    private Label homeREV;
+
+    @FXML
+    private Label homeTO;
+
+    @FXML
     private void handleMousePressed(MouseEvent event) {
         xOffset = event.getSceneX();
         yOffset = event.getSceneY();
@@ -265,6 +274,9 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         updateTotalDailySalesLabel();
         updateTotalDailyProductsSoldLabel();
         updateTotalDailyCustomersLabel();
+        updateTotalDailyCustomersHome();
+        updateTotalDailyProductsSoldHome();
+        updateTotalDailySalesHome();
 
         discounts = FXCollections.observableArrayList();
         setupDiscountColumns();
@@ -588,6 +600,22 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private void updateTotalDailyCustomersLabel() {
         int totalCustomers = calculateTotalDailyCustomers();
         Customer.setText(String.valueOf(totalCustomers));
+    }
+
+    private void updateTotalDailyCustomersHome() {
+        int totalCustomers = calculateTotalDailyCustomers();
+        homeNOC.setText(String.valueOf(totalCustomers));
+    }
+
+    private void updateTotalDailyProductsSoldHome() {
+        int totalProductsSold = calculateTotalDailyProductsSold();
+        // Adjust the label name if needed
+        homeTO.setText(String.valueOf(totalProductsSold));
+    }
+
+    private void updateTotalDailySalesHome() {
+        double totalSales = calculateTotalDailySales();
+        homeREV.setText(String.format("%.2f", totalSales));
     }
 
     private void setupDiscountColumns() {

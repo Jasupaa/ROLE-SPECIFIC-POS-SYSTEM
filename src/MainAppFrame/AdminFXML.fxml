@@ -14,21 +14,16 @@
 
 <AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AdminFXMLController">
     <children>
-        <ImageView fitHeight="59.0" fitWidth="42.0" layoutX="56.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@../Pictures/logo.png" />
-            </image>
-        </ImageView>
-        <Label layoutX="464.0" layoutY="78.0" text="DASHBOARD" textFill="#404040">
+        <Label layoutX="451.0" layoutY="77.0" text="DASHBOARD" textFill="#404040">
             <font>
                 <Font size="9.0" />
             </font>
         </Label>
-        <Label fx:id="dateLbl" layoutX="125.0" layoutY="102.0" text="Label" textFill="WHITE" />
-        <Label fx:id="timeLbl" layoutX="212.0" layoutY="102.0" text="Label" textFill="WHITE" />
-        <ImageView fitHeight="59.0" fitWidth="455.0" layoutX="122.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true">
+        <Label fx:id="dateLbl" layoutX="114.0" layoutY="102.0" text="Label" textFill="WHITE" />
+        <Label fx:id="timeLbl" layoutX="217.0" layoutY="102.0" text="Label" textFill="WHITE" />
+        <ImageView fitHeight="30.0" fitWidth="452.0" layoutX="112.0" layoutY="64.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../Pictures/Admin_Label.png" />
+                <Image url="@../Pictures/Good%20Morning,%20Admin!.png" />
             </image>
         </ImageView>
         <AnchorPane layoutX="251.0" layoutY="148.0" prefHeight="450.0" prefWidth="830.0">
@@ -113,17 +108,17 @@
                   </ImageView>
                   <HBox layoutX="587.0" layoutY="100.0">
                      <children>
-                        <Label text="Label" />
+                        <Label fx:id="homeREV" text="Label" textFill="WHITE" />
                      </children>
                   </HBox>
                   <HBox layoutX="587.0" layoutY="146.0">
                      <children>
-                        <Label text="Label" />
+                        <Label fx:id="homeTO" text="Label" textFill="WHITE" />
                      </children>
                   </HBox>
                   <HBox layoutX="587.0" layoutY="193.0">
                      <children>
-                        <Label text="Label" />
+                        <Label fx:id="homeNOC" text="Label" textFill="WHITE" />
                      </children>
                   </HBox>
                   <HBox layoutX="587.0" layoutY="280.0">
@@ -146,18 +141,17 @@
                         <Label fx:id="topOneQTY" text="Quantity" />
                      </children>
                   </HBox>
-                  <Label layoutY="15.0" text="Label" />
                   <HBox layoutX="587.0" layoutY="341.0">
                      <children>
                         <Label fx:id="topTwoQTY" text="Quantity" />
                      </children>
                   </HBox>
-                  <Label layoutY="15.0" text="Label" />
                   <HBox layoutX="587.0" layoutY="388.0">
                      <children>
                         <Label fx:id="topThreeQTY" text="Quantity" />
                      </children>
                   </HBox>
+                  <Line endX="252.20001220703125" layoutX="219.0" layoutY="9.0" opacity="0.09" startX="-100.0" stroke="WHITE" />
                </children>
             </AnchorPane>
                 <AnchorPane fx:id="disCoup" prefHeight="450.4" prefWidth="830.4" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -324,5 +318,11 @@
                </children></AnchorPane>
             </children>
         </AnchorPane>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="-11.0" layoutY="-11.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fitHeight="26.0" fitWidth="28.0" layoutX="71.0" layoutY="48.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Pictures/icons8-burger-64.png" />
+         </image>
+      </ImageView>
     </children>
 </AnchorPane>
