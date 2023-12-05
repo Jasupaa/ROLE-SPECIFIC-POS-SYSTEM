@@ -48,6 +48,18 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     double xOffset, yOffset;
 
     @FXML
+    private Button SRhomeBTN;
+
+    @FXML
+    private Button MLhomeBTN;
+
+    @FXML
+    private Button EMPhomeBTN;
+
+    @FXML
+    private Button DChomeBTN;
+
+    @FXML
     private Button AddCoup;
 
     @FXML
@@ -118,7 +130,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private TableColumn<Discount, LocalDate> validAtColumn;
-    
+
     @FXML
     private TableColumn<Discount, Integer> UsageColumn;
 
@@ -518,7 +530,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
                 java.sql.Date dateValidSql = resultSet.getDate("Date_valid");
                 LocalDate dateValid = (dateValidSql != null) ? dateValidSql.toLocalDate() : null;
 
-                Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid, usageLim );
+                Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid, usageLim);
                 discounts.add(discount);
             }
 
@@ -630,7 +642,6 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         validAtColumn.setCellValueFactory(new PropertyValueFactory<>("dateValid"));
         UsageColumn.setCellValueFactory(new PropertyValueFactory<>("usageLim"));
 
-
     }
 
     private void deleteDiscountFromDatabase(String discCode) {
@@ -687,9 +698,30 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             empDetails.setVisible(false);
             disCoup.setVisible(false);
 
-        } else if (clickedButton == salesRepBTN) {
-            home.setVisible(false);
-            salesRep.setVisible(true);
+        } else if (clickedButton == SRhomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == MLhomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == EMPhomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == DChomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
             invManage.setVisible(false);
             empDetails.setVisible(false);
             disCoup.setVisible(false);
