@@ -4,6 +4,7 @@
  */
 package MainAppFrame;
 
+import java.sql.Date;
 import ClassFiles.CoffeeItemData;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,6 +37,7 @@ import ClassFiles.ControllerManager;
 import ClassFiles.ItemData;
 import ClassFiles.OrderCardData;
 import MenuController.CoffeeController;
+import java.time.LocalDate;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -276,36 +278,48 @@ public class SettlePaymentFXMLController implements Initializable {
         alert.showAndWait();
     }
 
-    @FXML
-    void discEnterButton(ActionEvent event) {
-        String discountCode = discCodeTxtLbl.getText();
+@FXML
+void discEnterButton(ActionEvent event) {
+    String discountCode = discCodeTxtLbl.getText();
 
-        if (discountCode != null && !discountCode.isEmpty()) {
+    if (discountCode != null && !discountCode.isEmpty()) {
+        // Check if the discount is still valid
+        if (isDiscountValid(discountCode)) {
             double discountPercent = getDiscountValueFromDatabase(discountCode);
 
             if (discountPercent != -1) {
                 double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1)); // Remove the ₱ sign
                 double discountAmount = (discountPercent / 100) * totalAmount;
+                
+                updateDiscountUsage(discountCode);
 
-                if (discountPercent == 0) {
-                    discTxtLbl.setText("No discount applied.");
-                    appldDscLbl.setText("-₱0.00");
-                    appldDscTxtLbl.setText("-₱0.00"); // Apply the same logic to appldDscTxtLbl
-                    newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
+                int remainingUsage = getRemainingUsage(discountCode);
+
+                if (remainingUsage == 0) {
+                   
+                    discTxtLbl.setText("Code Invalid");
                 } else {
-                    discTxtLbl.setText(String.format("%.2f%%", discountPercent));
+                    if (discountPercent == 0) {
+                        discTxtLbl.setText("No discount applied.");
+                        appldDscLbl.setText("-₱0.00");
+                        appldDscTxtLbl.setText("-₱0.00"); // Apply the same logic to appldDscTxtLbl
+                        newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
+                    } else {
+                        // Display the discount value
+                        discTxtLbl.setText(String.format("%.2f%%", discountPercent));
 
-                    // Display the discounted amount in newTotalTxtLbl with a minus sign
-                    double discountedTotal = totalAmount - discountAmount;
-                    newTotalTxtLbl.setText(String.format("₱%.2f", discountedTotal));
+                        // Display the discounted amount in newTotalTxtLbl with a minus sign
+                        double discountedTotal = totalAmount - discountAmount;
+                        newTotalTxtLbl.setText(String.format("₱%.2f", discountedTotal));
 
-                    itmTotalTxtLbl.setText(String.format("₱%.2f", totalAmount));
-                    appldDscLbl.setText(String.format("-₱%.2f", discountAmount));
-                    appldDscTxtLbl.setText(String.format("-₱%.2f", discountAmount)); // Apply the same logic to appldDscTxtLbl
+                        itmTotalTxtLbl.setText(String.format("₱%.2f", totalAmount));
+                        appldDscLbl.setText(String.format("-₱%.2f", discountAmount));
+                        appldDscTxtLbl.setText(String.format("-₱%.2f", discountAmount)); // Apply the same logic to appldDscTxtLbl
+                    }
+
+                    // Update the custom total label
+                    updateCustomTotalLabel();
                 }
-
-                // Update the custom total label
-                updateCustomTotalLabel();
             } else {
                 if (discountCode.equals("0")) {
                     appldDscLbl.setText("-₱0.00");
@@ -318,16 +332,44 @@ public class SettlePaymentFXMLController implements Initializable {
                 }
             }
         } else {
-            discTxtLbl.setText("No Discount");
-            appldDscLbl.setText(appldDscLbl.getText());
-            appldDscTxtLbl.setText("₱0.00");
-            newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
-            // Update the custom total label
-            updateCustomTotalLabel();
+            // Handle the case when the discount is not valid
+            discTxtLbl.setText("Discount expired or invalid!");
         }
-
+    } else {
+        discTxtLbl.setText("No Discount");
+        appldDscLbl.setText(appldDscLbl.getText());
+        appldDscTxtLbl.setText("₱0.00");
+        newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
+        // Update the custom total label
+        updateCustomTotalLabel();
     }
+}
 
+
+private boolean isDiscountValid(String discountCode) {
+    try (Connection conn = database.getConnection()) {
+        if (conn != null) {
+            String sql = "SELECT Date_valid FROM discount WHERE disc_code = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, discountCode);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        Date validDate = rs.getDate("Date_valid");
+
+                        // Check if the current date is after the valid date
+                        LocalDate currentDate = LocalDate.now();
+                        LocalDate discountValidDate = validDate.toLocalDate();
+
+                        return currentDate.isBefore(discountValidDate) || currentDate.isEqual(discountValidDate);
+                    }
+                }
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false; // Return false if there is an error or the discount code is not found
+}
     private void updateCustomTotalLabel() {
         double newTotalAmount = parseNewTotalAmount();
         customTotalLabel.setText(String.format("₱%.2f", newTotalAmount));
@@ -392,7 +434,7 @@ public class SettlePaymentFXMLController implements Initializable {
         }
     }
 
-    @FXML
+   @FXML
     void cashEnterButton(ActionEvent event) {
         String cashEntered = cashTxtLbl.getText();
 
@@ -630,35 +672,52 @@ public class SettlePaymentFXMLController implements Initializable {
             }
         });
     }
-    
-    
+ 
+private void updateDiscountUsage(String discountCode) {
+    try (Connection conn = database.getConnection()) {
+        if (conn != null) {
+            String updateSql = "UPDATE discount SET limit_usage = limit_usage - 1 WHERE disc_code = ? AND limit_usage > 0";
 
-    /*private void openKeypad(TextField targetTextField) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("KeypadFXML.fxml"));
-            Parent keypadRoot = loader.load();
-            KeypadFXMLController keypadController = loader.getController();
-            keypadController.setTargetTextField(targetTextField);
-
-            // Create a new stage for the keypad
-            Stage keypadStage = new Stage();
-            keypadStage.initStyle(StageStyle.UNDECORATED);
-            keypadStage.setResizable(false);
-
-            // Set the scene fill to transparent
-            Scene keypadScene = new Scene(keypadRoot);
-            keypadScene.setFill(Color.TRANSPARENT);
-
-            // Set the scene to the stage
-            keypadStage.setScene(keypadScene);
-
-            // Show the stage
-            keypadStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle exceptions accordingly
+            try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                updateStmt.setString(1, discountCode);
+                int affectedRows = updateStmt.executeUpdate();
+                System.out.println("Rows updated: " + affectedRows);
+            }
         }
-    }*/
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Handle database-related exceptions
+    }
+}
 
-    
+private int getRemainingUsage(String discountCode) {
+    try (Connection conn = database.getConnection()) {
+        if (conn != null) {
+            String selectSql = "SELECT limit_usage FROM discount WHERE disc_code = ?";
+
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectSql)) {
+                selectStmt.setString(1, discountCode);
+
+                try (ResultSet rs = selectStmt.executeQuery()) {
+                    if (rs.next()) {
+                        int remainingUsage = rs.getInt("limit_usage");
+                        
+                        System.out.println("Remaining Usage: " + remainingUsage);
+
+                        if (remainingUsage <= 0) {
+                            discTxtLbl.setText("Code Invalid.");
+                        }
+
+                        return remainingUsage;
+                    }
+                }
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Handle database-related exceptions
+    }
+    return 0; // Return 0 if there is an error or the discount code is not found
+}
+
 }
