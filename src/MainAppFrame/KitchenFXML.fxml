@@ -14,7 +14,7 @@
 
 <AnchorPane id="AnchorPane" fx:id="KitchenPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.KitchenFXMLController">
     <children>
-      <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="83.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="91.0" fitWidth="94.0" layoutX="83.0" layoutY="46.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Pictures/Splashscreen%20(1).png" />
          </image>

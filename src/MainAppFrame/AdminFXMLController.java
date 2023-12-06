@@ -39,13 +39,28 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.collections.FXCollections;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
     double xOffset, yOffset;
+    
+    @FXML
+    private Button mtBTN;
+    
+    @FXML
+    private Button ftBTN;
+    
+    @FXML
+    private Pane milkteaPANE;
+    
+    @FXML
+    private Pane fruitdrinkPANE;
 
     @FXML
     private Button SRhomeBTN;
@@ -191,6 +206,12 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private Label homeTO;
 
     @FXML
+    private PieChart milkTeaPieChart;
+
+    @FXML
+    private PieChart fruitDrinkPieChart;
+
+    @FXML
     private void handleMousePressed(MouseEvent event) {
         xOffset = event.getSceneX();
         yOffset = event.getSceneY();
@@ -283,8 +304,77 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         disIV.setVisible(true);
     }
 
+    private void populateMilkTeaPieChart() {
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByItem();
+
+        // Clear existing data
+        milkTeaPieChart.getData().clear();
+
+        // Populate the pie chart
+        for (Map.Entry<String, Integer> entry : totalQuantityByItem.entrySet()) {
+            String itemName = entry.getKey();
+            int totalQuantity = entry.getValue();
+            milkTeaPieChart.getData().add(new PieChart.Data(itemName, totalQuantity));
+        }
+    }
+
+    private void populateFruitDrinkPieChart() {
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByFruitDrink();
+
+        // Clear existing data
+        fruitDrinkPieChart.getData().clear();
+
+        // Populate the pie chart
+        for (Map.Entry<String, Integer> entry : totalQuantityByItem.entrySet()) {
+            String itemName = entry.getKey();
+            int totalQuantity = entry.getValue();
+            fruitDrinkPieChart.getData().add(new PieChart.Data(itemName, totalQuantity));
+        }
+    }
+
+    private Map<String, Integer> calculateTotalQuantityByFruitDrink() {
+        Map<String, Integer> totalQuantityByItem = new HashMap<>();
+
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT item_name, SUM(quantity) AS totalQuantity FROM fruit_drink GROUP BY item_name"); ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String itemName = resultSet.getString("item_name");
+                int totalQuantity = resultSet.getInt("totalQuantity");
+                totalQuantityByItem.put(itemName, totalQuantity);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+
+        return totalQuantityByItem;
+    }
+
+    private Map<String, Integer> calculateTotalQuantityByItem() {
+        Map<String, Integer> totalQuantityByItem = new HashMap<>();
+
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT item_name, SUM(quantity) AS totalQuantity FROM milk_tea GROUP BY item_name"); ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String itemName = resultSet.getString("item_name");
+                int totalQuantity = resultSet.getInt("totalQuantity");
+                totalQuantityByItem.put(itemName, totalQuantity);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+
+        return totalQuantityByItem;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        populateMilkTeaPieChart();
+        populateFruitDrinkPieChart();
 
         updateTotalDailySalesLabel();
         updateTotalDailyProductsSoldLabel();
@@ -754,6 +844,26 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             empDetails.setVisible(false);
             disCoup.setVisible(true);
             refreshTableView();
+        }
+
+    }
+
+    @FXML
+    public void SwitchFormPieChart(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+
+        if (clickedButton == lastClickedButton) {
+            // Ignore the click if the same button was clicked twice in a row
+            return;
+        }
+
+        if (clickedButton == mtBTN) {
+            milkteaPANE.setVisible(true);
+            fruitdrinkPANE.setVisible(false);
+
+        } else if (clickedButton == ftBTN) {
+            milkteaPANE.setVisible(false);
+            fruitdrinkPANE.setVisible(true);
         }
 
     }
