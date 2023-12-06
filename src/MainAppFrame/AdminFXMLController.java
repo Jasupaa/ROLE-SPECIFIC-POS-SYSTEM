@@ -2,10 +2,12 @@ package MainAppFrame;
 
 import Admin.DiscountCRUDController;
 import ClassFiles.Discount;
+import ClassFiles.EmployeeData;
 import Login.ControllerInterface;
 import Login.LoginTest;
 import java.sql.Connection;
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -46,19 +48,23 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 
+import ClassFiles.EmployeeData;
+import ClassFiles.Role;
+import java.sql.Statement;
+
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
     double xOffset, yOffset;
-    
+
     @FXML
     private Button mtBTN;
-    
+
     @FXML
     private Button ftBTN;
-    
+
     @FXML
     private Pane milkteaPANE;
-    
+
     @FXML
     private Pane fruitdrinkPANE;
 
@@ -127,6 +133,63 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private Button milkteaBTN;
+
+    @FXML
+    private TableView<EmployeeData> employeeTable1;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> emp_id1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empFirstName1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empLastName1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empEmail1;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> empContact1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> emp_role1;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> pin_code1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empStatus1;
+
+    @FXML
+    private TableView<EmployeeData> employeeTable;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> emp_id;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empFirstName;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empLastName;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empEmail;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> empContact;
+
+    @FXML
+    private TableColumn<EmployeeData, String> emp_role;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> pin_code;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empStatus;
+
+    @FXML
+    private Button removeEmp;
 
     @FXML
     private TableView<Discount> discountTableView;
@@ -369,13 +432,86 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
         return totalQuantityByItem;
     }
+    
+    /*
+
+    public void updateEmployeeTable() {
+        for (EmployeeData employee : employeeDataList) {
+            System.out.println("Employee ID: " + employee.getEmp_id() + ", Status: " + employee.getStatus());
+        }
+        employeeTable.setItems(employeeDataList);
+        employeeTable.refresh();
+    }
+
+    public void addEmployee(EmployeeData employee) {
+        employeeTable.getItems().add(employee);
+        System.out.println("Adding employee: " + employee.getEmpFirstName());
+        employeeDataList.add(employee);
+        employeeTable.setItems(employeeDataList);
+    }
+
+    @FXML
+    private void openAddEmployeeDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEmployee.fxml"));
+            Parent root = loader.load();
+            AddEmployeeFXMLController addEmployeeController = loader.getController();
+            addEmployeeController.setParentController(this);
+            Stage stage = new Stage();
+            stage.setTitle("Add Employee");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ObservableList<EmployeeData> employeeDataList = FXCollections.observableArrayList();
+
+    private void fetchExistingDataFromDatabase() {
+        try (Connection connection = database.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("SELECT * FROM employees")) {
+
+            while (resultSet.next()) {
+                EmployeeData employee = new EmployeeData(
+                        resultSet.getInt("emp_id"),
+                        resultSet.getInt("pin_code"),
+                        resultSet.getString("empFirstName"),
+                        resultSet.getString("empLastName"),
+                        resultSet.getString("empEmail"),
+                        resultSet.getLong("empContact"),
+                        resultSet.getString("emp_role")
+                );
+
+                employee.setEmpStatus(resultSet.getString("empStatus"));
+                System.out.println("Employee ID: " + employee.getEmp_id() + ", Status: " + employee.getStatus());
+                employeeDataList.add(employee);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    @FXML
+    private void removeEmployee() {
+        // Get the selected employee from the employeeTable in EmployeeDetails
+        EmployeeData selectedEmployee = employeeTable.getSelectionModel().getSelectedItem();
+
+        if (selectedEmployee != null) {
+            // Remove the selected employee from the shared data list
+            employeeDataList.remove(selectedEmployee);
+
+            // Add the selected employee to the employeeTable1 in Archives
+            employeeTable1.getItems().add(selectedEmployee);
+        }
+    }
+
+*/
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        populateMilkTeaPieChart();
-        populateFruitDrinkPieChart();
-
+       
         updateTotalDailySalesLabel();
         updateTotalDailyProductsSoldLabel();
         updateTotalDailyCustomersLabel();
@@ -409,7 +545,6 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         });
     }
 
-    /* @RODEL ito yung action event para sa mga buttons na pa-square */
     @FXML
     private void handleMilkteaButtonClick(ActionEvent event) {
         try {
@@ -765,6 +900,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             System.out.println("Please select a discount to delete.");
         }
     }
+    
+    
 
     public void refreshTableView() {
         loadDataFromDatabase();

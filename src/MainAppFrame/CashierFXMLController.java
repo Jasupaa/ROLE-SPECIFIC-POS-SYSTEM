@@ -267,7 +267,11 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         try {
             // Load the SettlePaymentFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SettlePaymentFXML.fxml"));
-            Parent root = loader.load();
+            Parent pane = loader.load();
+            
+                        // Set the scene fill to transparent
+            Scene scene = new Scene(pane);
+            scene.setFill(Color.TRANSPARENT);
 
             // Create a new stage for the SettlePaymentFXML
             settlePaymentStage = new Stage();
@@ -276,10 +280,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             settlePaymentStage.initStyle(StageStyle.TRANSPARENT);
             settlePaymentStage.initStyle(StageStyle.UNDECORATED); // Removes the title bar
             settlePaymentStage.setResizable(false);
-
-            // Set the scene fill to transparent
-            Scene scene = new Scene(root);
-            scene.setFill(Color.TRANSPARENT);
 
             // Set the scene to the stage
             settlePaymentStage.setScene(scene);
