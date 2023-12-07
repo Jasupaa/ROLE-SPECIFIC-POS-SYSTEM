@@ -2,10 +2,12 @@ package MainAppFrame;
 
 import Admin.DiscountCRUDController;
 import ClassFiles.Discount;
+import ClassFiles.EmployeeData;
 import Login.ControllerInterface;
 import Login.LoginTest;
 import java.sql.Connection;
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -39,13 +41,44 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.collections.FXCollections;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+
+import ClassFiles.EmployeeData;
+import ClassFiles.Role;
+import java.sql.Statement;
 
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
     double xOffset, yOffset;
+
+    @FXML
+    private Button mtBTN;
+
+    @FXML
+    private Button ftBTN;
+
+    @FXML
+    private Pane milkteaPANE;
+
+    @FXML
+    private Pane fruitdrinkPANE;
+
+    @FXML
+    private Button SRhomeBTN;
+
+    @FXML
+    private Button MLhomeBTN;
+
+    @FXML
+    private Button EMPhomeBTN;
+
+    @FXML
+    private Button DChomeBTN;
 
     @FXML
     private Button AddCoup;
@@ -102,6 +135,63 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private Button milkteaBTN;
 
     @FXML
+    private TableView<EmployeeData> employeeTable1;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> emp_id1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empFirstName1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empLastName1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empEmail1;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> empContact1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> emp_role1;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> pin_code1;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empStatus1;
+
+    @FXML
+    private TableView<EmployeeData> employeeTable;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> emp_id;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empFirstName;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empLastName;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empEmail;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> empContact;
+
+    @FXML
+    private TableColumn<EmployeeData, String> emp_role;
+
+    @FXML
+    private TableColumn<EmployeeData, Integer> pin_code;
+
+    @FXML
+    private TableColumn<EmployeeData, String> empStatus;
+
+    @FXML
+    private Button removeEmp;
+
+    @FXML
     private TableView<Discount> discountTableView;
 
     @FXML
@@ -118,7 +208,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private TableColumn<Discount, LocalDate> validAtColumn;
-    
+
     @FXML
     private TableColumn<Discount, Integer> UsageColumn;
 
@@ -177,6 +267,12 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private Label homeTO;
+
+    @FXML
+    private PieChart milkTeaPieChart;
+
+    @FXML
+    private PieChart fruitDrinkPieChart;
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -271,9 +367,151 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         disIV.setVisible(true);
     }
 
+    private void populateMilkTeaPieChart() {
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByItem();
+
+        // Clear existing data
+        milkTeaPieChart.getData().clear();
+
+        // Populate the pie chart
+        for (Map.Entry<String, Integer> entry : totalQuantityByItem.entrySet()) {
+            String itemName = entry.getKey();
+            int totalQuantity = entry.getValue();
+            milkTeaPieChart.getData().add(new PieChart.Data(itemName, totalQuantity));
+        }
+    }
+
+    private void populateFruitDrinkPieChart() {
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByFruitDrink();
+
+        // Clear existing data
+        fruitDrinkPieChart.getData().clear();
+
+        // Populate the pie chart
+        for (Map.Entry<String, Integer> entry : totalQuantityByItem.entrySet()) {
+            String itemName = entry.getKey();
+            int totalQuantity = entry.getValue();
+            fruitDrinkPieChart.getData().add(new PieChart.Data(itemName, totalQuantity));
+        }
+    }
+
+    private Map<String, Integer> calculateTotalQuantityByFruitDrink() {
+        Map<String, Integer> totalQuantityByItem = new HashMap<>();
+
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT item_name, SUM(quantity) AS totalQuantity FROM fruit_drink GROUP BY item_name"); ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String itemName = resultSet.getString("item_name");
+                int totalQuantity = resultSet.getInt("totalQuantity");
+                totalQuantityByItem.put(itemName, totalQuantity);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+
+        return totalQuantityByItem;
+    }
+
+    private Map<String, Integer> calculateTotalQuantityByItem() {
+        Map<String, Integer> totalQuantityByItem = new HashMap<>();
+
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT item_name, SUM(quantity) AS totalQuantity FROM milk_tea GROUP BY item_name"); ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String itemName = resultSet.getString("item_name");
+                int totalQuantity = resultSet.getInt("totalQuantity");
+                totalQuantityByItem.put(itemName, totalQuantity);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+
+        return totalQuantityByItem;
+    }
+    
+    /*
+
+    public void updateEmployeeTable() {
+        for (EmployeeData employee : employeeDataList) {
+            System.out.println("Employee ID: " + employee.getEmp_id() + ", Status: " + employee.getStatus());
+        }
+        employeeTable.setItems(employeeDataList);
+        employeeTable.refresh();
+    }
+
+    public void addEmployee(EmployeeData employee) {
+        employeeTable.getItems().add(employee);
+        System.out.println("Adding employee: " + employee.getEmpFirstName());
+        employeeDataList.add(employee);
+        employeeTable.setItems(employeeDataList);
+    }
+
+    @FXML
+    private void openAddEmployeeDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEmployee.fxml"));
+            Parent root = loader.load();
+            AddEmployeeFXMLController addEmployeeController = loader.getController();
+            addEmployeeController.setParentController(this);
+            Stage stage = new Stage();
+            stage.setTitle("Add Employee");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ObservableList<EmployeeData> employeeDataList = FXCollections.observableArrayList();
+
+    private void fetchExistingDataFromDatabase() {
+        try (Connection connection = database.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("SELECT * FROM employees")) {
+
+            while (resultSet.next()) {
+                EmployeeData employee = new EmployeeData(
+                        resultSet.getInt("emp_id"),
+                        resultSet.getInt("pin_code"),
+                        resultSet.getString("empFirstName"),
+                        resultSet.getString("empLastName"),
+                        resultSet.getString("empEmail"),
+                        resultSet.getLong("empContact"),
+                        resultSet.getString("emp_role")
+                );
+
+                employee.setEmpStatus(resultSet.getString("empStatus"));
+                System.out.println("Employee ID: " + employee.getEmp_id() + ", Status: " + employee.getStatus());
+                employeeDataList.add(employee);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    @FXML
+    private void removeEmployee() {
+        // Get the selected employee from the employeeTable in EmployeeDetails
+        EmployeeData selectedEmployee = employeeTable.getSelectionModel().getSelectedItem();
+
+        if (selectedEmployee != null) {
+            // Remove the selected employee from the shared data list
+            employeeDataList.remove(selectedEmployee);
+
+            // Add the selected employee to the employeeTable1 in Archives
+            employeeTable1.getItems().add(selectedEmployee);
+        }
+    }
+
+*/
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+       
         updateTotalDailySalesLabel();
         updateTotalDailyProductsSoldLabel();
         updateTotalDailyCustomersLabel();
@@ -307,7 +545,6 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         });
     }
 
-    /* @RODEL ito yung action event para sa mga buttons na pa-square */
     @FXML
     private void handleMilkteaButtonClick(ActionEvent event) {
         try {
@@ -518,7 +755,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
                 java.sql.Date dateValidSql = resultSet.getDate("Date_valid");
                 LocalDate dateValid = (dateValidSql != null) ? dateValidSql.toLocalDate() : null;
 
-                Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid, usageLim );
+                Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid, usageLim);
                 discounts.add(discount);
             }
 
@@ -630,7 +867,6 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         validAtColumn.setCellValueFactory(new PropertyValueFactory<>("dateValid"));
         UsageColumn.setCellValueFactory(new PropertyValueFactory<>("usageLim"));
 
-
     }
 
     private void deleteDiscountFromDatabase(String discCode) {
@@ -664,6 +900,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             System.out.println("Please select a discount to delete.");
         }
     }
+    
+    
 
     public void refreshTableView() {
         loadDataFromDatabase();
@@ -687,9 +925,30 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             empDetails.setVisible(false);
             disCoup.setVisible(false);
 
-        } else if (clickedButton == salesRepBTN) {
-            home.setVisible(false);
-            salesRep.setVisible(true);
+        } else if (clickedButton == SRhomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == MLhomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == EMPhomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
+            invManage.setVisible(false);
+            empDetails.setVisible(false);
+            disCoup.setVisible(false);
+
+        } else if (clickedButton == DChomeBTN) {
+            home.setVisible(true);
+            salesRep.setVisible(false);
             invManage.setVisible(false);
             empDetails.setVisible(false);
             disCoup.setVisible(false);
@@ -722,6 +981,26 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             empDetails.setVisible(false);
             disCoup.setVisible(true);
             refreshTableView();
+        }
+
+    }
+
+    @FXML
+    public void SwitchFormPieChart(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+
+        if (clickedButton == lastClickedButton) {
+            // Ignore the click if the same button was clicked twice in a row
+            return;
+        }
+
+        if (clickedButton == mtBTN) {
+            milkteaPANE.setVisible(true);
+            fruitdrinkPANE.setVisible(false);
+
+        } else if (clickedButton == ftBTN) {
+            milkteaPANE.setVisible(false);
+            fruitdrinkPANE.setVisible(true);
         }
 
     }

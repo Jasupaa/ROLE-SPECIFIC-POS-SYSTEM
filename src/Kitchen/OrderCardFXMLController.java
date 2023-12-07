@@ -41,6 +41,9 @@ public class OrderCardFXMLController implements Initializable {
 
     @FXML
     private Label sugarlvlLBL;
+    
+    @FXML
+    private Label typeLBL;
 
     @FXML
     private ImageView checkBoxIV;
@@ -83,6 +86,7 @@ public class OrderCardFXMLController implements Initializable {
         String fruitFlavor = orderCardData.getFruitFlavor();
         String sinkers = orderCardData.getSinkers();
         String sugarLevel = orderCardData.getSugarLevel();
+        String type = orderCardData.getType();
 
         // Get the askMe boolean value
         boolean askMe = orderCardData.getAskMe();
@@ -97,6 +101,7 @@ public class OrderCardFXMLController implements Initializable {
         fruitfLBL.setText(fruitFlavor != null ? fruitFlavor : "");
         sinkersLBL.setText(sinkers != null ? sinkers : "");
         sugarlvlLBL.setText(sugarLevel != null ? sugarLevel : "");
+        typeLBL.setText(type != null ? type : "");
 
         // Set visibility of checkBoxIV based on the value of askMe
         checkBoxIV.setVisible(askMe);

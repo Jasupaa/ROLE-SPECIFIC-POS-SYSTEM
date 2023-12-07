@@ -162,13 +162,19 @@ public class KitchenCardFXMLController implements Initializable {
 
     public ObservableList<OrderCardData> menuGetData(String customerID) {
         // Fetch milk tea data
-        ObservableList<OrderCardData> listData = fetchData("SELECT item_name, quantity, size, add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, ask_me FROM milk_tea WHERE customer_id = ?", customerID);
+        ObservableList<OrderCardData> listData = fetchData("SELECT item_name, quantity, size, add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, 'None' AS type, ask_me FROM milk_tea WHERE customer_id = ?", customerID);
 
-        // Fetch fruit drink data
-        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, fruit_flavor, sinkers, 'None' AS sugar_level, ask_me FROM fruit_drink WHERE customer_id = ?", customerID));
+        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, fruit_flavor, sinkers, 'None' AS sugar_level, 'None' AS type, ask_me FROM fruit_drink WHERE customer_id = ?", customerID));
 
-        // Fetch frappe data
-        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, ask_me FROM frappe WHERE customer_id = ?", customerID));
+        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, 'None' AS type, ask_me FROM frappe WHERE customer_id = ?", customerID));
+
+        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, 'None' AS sugar_level, type, ask_me FROM coffee WHERE customer_id = ?", customerID));
+
+        listData.addAll(fetchData("SELECT item_name, quantity, 'None' AS size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, 'None' AS sugar_level, 'None' AS type, ask_me FROM rice_meal WHERE customer_id = ?", customerID));
+
+        listData.addAll(fetchData("SELECT item_name, quantity, 'None' AS size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, 'None' AS sugar_level, 'None' AS type, ask_me FROM snacks WHERE customer_id = ?", customerID));
+
+        listData.addAll(fetchData("SELECT item_name, quantity, 'None' AS size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, 'None' AS sugar_level, 'None' AS type, ask_me FROM extras WHERE customer_id = ?", customerID));
 
         return listData;
     }
@@ -188,12 +194,13 @@ public class KitchenCardFXMLController implements Initializable {
                     String fruitFlavor = result.getString("fruit_flavor");
                     String sinkers = result.getString("sinkers");
                     String sugarlvl = result.getString("sugar_level");
+                    String type = result.getString("type");
 
                     // Fetch the ask_me boolean value from the result set
                     boolean askMe = result.getBoolean("ask_me");
 
                     // Create an OrderCardData object and add it to the list
-                    OrderCardData orderCardData = new OrderCardData(itemName, quantity, size, addOns, fruitFlavor, sinkers, sugarlvl, askMe);
+                    OrderCardData orderCardData = new OrderCardData(itemName, quantity, size, addOns, fruitFlavor, sinkers, sugarlvl, type, askMe);
 
                     // Set the ask_me boolean value in the OrderCardData object
                     orderCardData.setAskMe(askMe);

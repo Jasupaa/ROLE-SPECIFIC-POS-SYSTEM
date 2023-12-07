@@ -62,3 +62,17 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-border-color: #ffffff;
     -fx-background-radius: 10px;
 }
+
+.homeButton {
+    -fx-background-color: #111315;
+    -fx-border-color: white;
+
+}
+
+.homeButton:hover {
+    -fx-background-color: #505180;
+    -fx-border-color: white;
+    -fx-text-fill: #111315;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}

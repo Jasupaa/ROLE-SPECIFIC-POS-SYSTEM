@@ -267,7 +267,11 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         try {
             // Load the SettlePaymentFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SettlePaymentFXML.fxml"));
-            Parent root = loader.load();
+            Parent pane = loader.load();
+            
+                        // Set the scene fill to transparent
+            Scene scene = new Scene(pane);
+            scene.setFill(Color.TRANSPARENT);
 
             // Create a new stage for the SettlePaymentFXML
             settlePaymentStage = new Stage();
@@ -276,10 +280,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             settlePaymentStage.initStyle(StageStyle.TRANSPARENT);
             settlePaymentStage.initStyle(StageStyle.UNDECORATED); // Removes the title bar
             settlePaymentStage.setResizable(false);
-
-            // Set the scene fill to transparent
-            Scene scene = new Scene(root);
-            scene.setFill(Color.TRANSPARENT);
 
             // Set the scene to the stage
             settlePaymentStage.setScene(scene);
@@ -822,11 +822,11 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 + "UNION "
                 + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM coffee WHERE customer_id = ? "
                 + "UNION "
-                + "SELECT order_id, ' ' AS size, item_name, final_price, quantity, date_time FROM rice_meal WHERE customer_id = ? "
+                + "SELECT order_id, '' AS size, item_name, final_price, quantity, date_time FROM rice_meal WHERE customer_id = ? "
                 + "UNION "
-                + "SELECT order_id, ' ' AS size, item_name, final_price, quantity, date_time FROM snacks WHERE customer_id = ? "
+                + "SELECT order_id, '' AS size, item_name, final_price, quantity, date_time FROM snacks WHERE customer_id = ? "
                 + "UNION "
-                + "SELECT order_id, ' ' AS size, item_name, final_price, quantity, date_time FROM extras WHERE customer_id = ? "
+                + "SELECT order_id, '' AS size, item_name, final_price, quantity, date_time FROM extras WHERE customer_id = ? "
                 + "ORDER BY date_time Asc";
 
         try (Connection connect = database.getConnection(); PreparedStatement combinedPrepare = connect.prepareStatement(combinedSql)) {
@@ -842,7 +842,15 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             ResultSet combinedResult = combinedPrepare.executeQuery();
             while (combinedResult.next()) {
                 int orderID = combinedResult.getInt("order_id");
-                String itemName = combinedResult.getString("size") + " " + combinedResult.getString("item_name");
+                String size = combinedResult.getString("size");
+                String itemName;
+
+                if (size.isEmpty()) {
+                    itemName = combinedResult.getString("item_name");
+                } else {
+                    itemName = size + " " + combinedResult.getString("item_name");
+                }
+
                 double itemPrice = combinedResult.getDouble("final_price");
                 int itemQuantity = combinedResult.getInt("quantity");
 
@@ -978,7 +986,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             System.out.println("Rows affected (delete all fruit drink): " + rowsAffectedFD);
         }
     } */
-
     private void refreshMenuGrid() throws SQLException {
 
         menuGrid.getChildren().clear();

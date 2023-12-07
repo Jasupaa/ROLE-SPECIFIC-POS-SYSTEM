@@ -67,6 +67,14 @@ public class OrderCardData {
     public void setSugarLevel(String sugarLevel) {
         this.sugarLevel = sugarLevel;
     }
+    
+    public void setType(String type) {
+        this.type = type;
+    }
+    
+    public String getType() {
+        return type;
+    }
 
     public Boolean getAskMe() {
         return askMe;
@@ -76,7 +84,7 @@ public class OrderCardData {
         this.askMe = askMe;
     }
 
-    public OrderCardData(String itemName, Integer quantity, String size, String addOns, String fruitFlavor, String sinkers, String sugarLevel, Boolean askMe) {
+    public OrderCardData(String itemName, Integer quantity, String size, String addOns, String fruitFlavor, String sinkers, String sugarLevel, String type, Boolean askMe) {
         this.itemName = itemName;
         this.quantity = quantity;
         this.size = size;
@@ -84,6 +92,7 @@ public class OrderCardData {
         this.fruitFlavor = fruitFlavor;
         this.sinkers = sinkers;
         this.sugarLevel = sugarLevel;
+        this.type = type;
         this.askMe = askMe;
     }
 
@@ -94,6 +103,7 @@ public class OrderCardData {
     private String fruitFlavor;
     private String sinkers;
     private String sugarLevel;
+    private String type;
     private Boolean askMe;
 
 }
