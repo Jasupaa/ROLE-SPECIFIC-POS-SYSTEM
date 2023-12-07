@@ -101,10 +101,10 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     private Label handlerName;
-    
+
     @FXML
     private Label cashInput;
-    
+
     @FXML
     private Label changeLbl;
 
@@ -404,20 +404,25 @@ public class SettlePaymentFXMLController implements Initializable {
                 // Parse the new total amount only if it's not empty and properly initialized
                 double newTotalAmount = parseNewTotalAmount();
 
-                // Calculate the change
-                double change = cashAmount - newTotalAmount;
+                if (cashAmount < newTotalAmount) {
+                    changeTxtLbl.setText("Insufficient Amount, Please Try Again");
+                } else {
 
-                // Display the change in the changeTxtLbl with a minus sign
-                changeTxtLbl.setText(String.format("₱%.2f", change));
+                    // Calculate the change
+                    double change = cashAmount - newTotalAmount;
 
-                // Display the change in the changeLbl with a minus sign
-                changeLbl.setText(String.format("₱%.2f", change));
+                    // Display the change in the changeTxtLbl with a minus sign
+                    changeTxtLbl.setText(String.format("₱%.2f", change));
 
-                // Update the class-level variable with the calculated change
-                changeValue = change;
+                    // Display the change in the changeLbl with a minus sign
+                    changeLbl.setText(String.format("₱%.2f", change));
 
-                cashInput.setText(String.format("₱%.2f", cashAmount));
+                    // Update the class-level variable with the calculated change
+                    changeValue = change;
 
+                    cashInput.setText(String.format("₱%.2f", cashAmount));
+
+                }
             } catch (NumberFormatException e) {
                 // Handle the case when the user enters non-numeric or invalid input for cash
                 changeTxtLbl.setText("Invalid Cash Amount");
@@ -452,7 +457,6 @@ public class SettlePaymentFXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         restrictLetter(cashTxtLbl);
-        
 
         try {
             setupTableView();
@@ -623,6 +627,7 @@ public class SettlePaymentFXMLController implements Initializable {
         // Bind the TableView to the combined ObservableList
         receiptTV.setItems(fetchOrderDetails());
     }
+
     public void restrictLetter(TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*\\.?\\d*")) {
@@ -630,8 +635,6 @@ public class SettlePaymentFXMLController implements Initializable {
             }
         });
     }
-    
-    
 
     /*private void openKeypad(TextField targetTextField) {
         try {
@@ -659,6 +662,42 @@ public class SettlePaymentFXMLController implements Initializable {
             // Handle exceptions accordingly
         }
     }*/
+    
+    private int fetchCustomerID() {
+    CashierFXMLController cashierController = ControllerManager.getCashierController();
+    int currentCustomerID = cashierController.getCurrentCustomerID();
+    System.out.println("Fetched Customer ID: " + currentCustomerID);
+    return currentCustomerID;
+}
 
+private double fetchChangeAmountFromDatabase() {
+    int customerID = fetchCustomerID();
+    System.out.println("Fetching change amount for Customer ID: " + customerID);
+
+    try (Connection conn = database.getConnection()) {
+        if (conn != null) {
+            String sql = "SELECT `change` FROM invoice WHERE customer_id = ?";
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                // Set the customer ID parameter
+                stmt.setInt(1, customerID);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        double changeAmount = rs.getDouble("change");
+                        System.out.println("Fetched change amount: " + changeAmount);
+                        return changeAmount;
+                    }
+                }
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Handle database-related exceptions
+    }
+        return 0;
+}
+    
     
 }
+

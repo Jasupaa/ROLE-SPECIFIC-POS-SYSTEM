@@ -48,15 +48,15 @@ public class CashierConfirmationFXMLController implements Initializable {
     @FXML
     private Label handlerName;
     @FXML
-    private Label subTotal;
+    private Label subTotal2;
     @FXML
-    private Label discount;
+    private Label applDsc2;
     @FXML
-    private Label total;
+    private Label customTotal2;
     @FXML
-    private Label cash;
+    private Label cashInput2;
     @FXML
-    private Label change;
+    private Label changeLbl2;
     @FXML
     private Label handlerName1;
 
@@ -133,13 +133,17 @@ public class CashierConfirmationFXMLController implements Initializable {
     }
 
     public void setupTableView() throws SQLException {
+        // Obtain the customer ID
+        CashierFXMLController cashierController = ControllerManager.getCashierController();
+        int currentCustomerID = cashierController.getCurrentCustomerID();
+
         ObservableList<ItemData> orderDetailsList = fetchOrderDetails();
         for (ItemData itemData : orderDetailsList) {
-
             System.out.println("Product Name: " + itemData.getItemName());
             System.out.println("Final Price: " + itemData.getItemPrice());
             System.out.println("Quantity: " + itemData.getItemQuantity());
         }
+
         try {
             receiptProduct.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getItemName()));
             receiptPrice2.setCellValueFactory(f -> new SimpleDoubleProperty(f.getValue().getItemPrice()).asObject());
@@ -147,10 +151,78 @@ public class CashierConfirmationFXMLController implements Initializable {
 
             // Bind the TableView to the combined ObservableList
             receiptTV2.setItems(fetchOrderDetails());
+
+            // Pass the customer ID to fetchChangeAmountFromDatabase method
+            double changeAmount = fetchChangeAmountFromDatabase(currentCustomerID);
+
+            // Populate the changeLbl and transfer the same data to changeLbl2
+            changeLbl2.setText(String.format("₱%.2f", changeAmount));
         } catch (SQLException e) {
             e.printStackTrace();
             // Handle exceptions accordingly
         }
+    }
+
+    private int fetchCustomerID() {
+    CashierFXMLController cashierController = ControllerManager.getCashierController();
+    int currentCustomerID = cashierController.getCurrentCustomerID();
+    System.out.println("Fetched Customer ID: " + currentCustomerID);
+    return currentCustomerID;
+}
+
+private double fetchChangeAmountFromDatabase() {
+    int customerID = fetchCustomerID();
+    System.out.println("Fetching change amount for Customer ID: " + customerID);
+
+    try (Connection conn = database.getConnection()) {
+        if (conn != null) {
+            String sql = "SELECT `change` FROM invoice WHERE customer_id = ?";
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                // Set the customer ID parameter
+                stmt.setInt(1, customerID);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        double changeAmount = rs.getDouble("change");
+                        System.out.println("Fetched change amount: " + changeAmount);
+                        return changeAmount;
+                    }
+                }
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Handle database-related exceptions
+    }
+
+    System.out.println("No change amount found. Returning default value: 0.0");
+    return 0.0; // Default value if no data is found
+}
+
+
+    private double fetchChangeAmountFromDatabase(int customerID) {
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                String sql = "SELECT `change` FROM invoice WHERE customer_id = ?";
+
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    // Set the customer ID parameter
+                    stmt.setInt(1, customerID);
+
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            return rs.getDouble("change");
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database-related exceptions
+        }
+
+        return 0.0; // Default value if no data is found
     }
 
 }

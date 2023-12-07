@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="yourAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="724.0" prefWidth="456.0" style="-fx-border-radius: 5px;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierConfirmationFXMLController">   <children>
+<AnchorPane fx:id="yourAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="724.0" prefWidth="456.0" style="-fx-border-radius: 5px;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierConfirmationFXMLController">   <children>
       <AnchorPane prefHeight="750.0" prefWidth="456.0" style="-fx-border-radius: 5px;">
          <children>
             <ImageView fitHeight="68.0" fitWidth="102.0" layoutX="178.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
@@ -42,27 +42,27 @@
             </HBox>
             <VBox layoutX="367.0" layoutY="556.0">
                <children>
-                  <Label fx:id="subTotal" text="Subtotal" textFill="#333333">
+                  <Label fx:id="subTotal2" text="Subtotal" textFill="#333333">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="discount" text="Discount" textFill="#333333">
+                  <Label fx:id="appllDsc2" text="Discount" textFill="#333333">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="total" text="Total" textFill="#333333">
+                  <Label fx:id="customTotal2" text="Total" textFill="#333333">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="cash" text="Cash" textFill="#333333">
+                  <Label fx:id="cashInput2" text="Cash" textFill="#333333">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="change" text="Change" textFill="#333333">
+                  <Label fx:id="changeLbl2" text="Change" textFill="#333333">
                      <font>
                         <Font size="13.0" />
                      </font>
@@ -81,7 +81,7 @@
             </ImageView>
             <ImageView fitHeight="12.0" fitWidth="110.0" layoutX="170.0" layoutY="156.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../Downloads/Number%20(1).png" />
+                  <Image url="@../Pictures/Number%20(1).png" />
                </image>
             </ImageView>
             <HBox alignment="CENTER_RIGHT" layoutX="363.0" layoutY="189.0">
