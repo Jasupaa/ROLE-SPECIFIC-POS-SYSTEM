@@ -38,6 +38,7 @@ import ClassFiles.ItemData;
 import ClassFiles.OrderCardData;
 import MenuController.CoffeeController;
 import java.time.LocalDate;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -173,27 +174,7 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     void confirmButton(ActionEvent event) {
-        CashierFXMLController cashierController = ControllerManager.getCashierController();
-
-        if (existingCashierController == null && cashierController != null) {
-            existingCashierController = cashierController;
-        }
-
-        // Get relevant information from the SettlePayment
-        int customerID = existingCashierController.getCurrentCustomerID();
-        String orderType = ordertypeTxtField.getText();
-        double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1));
-        double cashAmount = Double.parseDouble(cashTxtLbl.getText());
-        double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
-
-        // Insert into the "invoice" table
-        insertInvoiceToDatabase(customerID, orderType, totalAmount, cashAmount, changeAmount);
-
-        // Update UI or perform other actions as needed
-        cashierController.incrementCurrentCustomerID();
-        cashierController.menuGetMilkteaAndFrappe();
-        cashierController.setupTableView();
-        calculateCustomTotal();
+       
     }
 
     private void insertInvoiceToDatabase(int customerID, String orderType, double totalAmount, double cashAmount, double changeAmount) {
@@ -252,22 +233,51 @@ public class SettlePaymentFXMLController implements Initializable {
         }
     }
 
-    private void triggerPrintJob(Parent root) {
-        // Create PrinterJob
-        PrinterJob printerJob = PrinterJob.createPrinterJob();
+  private void triggerPrintJob(Parent root) {
+    // Create PrinterJob
+    PrinterJob printerJob = PrinterJob.createPrinterJob();
 
-        if (printerJob != null && printerJob.showPrintDialog(null)) {
-            // Set the content for printing
-            boolean success = printerJob.printPage(root);
-            if (success) {
-                printerJob.endJob();
-            } else {
-                showPrintErrorAlert();
+    if (printerJob != null && printerJob.showPrintDialog(null)) {
+        // Set the content for printing
+        boolean success = printerJob.printPage(root);
+        if (success) {
+            CashierFXMLController cashierController = ControllerManager.getCashierController();
+
+            if (existingCashierController == null && cashierController != null) {
+                existingCashierController = cashierController;
             }
-        } else {
+
+            // Get relevant information from the SettlePayment
+            int customerID = existingCashierController.getCurrentCustomerID();
+            String orderType = ordertypeTxtField.getText();
+            double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1));
+            double cashAmount = Double.parseDouble(cashTxtLbl.getText());
+            double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
+
+            // Insert into the "invoice" table
+            insertInvoiceToDatabase(customerID, orderType, totalAmount, cashAmount, changeAmount);
+Platform.runLater(() -> {
+            // Update UI or perform other actions as needed
+            cashierController.incrementCurrentCustomerID();
+            cashierController.menuGetMilkteaAndFrappe();
+            cashierController.setupTableView();
+            calculateCustomTotal();
+
+            Stage settlePaymentStage = (Stage) CloseButton.getScene().getWindow();
+            
+            settlePaymentStage.close();
+            existingCashierController.getMyPane().setVisible(false);
+           
+            
+            printerJob.endJob();
+});
+        }else {
             showPrintErrorAlert();
         }
+    } else {
+        showPrintErrorAlert();
     }
+}
 
     private void showPrintErrorAlert() {
         Alert alert = new Alert(AlertType.ERROR);
