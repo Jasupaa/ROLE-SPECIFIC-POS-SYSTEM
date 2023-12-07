@@ -54,23 +54,7 @@ public class OrderArchiveCardFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        initializeSizeComboBox();
 
-        // Set the default value to "None" for all ComboBoxes
-        orderStatusCB.setValue("Pending");
-
-        // Add a listener to the ComboBox to detect changes in the selected item
-        orderStatusCB.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                // Set the color based on the selected item
-                if ("Completed".equals(newValue)) {
-                    orderStatusCB.setStyle("-fx-background-color: #44AF3C;");
-                } else {
-                    orderStatusCB.setStyle(""); // Reset the style
-                }
-            }
-        });
     }
 
     public void setArchiveCardData(ArchiveOrderCardData archiveOrderCardData) throws SQLException {

@@ -6,6 +6,17 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Created on : Nov 6, 2023, 10:35:56 PM
     Author     : John Paul Uy
 */
+.table-cell {
+    -fx-alignment: CENTER;
+}
+
+.buttonNavigation {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10px; /* Set the background radius */
+    -fx-border-color: transparent;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
 
 .anchorPaneBG {
     -fx-background-color: #111315;

@@ -47,14 +47,36 @@ import javafx.collections.FXCollections;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.input.MouseEvent;
+
+import java.net.URL;
+import java.sql.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 import ClassFiles.EmployeeData;
 import ClassFiles.Role;
 import java.sql.Statement;
+import javafx.scene.chart.BarChart;
 
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
     double xOffset, yOffset;
+
+    @FXML
+    private BarChart<String, Number> weeklySales;
 
     @FXML
     private Button mtBTN;
@@ -432,7 +454,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
         return totalQuantityByItem;
     }
-    
+
     /*
 
     public void updateEmployeeTable() {
@@ -506,12 +528,10 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         }
     }
 
-*/
-
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-       
         updateTotalDailySalesLabel();
         updateTotalDailyProductsSoldLabel();
         updateTotalDailyCustomersLabel();
@@ -900,8 +920,6 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             System.out.println("Please select a discount to delete.");
         }
     }
-    
-    
 
     public void refreshTableView() {
         loadDataFromDatabase();

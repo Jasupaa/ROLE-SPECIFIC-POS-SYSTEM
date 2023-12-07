@@ -6,6 +6,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Created on : Nov 6, 2023, 10:44:02 PM
     Author     : John Paul Uy
 */
+.table-cell {
+    -fx-alignment: CENTER;
+}
+
 .anchorPaneBG {
     -fx-background-color:  #111315;
     -fx-background-radius: 5px;

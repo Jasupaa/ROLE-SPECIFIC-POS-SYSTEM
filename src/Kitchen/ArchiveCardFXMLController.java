@@ -35,6 +35,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
@@ -149,22 +151,24 @@ public class ArchiveCardFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // No need to retrieve all orders here
-        initializeSizeComboBox();
 
-        // Set the default value to "None" for all ComboBoxes
-        wholeOrderStatusCB.setValue("New Order!");
     }
 
     public ObservableList<ArchiveOrderCardData> menuGetData(String customerID) {
         // Fetch milk tea data
-        ObservableList<ArchiveOrderCardData> listData = fetchData("SELECT item_name, quantity, size, add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, ask_me FROM milk_tea WHERE customer_id = ?", customerID);
+        ObservableList<ArchiveOrderCardData> listData = fetchData("SELECT item_name, quantity, size, add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, 'None' AS type, ask_me FROM milk_tea WHERE customer_id = ?", customerID);
 
-        // Fetch fruit drink data
-        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, fruit_flavor, sinkers, 'None' AS sugar_level FROM fruit_drink, ask_me WHERE customer_id = ?", customerID));
+        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, fruit_flavor, sinkers, 'None' AS sugar_level, 'None' AS type, ask_me FROM fruit_drink WHERE customer_id = ?", customerID));
 
-        // Fetch frappe data
-        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, ask_me FROM frappe WHERE customer_id = ?", customerID));
+        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, sugar_level, 'None' AS type, ask_me FROM frappe WHERE customer_id = ?", customerID));
+
+        listData.addAll(fetchData("SELECT item_name, quantity, size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, 'None' AS sugar_level, type, ask_me FROM coffee WHERE customer_id = ?", customerID));
+
+        listData.addAll(fetchData("SELECT item_name, quantity, 'None' AS size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, 'None' AS sugar_level, 'None' AS type, ask_me FROM rice_meal WHERE customer_id = ?", customerID));
+
+        listData.addAll(fetchData("SELECT item_name, quantity, 'None' AS size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, 'None' AS sugar_level, 'None' AS type, ask_me FROM snacks WHERE customer_id = ?", customerID));
+
+        listData.addAll(fetchData("SELECT item_name, quantity, 'None' AS size, 'None' AS add_ons, 'None' AS fruit_flavor, 'None' AS sinkers, 'None' AS sugar_level, 'None' AS type, ask_me FROM extras WHERE customer_id = ?", customerID));
 
         return listData;
     }
@@ -199,16 +203,6 @@ public class ArchiveCardFXMLController implements Initializable {
         return listData;
     }
 
-    private void initializeSizeComboBox() {
-        // Populate the sizeComboBox with items
-        ObservableList<String> sizes = FXCollections.observableArrayList(
-                "New Order!",
-                "In Progress",
-                "Completed"
-        );
-        wholeOrderStatusCB.setItems(sizes);
-    }
-
     private void orderArchiveGrid() throws SQLException {
         orderCardGP.getChildren().clear();
         int column = 0;
@@ -230,7 +224,7 @@ public class ArchiveCardFXMLController implements Initializable {
                 }
 
                 orderCardGP.add(pane, column++, row);
-                GridPane.setMargin(pane, new Insets(10));
+                GridPane.setMargin(pane, new Insets(4));
 
             } catch (IOException ex) {
                 ex.printStackTrace();
