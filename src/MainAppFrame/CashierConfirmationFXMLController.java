@@ -67,7 +67,24 @@ public class CashierConfirmationFXMLController implements Initializable {
 
     public void setSettlePaymentController(SettlePaymentFXMLController controller) {
         this.settlePaymentController = controller;
-        // Now you can use settlePaymentController as needed
+    }
+
+    public void setOrderDetails(int customerID, String orderType, double subtotal, double discountApplied, double totalAmount, double cashAmount, double changeAmount) {
+
+        // Concatenate peso sign to the values
+        String pesoSign = "₱";
+        String subtotalText = pesoSign + String.valueOf(subtotal);
+        String discountText = (discountApplied != 0) ? "-" + pesoSign + String.valueOf(Math.abs(discountApplied)) : pesoSign + "0";
+        String totalText = pesoSign + String.valueOf(totalAmount);
+        String cashText = pesoSign + String.valueOf(cashAmount);
+        String changeText = pesoSign + String.valueOf(changeAmount);
+
+        subTotal.setText(subtotalText);
+        discount.setText(discountText);
+        total.setText(totalText);
+        cash.setText(cashText);
+        change.setText(changeText);
+
     }
 
     @Override
@@ -75,8 +92,10 @@ public class CashierConfirmationFXMLController implements Initializable {
         System.out.println("CashierConfirmationFXMLController initialized");
         try {
             setupTableView();
+
         } catch (SQLException ex) {
-            Logger.getLogger(CashierConfirmationFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CashierConfirmationFXMLController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
