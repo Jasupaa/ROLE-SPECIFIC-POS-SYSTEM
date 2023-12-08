@@ -79,11 +79,11 @@ public class CashierConfirmationFXMLController implements Initializable {
         String cashText = pesoSign + String.valueOf(cashAmount);
         String changeText = pesoSign + String.valueOf(changeAmount);
 
-        subTotal.setText(subtotalText);
-        discount.setText(discountText);
-        total.setText(totalText);
-        cash.setText(cashText);
-        change.setText(changeText);
+        subTotal2.setText(subtotalText);
+        applDsc2.setText(discountText);
+        customTotal2.setText(totalText);
+        cashInput2.setText(cashText);
+        changeLbl2.setText(changeText);
 
     }
 

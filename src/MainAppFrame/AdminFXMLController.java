@@ -1170,7 +1170,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             coffeePANE.setVisible(false);
             ricemealPANE.setVisible(false);
             snacksPANE.setVisible(false);
-            extrasPANE.setVisible(false);
+            extrasPANE.setVisible(false);   
 
         } else if (clickedButton == ftBTN) {
             milkteaPANE.setVisible(false);

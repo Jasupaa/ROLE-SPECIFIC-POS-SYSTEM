@@ -47,7 +47,7 @@
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="appllDsc2" text="Discount" textFill="#333333">
+                  <Label fx:id="applDsc2" text="Discount" textFill="#333333">
                      <font>
                         <Font size="13.0" />
                      </font>
