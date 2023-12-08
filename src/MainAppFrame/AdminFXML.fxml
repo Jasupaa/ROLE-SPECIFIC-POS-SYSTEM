@@ -198,7 +198,7 @@
                         </HBox>
                     </children>
                 </AnchorPane>
-                <AnchorPane fx:id="salesRep" layoutX="-192.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1022.0" style="-fx-background-color: #111315;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-192.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
+                <AnchorPane fx:id="salesRep" layoutX="-192.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1022.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-192.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
                     <children>
                         <AnchorPane layoutX="787.0" layoutY="70.0" />
                         <Pane layoutX="267.0" layoutY="107.0">
@@ -429,13 +429,8 @@
                         </ImageView>
                     </children>
                 </AnchorPane>
-                <AnchorPane fx:id="empDetails" layoutX="-182.0" layoutY="-96.0" prefHeight="560.0" prefWidth="1012.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-182.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-96.0">
+                <AnchorPane fx:id="empDetails" layoutX="-182.0" layoutY="-96.0" prefHeight="560.0" prefWidth="1012.0" style="-fx-background-color: #111315;" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-182.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-96.0">
                     <children>
-                        <ImageView fitHeight="36.0" fitWidth="46.0" layoutX="931.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/editEmployee.png" />
-                            </image>
-                        </ImageView>
                         <Button fx:id="EMPhomeBTN" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
                             <graphic>
                                 <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
@@ -444,11 +439,6 @@
                                     </image>
                                 </ImageView>
                             </graphic>
-                        </Button>
-                        <Button fx:id="addEmployee" layoutX="777.0" layoutY="93.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
                         </Button>
                         <TableView fx:id="employeeTable" layoutX="24.0" layoutY="142.0" prefHeight="320.0" prefWidth="949.0" style="-fx-background-color: #111315;">
                             <columns>
@@ -462,16 +452,25 @@
                                 <TableColumn fx:id="pin_code" prefWidth="112.79995117187502" text="PinCode" />
                             </columns>
                         </TableView>
-                        <Button fx:id="addEmployee1" layoutX="624.0" layoutY="93.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/CSS/AdminCSS.css" text="- Remove Employee" textFill="WHITE">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
                         <ImageView fitHeight="36.0" fitWidth="46.0" layoutX="766.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/editEmployee.png" />
                             </image>
                         </ImageView>
+                  <Button fx:id="addEmployee" layoutX="739.0" layoutY="91.0" mnemonicParsing="false" onAction="#openAddEmployeeDialog" prefHeight="30.0" prefWidth="146.0" styleClass="buttonPink" stylesheets="@../../../../New%20Folder%20(5)/ROLE-SPECIFIC-POS-SYSTEM/src/CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="901.0" layoutY="83.0" mnemonicParsing="false" onAction="#handleEditEmployeeButton" prefHeight="46.0" prefWidth="72.0">
+                     <graphic>
+                        <ImageView fitHeight="39.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../New%20Folder%20(5)/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/editEmployee.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                     </children>
                 </AnchorPane>
                 <AnchorPane fx:id="disCoup" layoutX="-200.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1030.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">

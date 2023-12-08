@@ -1,6 +1,7 @@
 package MainAppFrame;
 
 import Admin.DiscountCRUDController;
+import Admin.EditEmployeeFXMLController;
 import ClassFiles.Discount;
 import ClassFiles.EmployeeData;
 import Login.ControllerInterface;
@@ -76,6 +77,7 @@ import java.util.ResourceBundle;
 
 import ClassFiles.EmployeeData;
 import ClassFiles.Role;
+import Databases.CRUDDatabase;
 import java.sql.Statement;
 import java.util.Collections;
 import java.util.Optional;
@@ -85,6 +87,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableRow;
 
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
@@ -376,6 +379,191 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private PieChart coffeePieChart;
+
+    private ObservableList<EmployeeData> employeeDataList;
+
+    public void disableEmployeeCell(EmployeeData employeeData) {
+        int index = employeeDataList.indexOf(employeeData);
+        if (index >= 0) {
+            // Set the employee status to "Terminated"
+            employeeData.setEmpStatus("Terminated");
+
+            // Apply a grayish background style to terminated rows
+            employeeTable.setRowFactory(tv -> new TableRow<EmployeeData>() {
+                @Override
+                protected void updateItem(EmployeeData item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || (item.getEmpStatus() != null && item.getEmpStatus().equals("Terminated"))) {
+                        setStyle("-fx-background-color: #E0E0E0;"); // Use the desired grayish color
+                    } else {
+                        setStyle(""); // Reset the style for non-terminated rows
+                    }
+                }
+            });
+
+            // Remove the terminated employee from the current position
+            employeeDataList.remove(index);
+            // Add the terminated employee to the bottom of the list
+            employeeDataList.add(employeeData);
+            // Refresh the TableView
+            employeeTable.refresh();
+        }
+    }
+
+    private ObservableList<EmployeeData> fetchExistingDataFromDatabase() {
+        ObservableList<EmployeeData> employeeDataList = FXCollections.observableArrayList();
+
+        String sql = "SELECT * FROM employees";
+
+        try (Connection connection = CRUDDatabase.getConnection(); // Assuming your CRUDDatabase class provides the getConnection method
+                 PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            // Clear the list before populating it
+            employeeDataList.clear();
+
+            while (resultSet.next()) {
+                int empId = resultSet.getInt("emp_id");
+                int pinCode = resultSet.getInt("pin_code");
+                String empFirstName = resultSet.getString("empFirstName");
+                String empLastName = resultSet.getString("empLastName");
+                String empEmail = resultSet.getString("empEmail");
+                long empContact = resultSet.getLong("empContact");
+                String emp_role = resultSet.getString("emp_role");
+                String empStatus = resultSet.getString("empStatus");
+
+                EmployeeData employee = new EmployeeData(empId, empFirstName, empLastName, empEmail, empContact, emp_role, pinCode, empStatus);
+                employeeDataList.add(employee);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return employeeDataList;
+    }
+
+    public void setUpEmployeeTable() {
+        emp_id.setCellValueFactory(new PropertyValueFactory<>("emp_id"));
+        empFirstName.setCellValueFactory(new PropertyValueFactory<>("empFirstName"));
+        empLastName.setCellValueFactory(new PropertyValueFactory<>("empLastName"));
+        empStatus.setCellValueFactory(new PropertyValueFactory<>("empStatus"));
+        empContact.setCellValueFactory(new PropertyValueFactory<>("empContact"));
+        empEmail.setCellValueFactory(new PropertyValueFactory<>("empEmail"));
+        emp_role.setCellValueFactory(new PropertyValueFactory<>("emp_role"));
+        pin_code.setCellValueFactory(new PropertyValueFactory<>("pin_code"));
+    }
+
+    public void loadEmpDataFromDatabase() {
+        List<EmployeeData> employeeList = fetchExistingDataFromDatabase();
+        employeeDataList.clear();
+        employeeDataList.addAll(employeeList);
+        employeeTable.setItems(employeeDataList);
+    }
+
+    ////////////////////////////////// ADD
+    @FXML
+    private void openAddEmployeeDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEmployee.fxml"));
+            Parent root = loader.load();
+            AddEmployeeFXMLController addEmployeeController = loader.getController();
+            addEmployeeController.setAdminController(this);
+            Stage stage = new Stage();
+            stage.setTitle("Add Employee");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addEmployee(EmployeeData employee) {
+        // Assuming employeeTable is your TableView and employeeDataList is your underlying list
+        if (!employeeDataList.contains(employee)) {
+            employeeTable.getItems().add(employee);
+
+        }
+    }
+
+    //////////////////////////////// EDIT
+    @FXML
+    void handleEditEmployeeButton(ActionEvent event) throws SQLException {
+        EmployeeData selectedEmployee = employeeTable.getSelectionModel().getSelectedItem();
+
+        if (selectedEmployee != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/EditEmployee.fxml"));
+                Parent root = loader.load();
+
+                EditEmployeeFXMLController editEmployeeController = loader.getController();
+                editEmployeeController.setParentController(this);
+                editEmployeeController.setEmployeeData(selectedEmployee);
+
+                // Set the connection before showing the stage
+                editEmployeeController.setConnection(CRUDDatabase.getConnection());
+
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Please select an employee to edit.");
+        }
+
+    }
+
+    private Connection connection; // Initialize this somewhere, maybe in your constructor
+
+    // Other methods...
+    public void UpdateEmployee(Connection connection, EmployeeData employeeData) throws SQLException {
+        String updateQuery = "UPDATE employees SET "
+                + "empFirstName=?, empLastName=?, empContact=?, empEmail=?, emp_role=?, empStatus=? "
+                + "WHERE emp_id=?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, employeeData.getEmpFirstName());
+            preparedStatement.setString(2, employeeData.getEmpLastName());
+            preparedStatement.setLong(3, employeeData.getEmpContact());
+            preparedStatement.setString(4, employeeData.getEmpEmail());
+            preparedStatement.setString(5, employeeData.getEmp_role());
+            preparedStatement.setString(6, employeeData.getEmpStatus());
+            preparedStatement.setInt(7, employeeData.getEmp_id());
+
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public void updateEmployeeTable() {
+        for (EmployeeData employee : employeeDataList) {
+            System.out.println("Employee ID: " + employee.getEmp_id() + ", Status: " + employee.getStatus());
+        }
+        employeeTable.setItems(employeeDataList);
+        employeeTable.refresh();
+    }
+
+    public void updateEmployee(Connection connection, EmployeeData employeeData) throws SQLException {
+        String updateQuery = "UPDATE employees SET empFirstName=?, empLastName=?, empContact=?, empEmail=?, emp_role=?, empStatus=? WHERE empId=?";
+
+        try (PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
+            updateStmt.setString(1, employeeData.getEmpFirstName());
+            updateStmt.setString(2, employeeData.getEmpLastName());
+            updateStmt.setLong(3, employeeData.getEmpContact());
+            updateStmt.setString(4, employeeData.getEmpEmail());
+            updateStmt.setString(5, employeeData.getEmp_role());
+            updateStmt.setString(6, employeeData.getEmpStatus());
+            updateStmt.setInt(7, employeeData.getEmp_id());
+
+            // Execute the update statement
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e; // rethrow the exception after printing the stack trace
+        }
+    }
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -860,6 +1048,10 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
         initializeChart();
         updateBarChart();
+
+        employeeDataList = FXCollections.observableArrayList();
+        setUpEmployeeTable();
+        loadEmpDataFromDatabase();
 
         // Populate the combo box with categories
         categoryComboBox.getItems().addAll("Milk Tea", "Fruit Drink", "Frappe", "Coffee", "Rice Meal", "Snacks", "Extras");

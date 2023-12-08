@@ -104,6 +104,13 @@ public class AddEmployeeFXMLController implements Initializable {
     @FXML
     private ImageView CloseButton;
 
+    private AdminFXMLController adminController;
+
+    // Method to set the reference to AdminFXMLController
+    public void setAdminController(AdminFXMLController adminController) {
+        this.adminController = adminController;
+    }
+
     @FXML
     private void generateRandomPinCodeAction(ActionEvent event) {
 
@@ -123,7 +130,7 @@ public class AddEmployeeFXMLController implements Initializable {
     }
 
     private boolean isPinCodeExists(int pinCode) {
-        try (Connection connection = database.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("SELECT pin_code FROM employees WHERE pin_code = " + pinCode)) {
+        try (Connection connection = CRUDDatabase.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("SELECT pin_code FROM employees WHERE pin_code = " + pinCode)) {
 
             return resultSet.next();
 
@@ -134,7 +141,7 @@ public class AddEmployeeFXMLController implements Initializable {
         }
     }
 
-    private static final String INSERT_EMPLOYEES_SQL = "INSERT INTO `employees` (`emp_id`, `empFirstName`, `empLastName`, `empContact`, `empEmail`, `emp_role`, `pin_code`, `empStatus`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_EMPLOYEES_SQL = "INSERT INTO `employees` (`empFirstName`, `empLastName`, `empContact`, `empEmail`, `emp_role`, `pin_code`, `empStatus`) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private AdminFXMLController parentController;
 
     public void setParentController(AdminFXMLController parentController) {
@@ -151,12 +158,11 @@ public class AddEmployeeFXMLController implements Initializable {
 
     private static int nextEmpID = 1;
 
-    /*
     @FXML
     private void addEmployeeAction() {
         StringBuilder errorMessage = new StringBuilder();
 
-        EmployeeData employee = null; // Initialize employee
+        EmployeeData employee = null;
 
         // Check for empty fields
         if (FirstNameTxtLbl.getText().isEmpty() || LastNameTxtLbl.getText().isEmpty()
@@ -219,13 +225,15 @@ public class AddEmployeeFXMLController implements Initializable {
         }
         nextEmpID++;
 
-        parentController.addEmployee(employee);
-
-        try (Connection connection = database.getConnection(); PreparedStatement statement = employee.getInsertStatement(connection)) {
+        /* parentController.addEmployee(employee); */
+        try (Connection connection = CRUDDatabase.getConnection(); PreparedStatement statement = employee.getInsertStatement(connection)) {
             statement.setInt(5, employee.getPin_code());
             int affectedRows = statement.executeUpdate();
             if (affectedRows > 0) {
                 displaySuccessAlert("Employee added successfully!");
+                
+                adminController.loadEmpDataFromDatabase();
+                adminController.setUpEmployeeTable();
             } else {
                 displayErrorAlert("Failed to add an employee to the database.");
             }
@@ -234,7 +242,7 @@ public class AddEmployeeFXMLController implements Initializable {
             displayErrorAlert("Error inserting an employee into the database.");
         }
     }
-*/
+
     private void displaySuccessAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
@@ -248,7 +256,7 @@ public class AddEmployeeFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try (Connection connection = database.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("SELECT MAX(emp_id) FROM employees")) {
+        try (Connection connection = CRUDDatabase.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("SELECT MAX(emp_id) FROM employees")) {
 
             if (resultSet.next()) {
                 nextEmpID = resultSet.getInt(1) + 1;

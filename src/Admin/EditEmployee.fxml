@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="496.0" prefWidth="740.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Admin.EditEmployeeFXMLController">
+
+   <children>
+      <AnchorPane layoutX="300.0" layoutY="-1.0" prefHeight="496.0" prefWidth="459.0" style="-fx-background-color: 00000000;">
+         <children>
+            <ImageView fitHeight="56.0" fitWidth="221.0" layoutX="21.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/AccountDetails.png" />
+               </image>
+            </ImageView>
+            <ComboBox fx:id="roleComboBox" layoutX="34.0" layoutY="115.0" prefWidth="150.0" promptText="Select Role" />
+            <Label layoutX="40.0" layoutY="171.0" prefHeight="15.0" prefWidth="95.0" text="First Name">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="FirstNameTxtLbl" layoutX="40.0" layoutY="201.0" prefHeight="27.0" prefWidth="173.0" />
+            <Label layoutX="232.0" layoutY="169.0" prefHeight="15.0" prefWidth="95.0" text="Last Name">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="LastNameTxtLbl" layoutX="232.0" layoutY="201.0" prefHeight="27.0" prefWidth="173.0" />
+            <Button fx:id="UpdateEmployeeButton" layoutX="255.0" layoutY="403.0" mnemonicParsing="false" onAction="#handleUpdateEmployeeButtonClick" prefHeight="25.0" prefWidth="150.0" styleClass="employeeButton" stylesheets="@../CSS/AdminCSS.css" text="Update" />
+            <TextField fx:id="ContactTxtLbl" layoutX="40.0" layoutY="270.0" prefHeight="27.0" prefWidth="365.0" promptText="contact number must be 11 characters" />
+            <TextField fx:id="emailTxtLbl" layoutX="40.0" layoutY="339.0" prefHeight="27.0" prefWidth="365.0" promptText="e-mail must end with/e.g. @example.com" />
+            <Label layoutX="41.0" layoutY="314.0" prefHeight="15.0" prefWidth="95.0" text="E-mail">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="41.0" layoutY="242.0" prefHeight="20.0" prefWidth="134.0" text="Contact Number">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="statusComboBox" layoutX="193.0" layoutY="115.0" prefWidth="150.0" promptText="Select Status" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutY="-2.0" prefHeight="496.0" prefWidth="269.0" style="-fx-background-color: #111315;">
+         <children>
+            <ImageView fitHeight="184.0" fitWidth="180.0" layoutX="35.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/logo.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="CloseButton" fitHeight="22.0" fitWidth="18.0" layoutX="20.0" layoutY="450.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/icons8-log-out-96.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
