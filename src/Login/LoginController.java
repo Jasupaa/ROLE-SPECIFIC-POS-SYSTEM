@@ -28,6 +28,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import ClassFiles.ControllerManager;
+import Databases.CRUDDatabase;
 import MainAppFrame.SettlePaymentFXMLController;
 
 public class LoginController {
@@ -81,8 +82,6 @@ public class LoginController {
             // Handle any exceptions
         }
     }
-    
-    
 
     private void KitchenFrame() {
 
@@ -176,10 +175,10 @@ public class LoginController {
         String role = authenticateUser(enteredCode);
 
         if (role != null) {
-            
+
             String employeeName = getEmployeeName(enteredCode);
             int employeeId = getEmployeeId(enteredCode);
-            
+
             switch (role) {
                 case "cashier":
                     CashierFrame(employeeName, employeeId);
@@ -205,11 +204,18 @@ public class LoginController {
     }
 
     private String authenticateUser(String enteredCode) {
-        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT emp_role FROM employees WHERE pin_code = ?")) {
+        try (Connection connection = CRUDDatabase.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT emp_role, empStatus FROM employees WHERE pin_code = ?")) {
             statement.setString(1, enteredCode);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
+                String empStatus = resultSet.getString("empStatus");
+
+                if ("Terminated".equals(empStatus)) {
+                    handleInvalidCode("Employee is terminated", enteredCode);
+                    return null; // Do not allow login for terminated employees
+                }
+
                 return resultSet.getString("emp_role");
             }
         } catch (SQLException e) {
@@ -243,34 +249,35 @@ public class LoginController {
         }
 
     }
+
     private String getEmployeeName(String enteredCode) {
-    try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT name FROM employees WHERE pin_code = ?")) {
-        statement.setString(1, enteredCode);
-        ResultSet resultSet = statement.executeQuery();
+        try (Connection connection = CRUDDatabase.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT empFirstName FROM employees WHERE pin_code = ?")) {
+            statement.setString(1, enteredCode);
+            ResultSet resultSet = statement.executeQuery();
 
-        if (resultSet.next()) {
-            return resultSet.getString("name");
+            if (resultSet.next()) {
+                return resultSet.getString("empFirstName");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return null; // Unable to retrieve employee name
     }
 
-    return null; // Unable to retrieve employee name
-}
-    
     private int getEmployeeId(String enteredCode) {
-    try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT emp_id FROM employees WHERE pin_code = ?")) {
-        statement.setString(1, enteredCode);
-        ResultSet resultSet = statement.executeQuery();
+        try (Connection connection = CRUDDatabase.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT emp_id FROM employees WHERE pin_code = ?")) {
+            statement.setString(1, enteredCode);
+            ResultSet resultSet = statement.executeQuery();
 
-        if (resultSet.next()) {
-            return resultSet.getInt("emp_id");
+            if (resultSet.next()) {
+                return resultSet.getInt("emp_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-   return -1;
-    
+        return -1;
+
     }
 
 }

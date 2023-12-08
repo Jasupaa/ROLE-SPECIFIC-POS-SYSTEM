@@ -151,6 +151,9 @@ public class EditEmployeeFXMLController implements Initializable {
             employeeData.setEmpRole(roleComboBox.getValue().getRoleName());
         }
 
+        // Set employee status from the selected value in statusComboBox
+        employeeData.setEmpStatus(statusComboBox.getValue());
+
         if (statusComboBox.getValue() != null && statusComboBox.getValue().equals("Terminated")) {
             // If the status is "Terminated," disable the cells and move the employee to the bottom
             try {

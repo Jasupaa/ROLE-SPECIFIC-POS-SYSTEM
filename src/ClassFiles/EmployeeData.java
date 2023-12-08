@@ -139,4 +139,15 @@ public class EmployeeData {
         this.pin_code = new SimpleIntegerProperty(pin_code);
         this.empStatus = new SimpleStringProperty("Active");
     }
+
+    private int orderInList;
+
+    public int getOrderInList() {
+        return orderInList;
+    }
+
+    public void setOrderInList(int orderInList) {
+        this.orderInList = orderInList;
+    }
+
 }

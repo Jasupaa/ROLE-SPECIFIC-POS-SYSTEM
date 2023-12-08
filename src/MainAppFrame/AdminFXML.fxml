@@ -198,8 +198,13 @@
                         </HBox>
                     </children>
                 </AnchorPane>
-                <AnchorPane fx:id="salesRep" layoutX="-192.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1022.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-192.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
+                <AnchorPane fx:id="salesRep" layoutX="-192.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1022.0" style="-fx-background-color: #111315;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-192.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
                     <children>
+                  <ImageView fitHeight="452.0" fitWidth="298.0" layoutX="708.0" layoutY="108.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Pictures/Group%209.png" />
+                     </image>
+                  </ImageView>
                         <AnchorPane layoutX="787.0" layoutY="70.0" />
                         <Pane layoutX="267.0" layoutY="107.0">
                             <children>
@@ -267,32 +272,32 @@
                         </Pane>
                         <Pane fx:id="fruitdrinkPANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
                             <children>
-                                <PieChart fx:id="fruitDrinkPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                                <PieChart fx:id="fruitDrinkPieChart" layoutX="-7.0" layoutY="28.0" prefHeight="255.0" prefWidth="279.0" />
                             </children>
                         </Pane>
                         <Pane fx:id="frappePANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
                             <children>
-                                <PieChart fx:id="frappePieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                                <PieChart fx:id="frappePieChart" layoutX="-7.0" layoutY="28.0" prefHeight="255.0" prefWidth="279.0" />
                             </children>
                         </Pane>
                         <Pane fx:id="coffeePANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
                             <children>
-                                <PieChart fx:id="coffeePieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                                <PieChart fx:id="coffeePieChart" layoutX="-7.0" layoutY="28.0" prefHeight="255.0" prefWidth="279.0" />
                             </children>
                         </Pane>
                         <Pane fx:id="ricemealPANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
                             <children>
-                                <PieChart fx:id="riceMealPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                                <PieChart fx:id="riceMealPieChart" layoutX="-1.0" layoutY="28.0" prefHeight="255.0" prefWidth="273.0" />
                             </children>
                         </Pane>
                         <Pane fx:id="snacksPANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
                             <children>
-                                <PieChart fx:id="snacksPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                                <PieChart fx:id="snacksPieChart" layoutX="-7.0" layoutY="28.0" prefHeight="255.0" prefWidth="279.0" />
                             </children>
                         </Pane>
                         <Pane fx:id="extrasPANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
                             <children>
-                                <PieChart fx:id="extrasPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                                <PieChart fx:id="extrasPieChart" layoutX="-1.0" layoutY="28.0" prefHeight="255.0" prefWidth="273.0" />
                             </children>
                         </Pane>
                   <ImageView fitHeight="328.0" fitWidth="314.0" layoutX="49.0" layoutY="197.0" pickOnBounds="true" preserveRatio="true">
@@ -311,11 +316,6 @@
                   <ImageView fitHeight="325.0" fitWidth="307.0" layoutX="382.0" layoutY="196.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Pictures/Group%2010.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="452.0" fitWidth="298.0" layoutX="708.0" layoutY="108.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Pictures/Group%209.png" />
                      </image>
                   </ImageView>
                   <ComboBox fx:id="categoryComboBox" layoutX="898.0" layoutY="136.0" prefHeight="14.0" prefWidth="92.0" />
@@ -429,7 +429,7 @@
                         </ImageView>
                     </children>
                 </AnchorPane>
-                <AnchorPane fx:id="empDetails" layoutX="-182.0" layoutY="-96.0" prefHeight="560.0" prefWidth="1012.0" style="-fx-background-color: #111315;" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-182.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-96.0">
+                <AnchorPane fx:id="empDetails" layoutX="-182.0" layoutY="-96.0" prefHeight="560.0" prefWidth="1012.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-182.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-96.0">
                     <children>
                         <Button fx:id="EMPhomeBTN" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
                             <graphic>

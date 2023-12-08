@@ -80,6 +80,7 @@ import ClassFiles.Role;
 import Databases.CRUDDatabase;
 import java.sql.Statement;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Optional;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.BarChart;
@@ -388,26 +389,33 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Set the employee status to "Terminated"
             employeeData.setEmpStatus("Terminated");
 
-            // Apply a grayish background style to terminated rows
-            employeeTable.setRowFactory(tv -> new TableRow<EmployeeData>() {
-                @Override
-                protected void updateItem(EmployeeData item, boolean empty) {
-                    super.updateItem(item, empty);
+            // Update the order and status in the database
+            updateEmployeeOrderAndStatus();
 
-                    if (item == null || (item.getEmpStatus() != null && item.getEmpStatus().equals("Terminated"))) {
-                        setStyle("-fx-background-color: #E0E0E0;"); // Use the desired grayish color
-                    } else {
-                        setStyle(""); // Reset the style for non-terminated rows
-                    }
-                }
-            });
-
-            // Remove the terminated employee from the current position
-            employeeDataList.remove(index);
-            // Add the terminated employee to the bottom of the list
-            employeeDataList.add(employeeData);
             // Refresh the TableView
             employeeTable.refresh();
+        }
+    }
+
+    private void updateEmployeeOrderAndStatus() {
+        try {
+            Connection connection = CRUDDatabase.getConnection(); // Assuming your CRUDDatabase class provides the getConnection method
+
+            // Iterate through the list and update the status in the database
+            String updateQuery = "UPDATE employees SET empStatus=? WHERE emp_id=?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+                for (EmployeeData employeeData : employeeDataList) {
+                    preparedStatement.setString(1, "Terminated".equals(employeeData.getEmpStatus()) ? "Terminated" : "Active");
+                    preparedStatement.setInt(2, employeeData.getEmp_id());
+                    preparedStatement.addBatch();
+                }
+                preparedStatement.executeBatch();
+            }
+
+            // Close the connection
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -452,13 +460,37 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         empEmail.setCellValueFactory(new PropertyValueFactory<>("empEmail"));
         emp_role.setCellValueFactory(new PropertyValueFactory<>("emp_role"));
         pin_code.setCellValueFactory(new PropertyValueFactory<>("pin_code"));
+
+        applyCellStyling(employeeDataList);
     }
 
     public void loadEmpDataFromDatabase() {
         List<EmployeeData> employeeList = fetchExistingDataFromDatabase();
         employeeDataList.clear();
         employeeDataList.addAll(employeeList);
+
+        // Sort the list by order_in_list, assuming your EmployeeData class has a method getOrderInList()
+        employeeDataList.sort(Comparator.comparingInt(EmployeeData::getOrderInList));
+
+        // Apply the list to the TableView
         employeeTable.setItems(employeeDataList);
+
+        // Apply styling to cells
+        applyCellStyling(employeeDataList);
+    }
+
+    private void applyCellStyling(ObservableList<EmployeeData> employeeDataList) {
+        employeeTable.setRowFactory(tv -> new TableRow<EmployeeData>() {
+            @Override
+            protected void updateItem(EmployeeData item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null && "Terminated".equals(item.getEmpStatus())) {
+                    setStyle("-fx-background-color: #E0E0E0;"); // Use the desired grayish color
+                } else {
+                    setStyle(""); // Reset the style for non-terminated rows
+                }
+            }
+        });
     }
 
     ////////////////////////////////// ADD
@@ -546,22 +578,20 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         employeeTable.refresh();
     }
 
+// Sample updateEmployee method using PreparedStatement
     public void updateEmployee(Connection connection, EmployeeData employeeData) throws SQLException {
-        String updateQuery = "UPDATE employees SET empFirstName=?, empLastName=?, empContact=?, empEmail=?, emp_role=?, empStatus=? WHERE empId=?";
+        String updateQuery = "UPDATE employees SET empFirstName=?, empLastName=?, empContact=?, empEmail=?, emp_role=?, empStatus=? WHERE emp_id=?";
 
-        try (PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
-            updateStmt.setString(1, employeeData.getEmpFirstName());
-            updateStmt.setString(2, employeeData.getEmpLastName());
-            updateStmt.setLong(3, employeeData.getEmpContact());
-            updateStmt.setString(4, employeeData.getEmpEmail());
-            updateStmt.setString(5, employeeData.getEmp_role());
-            updateStmt.setString(6, employeeData.getEmpStatus());
-            updateStmt.setInt(7, employeeData.getEmp_id());
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, employeeData.getEmpFirstName());
+            preparedStatement.setString(2, employeeData.getEmpLastName());
+            preparedStatement.setLong(3, employeeData.getEmpContact());
+            preparedStatement.setString(4, employeeData.getEmpEmail());
+            preparedStatement.setString(5, employeeData.getEmp_role());
+            preparedStatement.setString(6, employeeData.getEmpStatus());
+            preparedStatement.setInt(7, employeeData.getEmp_id());
 
-            // Execute the update statement
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e; // rethrow the exception after printing the stack trace
+            preparedStatement.executeUpdate();
         }
     }
 
@@ -1582,6 +1612,29 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         ricemealPANE.setVisible("Rice Meal".equals(category));
         snacksPANE.setVisible("Snacks".equals(category));
         extrasPANE.setVisible("Extras".equals(category));
+
+        // Hide all other panes
+        if (!"Milk Tea".equals(category)) {
+            milkteaPANE.setVisible(false);
+        }
+        if (!"Fruit Drink".equals(category)) {
+            fruitdrinkPANE.setVisible(false);
+        }
+        if (!"Frappe".equals(category)) {
+            frappePANE.setVisible(false);
+        }
+        if (!"Coffee".equals(category)) {
+            coffeePANE.setVisible(false);
+        }
+        if (!"Rice Meal".equals(category)) {
+            ricemealPANE.setVisible(false);
+        }
+        if (!"Snacks".equals(category)) {
+            snacksPANE.setVisible(false);
+        }
+        if (!"Extras".equals(category)) {
+            extrasPANE.setVisible(false);
+        }
     }
 
 }
