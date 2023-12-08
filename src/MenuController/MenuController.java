@@ -27,6 +27,8 @@ import ClassFiles.MilkteaItemData;
 import Databases.CRUDDatabase;
 import java.sql.Blob;
 import java.io.ByteArrayInputStream;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 
 public class MenuController {
@@ -171,29 +173,40 @@ public class MenuController {
         }
 
         if (milkteaItemData != null) {
-            String menuName = milkteaItemData.getItemName();
-            String selectedAddon = addonsComboBox.getValue();
-            String selectedSize = sizeComboBox.getValue();
-            String selectedSugarLevel = sugarlevelComboBox.getValue();
-            Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
+        String menuName = milkteaItemData.getItemName();
+        String selectedAddon = addonsComboBox.getValue();
+        String selectedSize = sizeComboBox.getValue();
+        String selectedSugarLevel = sugarlevelComboBox.getValue();
+        Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
 
-            if ("None".equals(selectedAddon) || "None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
-                System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
+        if ("None".equals(selectedAddon) || "None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
+            System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
+        } else {
+            int customer_id = 0; // Initialize customer_id
+
+            if (existingCashierController != null) {
+                // Now, you can use the existing instance of CashierFXMLController
+                customer_id = existingCashierController.getCurrentCustomerID();
             } else {
-                int customer_id = 0; // Initialize customer_id
-                 
-                if (existingCashierController != null) {
-                    // Now, you can use the existing instance of CashierFXMLController
-                    customer_id = existingCashierController.getCurrentCustomerID();
-                } else {
-                    System.out.println("Cashier controller not available.");
-                }
-
-                // Move insertOrderToDatabase inside the else block to ensure customer_id is properly assigned
-                insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedAddon, selectedSugarLevel, askmeRadioSelected);
-                System.out.println("Data inserted into the database.");
+                System.out.println("Cashier controller not available.");
             }
 
+            // Check if the product is out of stock
+            String status = StatusLbl.getText(); 
+            if ("Out Of Stock".equals(status)) {
+                
+                Alert outOfStockAlert = new Alert(AlertType.ERROR);
+                outOfStockAlert.setTitle("Out of Stock");
+                outOfStockAlert.setHeaderText(null);
+                outOfStockAlert.setContentText("Sorry, the selected product is out of stock.");
+                outOfStockAlert.showAndWait();
+                return;
+            }
+
+            // Move insertOrderToDatabase inside the else block to ensure customer_id is properly assigned
+            insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedAddon, selectedSugarLevel, askmeRadioSelected);
+            System.out.println("Data inserted into the database.");
+        }
             // Reset the ComboBoxes to "None"
             addonsComboBox.setValue("None"); 
             sizeComboBox.setValue("None");

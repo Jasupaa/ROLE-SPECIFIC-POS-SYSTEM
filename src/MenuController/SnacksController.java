@@ -25,6 +25,7 @@ import ClassFiles.RiceMealsItemData;
 import ClassFiles.SnacksItemData;
 import java.io.ByteArrayInputStream;
 import java.sql.Blob;
+import javafx.scene.control.Alert;
 
 /**
  *
@@ -149,6 +150,17 @@ public class SnacksController {
                 } else {
                     System.out.println("Cashier controller not available.");
                 }
+                
+                 String status = StatusLbl.getText(); 
+            if ("Out Of Stock".equals(status)) {
+                
+                Alert outOfStockAlert = new Alert(Alert.AlertType.ERROR);
+                outOfStockAlert.setTitle("Out of Stock");
+                outOfStockAlert.setHeaderText(null);
+                outOfStockAlert.setContentText("Sorry, the selected product is out of stock.");
+                outOfStockAlert.showAndWait();
+                return;
+            }
 
                 // Move insertOrderToDatabase inside the else block to ensure customer_id is properly assigned
                 insertOrderToDatabase(customer_id, menuName, selectedQuantity, askmeRadioSelected);
