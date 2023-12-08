@@ -134,7 +134,7 @@ public class MenuController {
     private void insertOrderToDatabase(int customer_id, String menuName, int selectedQuantity, String selectedSize, String selectedAddon, String selectedSugarLevel, boolean askmeRadioSelected) {
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
-                String sql = "INSERT INTO milk_tea (customer_id, date_time, item_name, quantity, size, add_ons, sugar_level, ask_me, size_price, final_price) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO milk_tea (customer_id, date_time, item_name, quantity, size, add_ons, sugar_level, ask_me,addons_price , size_price, final_price) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, customer_id);
                     stmt.setString(2, menuName);
@@ -146,12 +146,16 @@ public class MenuController {
 
                     // Check if size and add-ons are selected and set the corresponding prices
                     int sizePrice = calculateSizePrice(selectedSize);
+                     int addonsPrice = calculateAddonsPrice(selectedAddon);
 
                     stmt.setInt(8, sizePrice);
 
                     // Calculate the final price based on selected size and add-ons
-                    int finalPrice = sizePrice * selectedQuantity;
-                    stmt.setInt(9, finalPrice);
+                    
+                     stmt.setString(9, addonsPrice > 0 ? String.valueOf(addonsPrice) : "");
+                     
+                     int finalPrice = (sizePrice + addonsPrice) * selectedQuantity;
+                    stmt.setInt(10, finalPrice);
 
                     stmt.executeUpdate();
                 }
@@ -162,7 +166,42 @@ public class MenuController {
             e.printStackTrace();
         }
     }
+ private int calculateAddonsPrice(String selectedAddon) {
+        // Assuming you have a method in MilkteaItemData to get the addons_price
+        try (Connection conn = CRUDDatabase.getConnection()) {
+            if (conn != null) {
+                String sql = "SELECT addons, addons_price FROM milktea_items WHERE item_name = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setString(1, foodLabel.getText());  // Assuming foodLabel is the label displaying the food name
+                    ResultSet resultSet = stmt.executeQuery();
+                    if (resultSet.next()) {
+                        // Get addons and addons_price as strings
+                        String addonsString = resultSet.getString("addons");
+                        String addonsPriceString = resultSet.getString("addons_price");
 
+                        // Split addons and addons_price into arrays
+                        String[] addonsArray = addonsString.split(", ");
+                        String[] addonsPriceArray = addonsPriceString.split(", ");
+
+                        // Iterate through the arrays and add new values to the ComboBox
+                        for (int i = 0; i < addonsArray.length; i++) {
+                            if (!addonsComboBox.getItems().contains(addonsArray[i])) {
+                                addonsComboBox.getItems().add(addonsArray[i]);
+                            }
+                            if (addonsArray[i].equals(selectedAddon)) {
+                                return Integer.parseInt(addonsPriceArray[i].trim());
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Return 0 if addons_price is not found or if an error occurred
+        return 0;
+    }
     @FXML
     public void confirmButton1(ActionEvent event) {
 

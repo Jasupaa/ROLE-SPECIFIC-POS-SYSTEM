@@ -465,6 +465,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 // Replace these column names with your actual column names from the "milktea_items" table
                 String itemName = result.getString("item_name");
                 String addons = result.getString("addons");
+                String addonsPrice = result.getString("addons_price");
                 Integer smallPrice = result.getInt("small_price");
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
@@ -472,7 +473,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer itemID = result.getInt("item_ID");
                 String status = result.getString("status");
                 // Create a MilkteaItemData object and add it to the list
-                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice, image, itemID, status);
+                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, addonsPrice, smallPrice, mediumPrice, largePrice, image, itemID, status);
                 listData.add(milkteaItemData);
 
             }

@@ -50,7 +50,9 @@ public class MilkteaCRUDController implements Initializable {
 
     @FXML
     private TableView<MilkteaItemData> milkteaTV;
-
+    
+    @FXML
+    private TableColumn<MilkteaItemData, Integer> addonsPriceMT;
     @FXML
     private TableColumn<MilkteaItemData, String> itemMT;
 
@@ -91,6 +93,9 @@ public class MilkteaCRUDController implements Initializable {
 
     @FXML
     private ImageView itemIV;
+    
+     @FXML
+    private TextArea txtAddonsPrice;
 
     private Image selectedImage;
     private String status;
@@ -157,6 +162,7 @@ public class MilkteaCRUDController implements Initializable {
                 String mediumPrice = txtMediumPrice.getText();
                 String largePrice = txtLargePrice.getText();
                 String status = getSelectedStatus();
+                String addonsPrice = txtAddonsPrice.getText();
 
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
@@ -172,7 +178,7 @@ public class MilkteaCRUDController implements Initializable {
                 imageInputStream = null;
             }
                         
-                    insertMilkteaItem(connection, itemName, addons, smallPrice, mediumPrice, largePrice, imageInputStream, status);
+                    insertMilkteaItem(connection, itemName, addons, addonsPrice, smallPrice, mediumPrice, largePrice, imageInputStream, status);
                     System.out.println("Data inserted.");
                      clearTextFields();
                 } else {
@@ -186,7 +192,7 @@ public class MilkteaCRUDController implements Initializable {
                 int itemID = selectedItem.getItemID();
                 if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
                     selectedItem.setItemID(itemID);
-                    updateMilkteaItem(connection, itemName, addons, smallPrice, mediumPrice, largePrice, imageInputStream, itemID, status);
+                    updateMilkteaItem(connection, itemName, addons, addonsPrice, smallPrice, mediumPrice, largePrice, imageInputStream, itemID, status);
                     System.out.println("Data updated.");
                      clearTextFields();
                 } else {
@@ -247,17 +253,18 @@ public class MilkteaCRUDController implements Initializable {
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
      */
-    private void insertMilkteaItem(Connection connection, String itemName, String addons, String smallPrice, String mediumPrice, String largePrice, InputStream image, String status) {
-        String sql = "INSERT INTO milktea_items (item_name, addons, small_price, medium_price, large_price, image, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private void insertMilkteaItem(Connection connection, String itemName, String addons,String addonsPrice, String smallPrice, String mediumPrice, String largePrice, InputStream image, String status) {
+        String sql = "INSERT INTO milktea_items (item_name, addons, addons_price, small_price, medium_price, large_price, image, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, addons);
-            preparedStatement.setString(3, smallPrice);
-            preparedStatement.setString(4, mediumPrice);
-            preparedStatement.setString(5, largePrice);
-            preparedStatement.setBlob(6, image); // Use setBlob for InputStream
-             preparedStatement.setString(7, status);
+            preparedStatement.setString(3, addonsPrice);
+            preparedStatement.setString(4, smallPrice);
+            preparedStatement.setString(5, mediumPrice);
+            preparedStatement.setString(6, largePrice);
+            preparedStatement.setBlob(7, image); // Use setBlob for InputStream
+             preparedStatement.setString(8, status);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -266,30 +273,31 @@ public class MilkteaCRUDController implements Initializable {
         }
     }
 
-    private void updateMilkteaItem(Connection connection, String itemName, String addons, String smallPrice, String mediumPrice, String largePrice, InputStream image, int itemID, String status) {
+    private void updateMilkteaItem(Connection connection, String itemName, String addons, String addonsPrice, String smallPrice, String mediumPrice, String largePrice, InputStream image, int itemID, String status) {
         String sql;
 
         if (image != null) {
 
-            sql = "UPDATE milktea_items SET item_name=?, addons=?, small_price=?, medium_price=?, large_price=?, image=?, status=? WHERE item_ID=?";
+            sql = "UPDATE milktea_items SET item_name=?, addons=?, addons_price=?, small_price=?, medium_price=?, large_price=?, image=?, status=? WHERE item_ID=?";
         } else {
 
-            sql = "UPDATE milktea_items SET item_name=?, addons=?, small_price=?, medium_price=?, large_price=?, status=? WHERE item_ID=?";
+            sql = "UPDATE milktea_items SET item_name=?, addons=?, addons_price=?, small_price=?, medium_price=?, large_price=?, status=? WHERE item_ID=?";
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, addons);
-            preparedStatement.setString(3, smallPrice);
-            preparedStatement.setString(4, mediumPrice);
-            preparedStatement.setString(5, largePrice);
-              preparedStatement.setString(6, status);
+            preparedStatement.setString(3, addonsPrice);
+            preparedStatement.setString(4, smallPrice);
+            preparedStatement.setString(5, mediumPrice);
+            preparedStatement.setString(6, largePrice);
+              preparedStatement.setString(7, status);
 
             if (image != null) {
-                preparedStatement.setBlob(7, image); // Use setBlob for InputStream
-                preparedStatement.setInt(8, itemID);
+                preparedStatement.setBlob(8, image); // Use setBlob for InputStream
+                preparedStatement.setInt(9, itemID);
             } else {
-                preparedStatement.setInt(7, itemID);
+                preparedStatement.setInt(8, itemID);
             }
             
               
@@ -329,7 +337,7 @@ public class MilkteaCRUDController implements Initializable {
     private ObservableList<MilkteaItemData> fetchDataFromDatabase() {
         ObservableList<MilkteaItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name, addons, small_price, medium_price, large_price, image, status FROM milktea_items";
+        String sql = "SELECT item_id, item_name, addons, addons_price, small_price, medium_price, large_price, image, status FROM milktea_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
@@ -337,6 +345,7 @@ public class MilkteaCRUDController implements Initializable {
                 int itemID = result.getInt("item_id");
                 String itemName = result.getString("item_name");
                 String addons = result.getString("addons");
+                String addonsPrice = result.getString("addons_price");
                 Integer smallPrice = result.getInt("small_price");
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
@@ -349,11 +358,12 @@ public class MilkteaCRUDController implements Initializable {
                 InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
 
                 // Create MilkteaItemData and set properties
-                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice);
+                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, addonsPrice, smallPrice, mediumPrice, largePrice);
                 milkteaItemData.setItemID(itemID);
                 milkteaItemData.setImage(imageBlob); // Set Blob if needed
                 milkteaItemData.setImageInputStream(imageInputStream); // Set InputStream
                  milkteaItemData.setStatus(status);
+                 
 
                 // Add to the list
                 listData.add(milkteaItemData);
@@ -371,6 +381,7 @@ public class MilkteaCRUDController implements Initializable {
         // Set up the PropertyValueFactory for each column
         itemMT.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         addonsMT.setCellValueFactory(new PropertyValueFactory<>("addons"));
+        addonsPriceMT.setCellValueFactory(new PropertyValueFactory<>("addonsPrice"));
         smallMT.setCellValueFactory(new PropertyValueFactory<>("smallPrice"));
         medMT.setCellValueFactory(new PropertyValueFactory<>("mediumPrice"));
         largeMT.setCellValueFactory(new PropertyValueFactory<>("largePrice"));
@@ -390,6 +401,7 @@ public class MilkteaCRUDController implements Initializable {
     private void clearTextFields() {
         txtItemName.clear();
         txtAddons.clear();
+        txtAddonsPrice.clear();
         txtSmallPrice.clear();
         txtMediumPrice.clear();
         txtLargePrice.clear();
@@ -414,6 +426,7 @@ public class MilkteaCRUDController implements Initializable {
             txtItemName.setText(selectedItem.getItemName());
 
             txtAddons.setText(selectedItem.getAddons());
+            txtAddonsPrice.setText(String.valueOf(selectedItem.getAddonsPrice()));
             txtSmallPrice.setText(String.valueOf(selectedItem.getSmallPrice()));
             txtMediumPrice.setText(String.valueOf(selectedItem.getMediumPrice()));
             txtLargePrice.setText(String.valueOf(selectedItem.getLargePrice()));
