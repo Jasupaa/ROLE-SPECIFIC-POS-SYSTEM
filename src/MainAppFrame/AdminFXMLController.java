@@ -1355,7 +1355,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private double calculateTotalDailySales() {
         double totalSales = 0.0;
 
-        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT SUM(total) AS totalSales FROM invoice"); ResultSet resultSet = statement.executeQuery()) {
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT SUM(total) AS totalSales FROM invoice_archive"); ResultSet resultSet = statement.executeQuery()) {
 
             if (resultSet.next()) {
                 totalSales = resultSet.getDouble("totalSales");
