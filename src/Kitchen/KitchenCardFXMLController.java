@@ -273,11 +273,10 @@ public class KitchenCardFXMLController implements Initializable {
         // Call the getArchive method in the KitchenFXMLController
         if (kitchenController != null) {
             kitchenController.getOrders(); // If needed, also update the Orders tab
+            kitchenController.loadArchiveTableFromDatabase(); 
+            kitchenController.setupArchiveColumns();
         }
-
-        if (kitchencontroller != null) {
-            kitchencontroller.getArchive();
-        }
+        
     }
 
     private void initializeSizeComboBox() {
@@ -291,4 +290,4 @@ public class KitchenCardFXMLController implements Initializable {
     }
 
     ////////////////////////////////////
-}
+} 

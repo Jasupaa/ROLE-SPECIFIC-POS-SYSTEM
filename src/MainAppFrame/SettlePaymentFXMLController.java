@@ -174,7 +174,7 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     void confirmButton(ActionEvent event) {
-       
+
     }
 
     private void insertInvoiceToDatabase(int customerID, String orderType, double totalAmount, double cashAmount, double changeAmount) {
@@ -225,59 +225,73 @@ public class SettlePaymentFXMLController implements Initializable {
             // Hide the stage
             cashierConfirm.hide();
 
+            // Move the setOrderDetails call here
+            int customerID = existingCashierController.getCurrentCustomerID();
+            String orderType = ordertypeTxtField.getText();
+            
+            double subtotal = Double.parseDouble(subTotal.getText().substring(1));
+            String discountText = appldDscLbl.getText().substring(1);
+            discountText = discountText.replaceAll("[^\\d.]", "");
+
+            double discountApplied = Double.parseDouble(discountText);
+            double totalAmount = Double.parseDouble(customTotalLabel.getText().substring(1));
+            double cashAmount = Double.parseDouble(cashTxtLbl.getText());
+            double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
+
+            // Use the controller passed as a parameter
+            controller.setOrderDetails(customerID, orderType, subtotal, discountApplied, totalAmount, cashAmount, changeAmount);
+
             // Trigger the print job
-            triggerPrintJob(root);
+            triggerPrintJob(root, controller);
         } catch (IOException e) {
             e.printStackTrace();
             // Handle exceptions accordingly
         }
     }
 
-  private void triggerPrintJob(Parent root) {
-    // Create PrinterJob
-    PrinterJob printerJob = PrinterJob.createPrinterJob();
+    private void triggerPrintJob(Parent root, CashierConfirmationFXMLController controller) {
+        // Create PrinterJob
+        PrinterJob printerJob = PrinterJob.createPrinterJob();
 
-    if (printerJob != null && printerJob.showPrintDialog(null)) {
-        // Set the content for printing
-        boolean success = printerJob.printPage(root);
-        if (success) {
-            CashierFXMLController cashierController = ControllerManager.getCashierController();
+        if (printerJob != null && printerJob.showPrintDialog(null)) {
+            // Set the content for printing
+            boolean success = printerJob.printPage(root);
+            if (success) {
+                CashierFXMLController cashierController = ControllerManager.getCashierController();
 
-            if (existingCashierController == null && cashierController != null) {
-                existingCashierController = cashierController;
+                if (existingCashierController == null && cashierController != null) {
+                    existingCashierController = cashierController;
+                }
+
+                int customerID = existingCashierController.getCurrentCustomerID();
+                String orderType = ordertypeTxtField.getText();
+                double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1));
+                double cashAmount = Double.parseDouble(cashTxtLbl.getText());
+                double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
+
+                // Insert into the "invoice" table
+                insertInvoiceToDatabase(customerID, orderType, totalAmount, cashAmount, changeAmount);
+                Platform.runLater(() -> {
+                    // Update UI or perform other actions as needed
+                    cashierController.incrementCurrentCustomerID();
+                    cashierController.menuGetMilkteaAndFrappe();
+                    cashierController.setupTableView();
+                    calculateCustomTotal();
+
+                    Stage settlePaymentStage = (Stage) CloseButton.getScene().getWindow();
+
+                    settlePaymentStage.close();
+                    existingCashierController.getMyPane().setVisible(false);
+
+                    printerJob.endJob();
+                });
+            } else {
+                showPrintErrorAlert();
             }
-
-            // Get relevant information from the SettlePayment
-            int customerID = existingCashierController.getCurrentCustomerID();
-            String orderType = ordertypeTxtField.getText();
-            double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1));
-            double cashAmount = Double.parseDouble(cashTxtLbl.getText());
-            double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
-
-            // Insert into the "invoice" table
-            insertInvoiceToDatabase(customerID, orderType, totalAmount, cashAmount, changeAmount);
-Platform.runLater(() -> {
-            // Update UI or perform other actions as needed
-            cashierController.incrementCurrentCustomerID();
-            cashierController.menuGetMilkteaAndFrappe();
-            cashierController.setupTableView();
-            calculateCustomTotal();
-
-            Stage settlePaymentStage = (Stage) CloseButton.getScene().getWindow();
-            
-            settlePaymentStage.close();
-            existingCashierController.getMyPane().setVisible(false);
-           
-            
-            printerJob.endJob();
-});
-        }else {
+        } else {
             showPrintErrorAlert();
         }
-    } else {
-        showPrintErrorAlert();
     }
-}
 
     private void showPrintErrorAlert() {
         Alert alert = new Alert(AlertType.ERROR);
@@ -288,98 +302,98 @@ Platform.runLater(() -> {
         alert.showAndWait();
     }
 
-@FXML
-void discEnterButton(ActionEvent event) {
-    String discountCode = discCodeTxtLbl.getText();
+    @FXML
+    void discEnterButton(ActionEvent event) {
+        String discountCode = discCodeTxtLbl.getText();
 
-    if (discountCode != null && !discountCode.isEmpty()) {
-        // Check if the discount is still valid
-        if (isDiscountValid(discountCode)) {
-            double discountPercent = getDiscountValueFromDatabase(discountCode);
+        if (discountCode != null && !discountCode.isEmpty()) {
+            // Check if the discount is still valid
+            if (isDiscountValid(discountCode)) {
+                double discountPercent = getDiscountValueFromDatabase(discountCode);
 
-            if (discountPercent != -1) {
-                double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1)); // Remove the ₱ sign
-                double discountAmount = (discountPercent / 100) * totalAmount;
-                
-                updateDiscountUsage(discountCode);
+                if (discountPercent != -1) {
+                    double totalAmount = Double.parseDouble(itmTotalTxtLbl.getText().substring(1)); // Remove the ₱ sign
+                    double discountAmount = (discountPercent / 100) * totalAmount;
 
-                int remainingUsage = getRemainingUsage(discountCode);
+                    updateDiscountUsage(discountCode);
 
-                if (remainingUsage == 0) {
-                   
-                    discTxtLbl.setText("Code Invalid");
+                    int remainingUsage = getRemainingUsage(discountCode);
+
+                    if (remainingUsage == 0) {
+
+                        discTxtLbl.setText("Code Invalid");
+                    } else {
+                        if (discountPercent == 0) {
+                            discTxtLbl.setText("No discount applied.");
+                            appldDscLbl.setText("-₱0.00");
+                            appldDscTxtLbl.setText("-₱0.00"); // Apply the same logic to appldDscTxtLbl
+                            newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
+                        } else {
+                            // Display the discount value
+                            discTxtLbl.setText(String.format("%.2f%%", discountPercent));
+
+                            // Display the discounted amount in newTotalTxtLbl with a minus sign
+                            double discountedTotal = totalAmount - discountAmount;
+                            newTotalTxtLbl.setText(String.format("₱%.2f", discountedTotal));
+
+                            itmTotalTxtLbl.setText(String.format("₱%.2f", totalAmount));
+                            appldDscLbl.setText(String.format("-₱%.2f", discountAmount));
+                            appldDscTxtLbl.setText(String.format("-₱%.2f", discountAmount)); // Apply the same logic to appldDscTxtLbl
+                        }
+
+                        // Update the custom total label
+                        updateCustomTotalLabel();
+                    }
                 } else {
-                    if (discountPercent == 0) {
-                        discTxtLbl.setText("No discount applied.");
+                    if (discountCode.equals("0")) {
                         appldDscLbl.setText("-₱0.00");
                         appldDscTxtLbl.setText("-₱0.00"); // Apply the same logic to appldDscTxtLbl
                         newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
+                        // Update the custom total label for zero discount
+                        updateCustomTotalLabel();
                     } else {
-                        // Display the discount value
-                        discTxtLbl.setText(String.format("%.2f%%", discountPercent));
-
-                        // Display the discounted amount in newTotalTxtLbl with a minus sign
-                        double discountedTotal = totalAmount - discountAmount;
-                        newTotalTxtLbl.setText(String.format("₱%.2f", discountedTotal));
-
-                        itmTotalTxtLbl.setText(String.format("₱%.2f", totalAmount));
-                        appldDscLbl.setText(String.format("-₱%.2f", discountAmount));
-                        appldDscTxtLbl.setText(String.format("-₱%.2f", discountAmount)); // Apply the same logic to appldDscTxtLbl
+                        discTxtLbl.setText("Invalid!");
                     }
-
-                    // Update the custom total label
-                    updateCustomTotalLabel();
                 }
             } else {
-                if (discountCode.equals("0")) {
-                    appldDscLbl.setText("-₱0.00");
-                    appldDscTxtLbl.setText("-₱0.00"); // Apply the same logic to appldDscTxtLbl
-                    newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
-                    // Update the custom total label for zero discount
-                    updateCustomTotalLabel();
-                } else {
-                    discTxtLbl.setText("Invalid!");
-                }
+                // Handle the case when the discount is not valid
+                discTxtLbl.setText("Discount expired or invalid!");
             }
         } else {
-            // Handle the case when the discount is not valid
-            discTxtLbl.setText("Discount expired or invalid!");
+            discTxtLbl.setText("No Discount");
+            appldDscLbl.setText(appldDscLbl.getText());
+            appldDscTxtLbl.setText("₱0.00");
+            newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
+            // Update the custom total label
+            updateCustomTotalLabel();
         }
-    } else {
-        discTxtLbl.setText("No Discount");
-        appldDscLbl.setText(appldDscLbl.getText());
-        appldDscTxtLbl.setText("₱0.00");
-        newTotalTxtLbl.setText(itmTotalTxtLbl.getText());
-        // Update the custom total label
-        updateCustomTotalLabel();
     }
-}
 
+    private boolean isDiscountValid(String discountCode) {
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                String sql = "SELECT Date_valid FROM discount WHERE disc_code = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setString(1, discountCode);
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            Date validDate = rs.getDate("Date_valid");
 
-private boolean isDiscountValid(String discountCode) {
-    try (Connection conn = database.getConnection()) {
-        if (conn != null) {
-            String sql = "SELECT Date_valid FROM discount WHERE disc_code = ?";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, discountCode);
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        Date validDate = rs.getDate("Date_valid");
+                            // Check if the current date is after the valid date
+                            LocalDate currentDate = LocalDate.now();
+                            LocalDate discountValidDate = validDate.toLocalDate();
 
-                        // Check if the current date is after the valid date
-                        LocalDate currentDate = LocalDate.now();
-                        LocalDate discountValidDate = validDate.toLocalDate();
-
-                        return currentDate.isBefore(discountValidDate) || currentDate.isEqual(discountValidDate);
+                            return currentDate.isBefore(discountValidDate) || currentDate.isEqual(discountValidDate);
+                        }
                     }
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return false; // Return false if there is an error or the discount code is not found
     }
-    return false; // Return false if there is an error or the discount code is not found
-}
+
     private void updateCustomTotalLabel() {
         double newTotalAmount = parseNewTotalAmount();
         customTotalLabel.setText(String.format("₱%.2f", newTotalAmount));
@@ -444,7 +458,7 @@ private boolean isDiscountValid(String discountCode) {
         }
     }
 
-   @FXML
+    @FXML
     void cashEnterButton(ActionEvent event) {
         String cashEntered = cashTxtLbl.getText();
 
@@ -687,53 +701,53 @@ private boolean isDiscountValid(String discountCode) {
             }
         });
     }
- 
-private void updateDiscountUsage(String discountCode) {
-    try (Connection conn = database.getConnection()) {
-        if (conn != null) {
-            String updateSql = "UPDATE discount SET limit_usage = limit_usage - 1 WHERE disc_code = ? AND limit_usage > 0";
 
-            try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
-                updateStmt.setString(1, discountCode);
-                int affectedRows = updateStmt.executeUpdate();
-                System.out.println("Rows updated: " + affectedRows);
+    private void updateDiscountUsage(String discountCode) {
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                String updateSql = "UPDATE discount SET limit_usage = limit_usage - 1 WHERE disc_code = ? AND limit_usage > 0";
+
+                try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                    updateStmt.setString(1, discountCode);
+                    int affectedRows = updateStmt.executeUpdate();
+                    System.out.println("Rows updated: " + affectedRows);
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database-related exceptions
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-        // Handle database-related exceptions
     }
-}
 
-private int getRemainingUsage(String discountCode) {
-    try (Connection conn = database.getConnection()) {
-        if (conn != null) {
-            String selectSql = "SELECT limit_usage FROM discount WHERE disc_code = ?";
+    private int getRemainingUsage(String discountCode) {
+        try (Connection conn = database.getConnection()) {
+            if (conn != null) {
+                String selectSql = "SELECT limit_usage FROM discount WHERE disc_code = ?";
 
-            try (PreparedStatement selectStmt = conn.prepareStatement(selectSql)) {
-                selectStmt.setString(1, discountCode);
+                try (PreparedStatement selectStmt = conn.prepareStatement(selectSql)) {
+                    selectStmt.setString(1, discountCode);
 
-                try (ResultSet rs = selectStmt.executeQuery()) {
-                    if (rs.next()) {
-                        int remainingUsage = rs.getInt("limit_usage");
-                        
-                        System.out.println("Remaining Usage: " + remainingUsage);
+                    try (ResultSet rs = selectStmt.executeQuery()) {
+                        if (rs.next()) {
+                            int remainingUsage = rs.getInt("limit_usage");
 
-                        if (remainingUsage <= 0) {
-                            discTxtLbl.setText("Code Invalid.");
+                            System.out.println("Remaining Usage: " + remainingUsage);
+
+                            if (remainingUsage <= 0) {
+                                discTxtLbl.setText("Code Invalid.");
+                            }
+
+                            return remainingUsage;
                         }
-
-                        return remainingUsage;
                     }
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database-related exceptions
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-        // Handle database-related exceptions
+        return 0; // Return 0 if there is an error or the discount code is not found
     }
-    return 0; // Return 0 if there is an error or the discount code is not found
-}
 
     private int fetchCustomerID() {
     CashierFXMLController cashierController = ControllerManager.getCashierController();

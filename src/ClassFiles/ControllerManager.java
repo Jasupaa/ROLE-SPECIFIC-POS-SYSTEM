@@ -4,6 +4,7 @@
  */
 package ClassFiles;
 
+import MainAppFrame.CashierConfirmationFXMLController;
 import MainAppFrame.CashierFXMLController;
 import MainAppFrame.SettlePaymentFXMLController;
 
@@ -14,6 +15,8 @@ import MainAppFrame.SettlePaymentFXMLController;
 public class ControllerManager {
 
     private static CashierFXMLController cashierController;
+    private static SettlePaymentFXMLController settlePaymentController;
+    private static CashierConfirmationFXMLController cashierConfirmationController;
 
     public static void setCashierController(CashierFXMLController controller) {
         cashierController = controller;
@@ -23,7 +26,19 @@ public class ControllerManager {
         return cashierController;
     }
 
-    public static void setCashierController(SettlePaymentFXMLController paymentController) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public static SettlePaymentFXMLController getSettlePaymentController() {
+        return settlePaymentController;
+    }
+
+    public static void setSettlePaymentController(SettlePaymentFXMLController controller) {
+        settlePaymentController = controller;
+    }
+
+    public static CashierConfirmationFXMLController getCashierConfirmationController() {
+        return cashierConfirmationController;
+    }
+
+    public static void setCashierConfirmationController(CashierConfirmationFXMLController controller) {
+        cashierConfirmationController = controller;
     }
 }

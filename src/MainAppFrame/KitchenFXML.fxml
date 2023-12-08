@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" fx:id="KitchenPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.KitchenFXMLController">
@@ -20,7 +21,7 @@
             <Image url="@../Pictures/icons8-log-out-96.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="55.0" fitWidth="83.0" layoutX="77.0" layoutY="55.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="55.0" fitWidth="83.0" layoutX="77.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Pictures/Splashscreen%20(1).png" />
          </image>
@@ -37,8 +38,13 @@
             <Image url="@../Pictures/Orders_Tab.png" />
          </image>
       </ImageView>
-      <AnchorPane fx:id="orderTab" layoutX="49.0" layoutY="152.0" prefHeight="447.0" prefWidth="1036.0" visible="false" AnchorPane.bottomAnchor="63.0" AnchorPane.leftAnchor="49.0" AnchorPane.rightAnchor="61.0" AnchorPane.topAnchor="152.0">
+      <AnchorPane fx:id="orderTab" layoutX="49.0" layoutY="152.0" prefHeight="447.0" prefWidth="1036.0" AnchorPane.bottomAnchor="63.0" AnchorPane.leftAnchor="49.0" AnchorPane.rightAnchor="61.0" AnchorPane.topAnchor="152.0">
          <children>
+            <ImageView fx:id="archivedIV" fitHeight="145.0" fitWidth="158.0" layoutX="17.0" layoutY="242.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/Group%20169.png" />
+               </image>
+            </ImageView>
             <ScrollPane fx:id="ordersTabSP" layoutX="184.0" layoutY="-1.0" prefHeight="454.0" prefWidth="871.0" stylesheets="@../CSS/KitchenEmpsCSS.css" AnchorPane.bottomAnchor="-6.0" AnchorPane.leftAnchor="184.0" AnchorPane.rightAnchor="-19.0" AnchorPane.topAnchor="-1.0">
                <content>
                   <GridPane fx:id="ordersTabGP" prefHeight="0.0" prefWidth="0.0" stylesheets="@../CSS/KitchenEmpsCSS.css">
@@ -48,30 +54,67 @@
                   </GridPane>
                </content>
             </ScrollPane>
-            <Button fx:id="archiveBTN" mnemonicParsing="false" onAction="#archiveTabsGrid" prefHeight="26.0" prefWidth="115.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css" text="Check Archive" textFill="WHITE" />
+            <ImageView fitHeight="92.0" fitWidth="150.0" layoutX="17.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/Group%20166.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="92.0" fitWidth="150.0" layoutX="18.0" layoutY="138.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/Group%20167.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="archiveBTN" layoutX="8.0" layoutY="237.0" mnemonicParsing="false" onAction="#SwitchForm" onMouseEntered="#handleMouseEnter" onMouseExited="#handleMouseExit" styleClass="buttonNavigation" stylesheets="@../CSS/KitchenEmpsCSS.css">
+               <graphic>
+                  <ImageView fx:id="archiveIV" fitHeight="145.0" fitWidth="158.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Pictures/Group%20168.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="archiveTab" layoutX="49.0" layoutY="138.0" prefHeight="447.0" prefWidth="1036.0">
+      <AnchorPane fx:id="archiveTab" layoutX="50.0" layoutY="143.0" prefHeight="482.0" prefWidth="1036.0" style="-fx-background-color: #111315;" visible="false">
          <children>
-            <TableView layoutX="148.0" layoutY="73.0" prefHeight="344.0" prefWidth="531.0">
+            <TableView fx:id="archiveTV" layoutX="28.0" layoutY="94.0" prefHeight="351.0" prefWidth="344.0" stylesheets="@../CSS/KitchenEmpsCSS.css">
               <columns>
-                <TableColumn prefWidth="132.800048828125" text="Date-Time" />
-                  <TableColumn prefWidth="106.39999389648438" text="Cashier Handler" />
-                <TableColumn prefWidth="76.53338623046875" text="Customer ID" />
-                  <TableColumn prefWidth="110.39996337890625" text="Order Type" />
-                  <TableColumn prefWidth="103.20000000000005" text="Total Price" />
+                <TableColumn fx:id="dateCLM" prefWidth="70.66665649414062" text="Date" />
+                  <TableColumn fx:id="cashierCLM" prefWidth="64.0" text="Cashier" />
+                <TableColumn fx:id="custCLM" prefWidth="52.80006408691406" text="Cust. ID" />
+                  <TableColumn fx:id="orderCLM" prefWidth="83.20001220703125" text="Order Type" />
+                  <TableColumn fx:id="totalCLM" prefWidth="70.39996337890625" text="Total" />
               </columns>
             </TableView>
-            <ScrollPane layoutX="694.0" layoutY="71.0" prefHeight="345.0" prefWidth="320.0">
+            <ScrollPane layoutX="390.0" layoutY="98.0" prefHeight="344.0" prefWidth="620.0">
                <content>
-                  <GridPane fx:id="ordersTabGP" prefHeight="0.0" prefWidth="0.0">
+                  <GridPane fx:id="archiveGP" prefHeight="0.0" prefWidth="0.0">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                   </GridPane>
                </content>
             </ScrollPane>
+            <Button fx:id="homeBTN" layoutX="30.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="26.0" prefWidth="115.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="13.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Pictures/Group%205_1.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <ImageView id="#default" fx:id="clickHereIV" fitHeight="369.0" fitWidth="603.0" layoutX="392.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/Group%201%20(5).png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="26.0" fitWidth="247.0" layoutX="28.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Pictures/Group%208.png" />
+               </image>
+            </ImageView>
+            <Line endX="668.6000366210938" layoutX="247.0" layoutY="69.0" opacity="0.12" startX="-90.59999084472656" stroke="WHITE" />
+            <Label layoutX="927.0" layoutY="61.0" text="Archived: 60" />
          </children>
       </AnchorPane>
    </children>

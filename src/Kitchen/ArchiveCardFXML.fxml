@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="kitchenCardAP" prefHeight="407.0" prefWidth="449.0" styleClass="kitchenCard" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Kitchen.ArchiveCardFXMLController">
+<AnchorPane id="AnchorPane" fx:id="kitchenCardAP" prefHeight="353.0" prefWidth="595.0" styleClass="kitchenCard" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Kitchen.ArchiveCardFXMLController">
    <children>
       <VBox alignment="CENTER_LEFT" layoutX="153.0" layoutY="34.0">
          <children>
@@ -38,9 +38,9 @@
             <Image url="@../Pictures/Time%20Ordered_.png" />
          </image>
       </ImageView>
-      <ScrollPane layoutX="20.0" layoutY="151.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="218.0" prefWidth="342.0">
+      <ScrollPane layoutX="24.0" layoutY="151.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="161.0" prefWidth="548.0">
          <content>
-            <GridPane fx:id="orderCardGP" prefHeight="0.0" prefWidth="738.0">
+            <GridPane fx:id="orderCardGP" prefHeight="0.0" prefWidth="590.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -67,6 +67,6 @@
       <Label layoutX="347.0" layoutY="107.0" text="Ask Me" />
    </children>
    <padding>
-      <Insets bottom="35.0" right="30.0" />
+      <Insets bottom="35.0" right="20.0" />
    </padding>
 </AnchorPane>

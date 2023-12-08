@@ -47,14 +47,42 @@ import javafx.collections.FXCollections;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.input.MouseEvent;
+
+import java.net.URL;
+import java.sql.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 import ClassFiles.EmployeeData;
 import ClassFiles.Role;
 import java.sql.Statement;
+import javafx.scene.chart.BarChart;
 
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
     double xOffset, yOffset;
+
+    @FXML
+    private Label topEmpLBL;
+
+    @FXML
+    private Label totalOrdsHandledLBL;
+
+    @FXML
+    private BarChart<String, Number> weeklySales;
 
     @FXML
     private Button mtBTN;
@@ -63,10 +91,40 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private Button ftBTN;
 
     @FXML
+    private Button frBTN;
+
+    @FXML
+    private Button cfBTN;
+
+    @FXML
+    private Button rmBTN;
+
+    @FXML
+    private Button snBTN;
+
+    @FXML
+    private Button exBTN;
+
+    @FXML
     private Pane milkteaPANE;
 
     @FXML
     private Pane fruitdrinkPANE;
+
+    @FXML
+    private Pane frappePANE;
+
+    @FXML
+    private Pane coffeePANE;
+
+    @FXML
+    private Pane ricemealPANE;
+
+    @FXML
+    private Pane snacksPANE;
+
+    @FXML
+    private Pane extrasPANE;
 
     @FXML
     private Button SRhomeBTN;
@@ -272,7 +330,22 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private PieChart milkTeaPieChart;
 
     @FXML
+    private PieChart snacksPieChart;
+
+    @FXML
+    private PieChart riceMealPieChart;
+
+    @FXML
     private PieChart fruitDrinkPieChart;
+
+    @FXML
+    private PieChart frappePieChart;
+
+    @FXML
+    private PieChart extrasPieChart;
+
+    @FXML
+    private PieChart coffeePieChart;
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
@@ -367,8 +440,27 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         disIV.setVisible(true);
     }
 
+    private Map<String, Integer> calculateTotalQuantityByItem(String tableName) {
+        Map<String, Integer> totalQuantityByItem = new HashMap<>();
+
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT item_name, SUM(quantity) AS totalQuantity FROM " + tableName + " GROUP BY item_name"); ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String itemName = resultSet.getString("item_name");
+                int totalQuantity = resultSet.getInt("totalQuantity");
+                totalQuantityByItem.put(itemName, totalQuantity);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+
+        return totalQuantityByItem;
+    }
+
     private void populateMilkTeaPieChart() {
-        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByItem();
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByItem("milk_tea");
 
         // Clear existing data
         milkTeaPieChart.getData().clear();
@@ -382,7 +474,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     }
 
     private void populateFruitDrinkPieChart() {
-        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByFruitDrink();
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByItem("fruit_drink");
 
         // Clear existing data
         fruitDrinkPieChart.getData().clear();
@@ -395,44 +487,76 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         }
     }
 
-    private Map<String, Integer> calculateTotalQuantityByFruitDrink() {
-        Map<String, Integer> totalQuantityByItem = new HashMap<>();
+    private void populateFrappePieChart() {
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByItem("frappe");
 
-        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT item_name, SUM(quantity) AS totalQuantity FROM fruit_drink GROUP BY item_name"); ResultSet resultSet = statement.executeQuery()) {
+        // Clear existing data
+        frappePieChart.getData().clear();
 
-            while (resultSet.next()) {
-                String itemName = resultSet.getString("item_name");
-                int totalQuantity = resultSet.getInt("totalQuantity");
-                totalQuantityByItem.put(itemName, totalQuantity);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Handle database exceptions
+        // Populate the pie chart
+        for (Map.Entry<String, Integer> entry : totalQuantityByItem.entrySet()) {
+            String itemName = entry.getKey();
+            int totalQuantity = entry.getValue();
+            frappePieChart.getData().add(new PieChart.Data(itemName, totalQuantity));
         }
-
-        return totalQuantityByItem;
     }
 
-    private Map<String, Integer> calculateTotalQuantityByItem() {
-        Map<String, Integer> totalQuantityByItem = new HashMap<>();
+    private void populateCoffeePieChart() {
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByItem("coffee");
 
-        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT item_name, SUM(quantity) AS totalQuantity FROM milk_tea GROUP BY item_name"); ResultSet resultSet = statement.executeQuery()) {
+        // Clear existing data
+        coffeePieChart.getData().clear();
 
-            while (resultSet.next()) {
-                String itemName = resultSet.getString("item_name");
-                int totalQuantity = resultSet.getInt("totalQuantity");
-                totalQuantityByItem.put(itemName, totalQuantity);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Handle database exceptions
+        // Populate the pie chart
+        for (Map.Entry<String, Integer> entry : totalQuantityByItem.entrySet()) {
+            String itemName = entry.getKey();
+            int totalQuantity = entry.getValue();
+            coffeePieChart.getData().add(new PieChart.Data(itemName, totalQuantity));
         }
-
-        return totalQuantityByItem;
     }
-    
+
+    private void populateRiceMealPieChart() {
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByItem("rice_meal");
+
+        // Clear existing data
+        riceMealPieChart.getData().clear();
+
+        // Populate the pie chart
+        for (Map.Entry<String, Integer> entry : totalQuantityByItem.entrySet()) {
+            String itemName = entry.getKey();
+            int totalQuantity = entry.getValue();
+            riceMealPieChart.getData().add(new PieChart.Data(itemName, totalQuantity));
+        }
+    }
+
+    private void populateSnacksPieChart() {
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByItem("snacks");
+
+        // Clear existing data
+        snacksPieChart.getData().clear();
+
+        // Populate the pie chart
+        for (Map.Entry<String, Integer> entry : totalQuantityByItem.entrySet()) {
+            String itemName = entry.getKey();
+            int totalQuantity = entry.getValue();
+            snacksPieChart.getData().add(new PieChart.Data(itemName, totalQuantity));
+        }
+    }
+
+    private void populateExtrasPieChart() {
+        Map<String, Integer> totalQuantityByItem = calculateTotalQuantityByItem("extras");
+
+        // Clear existing data
+        extrasPieChart.getData().clear();
+
+        // Populate the pie chart
+        for (Map.Entry<String, Integer> entry : totalQuantityByItem.entrySet()) {
+            String itemName = entry.getKey();
+            int totalQuantity = entry.getValue();
+            extrasPieChart.getData().add(new PieChart.Data(itemName, totalQuantity));
+        }
+    }
+
     /*
 
     public void updateEmployeeTable() {
@@ -506,18 +630,27 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         }
     }
 
-*/
-
+     */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    public void initialize(URL url, ResourceBundle rb
+    ) {
 
-       
         updateTotalDailySalesLabel();
         updateTotalDailyProductsSoldLabel();
         updateTotalDailyCustomersLabel();
         updateTotalDailyCustomersHome();
         updateTotalDailyProductsSoldHome();
         updateTotalDailySalesHome();
+
+        populateMilkTeaPieChart();
+        populateSnacksPieChart();
+        populateRiceMealPieChart();
+        populateFruitDrinkPieChart();
+        populateFrappePieChart();
+        populateExtrasPieChart();
+        populateCoffeePieChart();
+
+        fetchHighestPerformingEmployee();
 
         discounts = FXCollections.observableArrayList();
         setupDiscountColumns();
@@ -546,7 +679,37 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     }
 
     @FXML
-    private void handleMilkteaButtonClick(ActionEvent event) {
+    private void fetchHighestPerformingEmployee() {
+        try (Connection connection = database.getConnection()) {
+            String query = "SELECT emp_name, COUNT(emp_name) AS orderCount "
+                    + "FROM invoice_archive "
+                    + "GROUP BY emp_name "
+                    + "ORDER BY orderCount DESC "
+                    + "LIMIT 1";
+
+            try (PreparedStatement statement = connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+
+                if (resultSet.next()) {
+                    String topEmployeeName = resultSet.getString("emp_name");
+                    int orderCount = resultSet.getInt("orderCount");
+
+                    topEmpLBL.setText(topEmployeeName);
+                    totalOrdsHandledLBL.setText(String.valueOf(orderCount));
+                } else {
+                    // Handle case when no data is returned
+                    topEmpLBL.setText("No data available");
+                    totalOrdsHandledLBL.setText("N/A");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+    }
+
+    @FXML
+    private void handleMilkteaButtonClick(ActionEvent event
+    ) {
         try {
             // Load the MilkteaCRUDFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/MilkteaCRUD.fxml"));
@@ -564,7 +727,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     }
 
     @FXML
-    private void handleFruitDrinkButtonClick(ActionEvent event) {
+    private void handleFruitDrinkButtonClick(ActionEvent event
+    ) {
         try {
             // Load the MilkteaCRUDFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/FruitDrinkCRUD.fxml"));
@@ -582,7 +746,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     }
 
     @FXML
-    private void handleCoffeeButtonClick(ActionEvent event) {
+    private void handleCoffeeButtonClick(ActionEvent event
+    ) {
         try {
             // Load the MilkteaCRUDFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/CoffeeCRUD.fxml"));
@@ -600,7 +765,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     }
 
     @FXML
-    private void handleRiceMealsButtonClick(ActionEvent event) {
+    private void handleRiceMealsButtonClick(ActionEvent event
+    ) {
         try {
             // Load the MilkteaCRUDFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/RiceMealsCRUD.fxml"));
@@ -618,7 +784,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     }
 
     @FXML
-    private void handleSnacksButtonClick(ActionEvent event) {
+    private void handleSnacksButtonClick(ActionEvent event
+    ) {
         try {
             // Load the MilkteaCRUDFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/SnacksCRUD.fxml"));
@@ -636,7 +803,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     }
 
     @FXML
-    private void handleExtrasButtonClick(ActionEvent event) {
+    private void handleExtrasButtonClick(ActionEvent event
+    ) {
         try {
             // Load the MilkteaCRUDFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/ExtrasCRUD.fxml"));
@@ -654,7 +822,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     }
 
     @FXML
-    private void handleFrappeButtonClick(ActionEvent event) {
+    private void handleFrappeButtonClick(ActionEvent event
+    ) {
         try {
             // Load the MilkteaCRUDFXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CRUDsFXML/FrappeCRUD.fxml"));
@@ -672,7 +841,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     }
 
     @FXML
-    private void handleDiscountButtonClick(ActionEvent event) {
+    private void handleDiscountButtonClick(ActionEvent event
+    ) {
         try {
             // Load the DiscountCrud.fxml file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/DiscountCrud.fxml"));
@@ -694,7 +864,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     }
 
     @FXML
-    private void handleEditButtonAction(ActionEvent event) {
+    private void handleEditButtonAction(ActionEvent event
+    ) {
         // Get the selected discount from the TableView
         Discount selectedDiscount = discountTableView.getSelectionModel().getSelectedItem();
 
@@ -900,8 +1071,6 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             System.out.println("Please select a discount to delete.");
         }
     }
-    
-    
 
     public void refreshTableView() {
         loadDataFromDatabase();
@@ -997,11 +1166,65 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         if (clickedButton == mtBTN) {
             milkteaPANE.setVisible(true);
             fruitdrinkPANE.setVisible(false);
+            frappePANE.setVisible(false);
+            coffeePANE.setVisible(false);
+            ricemealPANE.setVisible(false);
+            snacksPANE.setVisible(false);
+            extrasPANE.setVisible(false);
 
         } else if (clickedButton == ftBTN) {
             milkteaPANE.setVisible(false);
             fruitdrinkPANE.setVisible(true);
-        }
+            frappePANE.setVisible(false);
+            coffeePANE.setVisible(false);
+            ricemealPANE.setVisible(false);
+            snacksPANE.setVisible(false);
+            extrasPANE.setVisible(false);
 
+        } else if (clickedButton == frBTN) {
+            milkteaPANE.setVisible(false);
+            fruitdrinkPANE.setVisible(false);
+            frappePANE.setVisible(true);
+            coffeePANE.setVisible(false);
+            ricemealPANE.setVisible(false);
+            snacksPANE.setVisible(false);
+            extrasPANE.setVisible(false);
+
+        } else if (clickedButton == cfBTN) {
+            milkteaPANE.setVisible(false);
+            fruitdrinkPANE.setVisible(false);
+            frappePANE.setVisible(false);
+            coffeePANE.setVisible(true);
+            ricemealPANE.setVisible(false);
+            snacksPANE.setVisible(false);
+            extrasPANE.setVisible(false);
+
+        } else if (clickedButton == rmBTN) {
+            milkteaPANE.setVisible(false);
+            fruitdrinkPANE.setVisible(false);
+            frappePANE.setVisible(false);
+            coffeePANE.setVisible(false);
+            ricemealPANE.setVisible(true);
+            snacksPANE.setVisible(false);
+            extrasPANE.setVisible(false);
+
+        } else if (clickedButton == snBTN) {
+            milkteaPANE.setVisible(false);
+            fruitdrinkPANE.setVisible(false);
+            frappePANE.setVisible(false);
+            coffeePANE.setVisible(false);
+            ricemealPANE.setVisible(false);
+            snacksPANE.setVisible(true);
+            extrasPANE.setVisible(false);
+
+        } else if (clickedButton == exBTN) {
+            milkteaPANE.setVisible(false);
+            fruitdrinkPANE.setVisible(false);
+            frappePANE.setVisible(false);
+            coffeePANE.setVisible(false);
+            ricemealPANE.setVisible(false);
+            snacksPANE.setVisible(false);
+            extrasPANE.setVisible(true);
+        }
     }
 }

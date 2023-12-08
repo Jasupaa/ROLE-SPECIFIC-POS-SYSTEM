@@ -1,6 +1,8 @@
 package MainAppFrame;
 
 import ClassFiles.ArchiveCardData;
+import ClassFiles.ArchiveInvoice;
+import ClassFiles.Discount;
 import ClassFiles.KitchenCardData;
 import ClassFiles.MilkteaItemData;
 import Databases.CRUDDatabase;
@@ -41,12 +43,24 @@ import Kitchen.ArchiveCardFXMLController;
 import Kitchen.KitchenCardFXMLController;
 import MenuController.MenuController;
 import java.io.IOException;
+import java.util.List;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 public class KitchenFXMLController implements Initializable, ControllerInterface {
 
     double xOffset, yOffset;
+
+    @FXML
+    private Button homeBTN;
+
+    @FXML
+    private AnchorPane archiveTab;
 
     @FXML
     private ImageView CloseButton;
@@ -78,13 +92,41 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     @FXML
     private GridPane archiveGP;
 
+    @FXML
+    private TableColumn<ArchiveInvoice, String> cashierCLM;
+
+    @FXML
+    private TableColumn<ArchiveInvoice, Integer> custCLM;
+
+    @FXML
+    private TableColumn<ArchiveInvoice, LocalDate> dateCLM;
+
+    @FXML
+    private TableColumn<ArchiveInvoice, String> orderCLM;
+
+    @FXML
+    private TableColumn<ArchiveInvoice, Double> totalCLM;
+
+    @FXML
+    private TableView<ArchiveInvoice> archiveTV;
+
+    @FXML
+    private ImageView archiveIV;
+
+    @FXML
+    private ImageView clickHereIV;
+
+    @FXML
+    private Button archiveTAB;
+
     private Stage stage;
 
     ObservableList<KitchenCardData> kitchenCardDataList = kitchenGetData();
 
     private ObservableList<KitchenCardData> kitchenCardData = FXCollections.observableArrayList();
 
-    ObservableList<ArchiveCardData> archiveCardDataList = kitchenGetArchive();
+    /* ObservableList<ArchiveCardData> archiveCardDataList = kitchenGetArchive(); */
+    private ObservableList<ArchiveInvoice> archiveInvoice = FXCollections.observableArrayList();
 
     private ObservableList<ArchiveCardData> archiveCardData = FXCollections.observableArrayList();
 
@@ -103,6 +145,18 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    @FXML
+    private void handleMouseEnter(MouseEvent event) {
+        // Handle mouse enter (hover in)
+        archiveIV.setVisible(false);
+    }
+
+    @FXML
+    private void handleMouseExit(MouseEvent event) {
+        // Handle mouse exit (hover out)
+        archiveIV.setVisible(true);
     }
 
     private volatile boolean stop = false;
@@ -257,17 +311,20 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         try {
             orderTabsGrid();
             DateLabel();
             Timenow();
+            loadArchiveTableFromDatabase();
+            setupArchiveColumns();
 
             CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-
                     try {
+                        // Save any necessary state or perform cleanup here
+
+                        // Close the application
                         Stage stage = (Stage) CloseButton.getScene().getWindow();
                         stage.close();
 
@@ -278,6 +335,21 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
                         Logger.getLogger(AdminFXMLController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+            });
+
+            // Register a shutdown hook to ensure cleanup when the application is closed
+            Platform.runLater(() -> {
+                Platform.setImplicitExit(false); // Prevent closing the application when the last window is closed
+
+                // Get the primary stage
+                Stage primaryStage = (Stage) CloseButton.getScene().getWindow();
+
+                // Register a shutdown hook
+                primaryStage.setOnCloseRequest(event -> {
+                    // Save any necessary state or perform cleanup here
+                    // Call the method to restore the default ImageView visibility
+                    restoreDefaultImageViewVisibility();
+                });
             });
         } catch (SQLException ex) {
             Logger.getLogger(KitchenFXMLController.class.getName()).log(Level.SEVERE, null, ex);
@@ -295,18 +367,161 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
             return;
         }
 
-        if (clickedButton == orderTabBTN) {
+        if (clickedButton == homeBTN) {
             orderTab.setVisible(true);
-            archive.setVisible(false);
+            archiveTab.setVisible(false);
 
         } else if (clickedButton == archiveBTN) {
             orderTab.setVisible(false);
-            archive.setVisible(true);
+            archiveTab.setVisible(true);
         }
 
     }
 
     ///////////////////////////////////////////////////
+    private ObservableList<ArchiveInvoice> fetchArchivedFromDatabase() {
+        ObservableList<ArchiveInvoice> archiveInvoice = FXCollections.observableArrayList();
+
+        String sql = "SELECT * FROM invoice_archive";
+
+        try (Connection connection = database.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                java.sql.Date dateTime = resultSet.getDate("date_time");
+                String cashier = resultSet.getString("emp_name");
+                Integer custID = resultSet.getInt("customer_id");
+                String orderType = resultSet.getString("order_type");
+                Double total = resultSet.getDouble("total");
+
+                ArchiveInvoice archiveinvoice = new ArchiveInvoice(dateTime, cashier, custID, orderType, total);
+                archiveInvoice.add(archiveinvoice);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return archiveInvoice;
+    }
+
+    public void setupArchiveColumns() {
+        dateCLM.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
+        cashierCLM.setCellValueFactory(new PropertyValueFactory<>("cashier"));
+        custCLM.setCellValueFactory(new PropertyValueFactory<>("custID"));
+        orderCLM.setCellValueFactory(new PropertyValueFactory<>("orderType"));
+        totalCLM.setCellValueFactory(new PropertyValueFactory<>("total"));
+
+        // Set custom cell factory to center text in cells
+        setCenterAlignment(dateCLM);
+        setCenterAlignment(cashierCLM);
+        setCenterAlignment(custCLM);
+        setCenterAlignment(orderCLM);
+        setCenterAlignment(totalCLM);
+    }
+
+    private <T> void setCenterAlignment(TableColumn<ArchiveInvoice, T> column) {
+        column.setCellFactory(new Callback<TableColumn<ArchiveInvoice, T>, TableCell<ArchiveInvoice, T>>() {
+            @Override
+            public TableCell<ArchiveInvoice, T> call(TableColumn<ArchiveInvoice, T> param) {
+                return new TableCell<ArchiveInvoice, T>() {
+                    @Override
+                    protected void updateItem(T item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setText(null);
+                        } else {
+                            setText(item.toString());
+                            setAlignment(javafx.geometry.Pos.CENTER);
+                        }
+                    }
+                };
+            }
+        });
+    }
+
+    public void loadArchiveTableFromDatabase() {
+        List<ArchiveInvoice> archiveInvoiceList = fetchArchivedFromDatabase();
+        archiveInvoice.clear();
+        archiveInvoice.addAll(archiveInvoiceList);
+        archiveTV.setItems(archiveInvoice);
+
+        // Add event handler to TableView cells
+        archiveTV.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getClickCount() == 1) {
+                    try {
+                        handleTableClick();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(KitchenFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+    }
+
+    private void handleTableClick() throws SQLException {
+        ArchiveInvoice selectedInvoice = archiveTV.getSelectionModel().getSelectedItem();
+        if (selectedInvoice != null) {
+            String custID = String.valueOf(selectedInvoice.getCustID());
+            // Now you can pass custID to your ArchiveCardFXMLController
+            openArchiveCardFXML(custID);
+
+            // Set the visibility of the default ImageView
+            setDefaultImageViewVisibility(false);
+        }
+    }
+
+    private void openArchiveCardFXML(String custID) throws SQLException {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Kitchen/ArchiveCardFXML.fxml"));
+            AnchorPane root = loader.load();
+            ArchiveCardFXMLController archiveCardController = loader.getController();
+
+            // Create an ArchiveCardData object with the custID
+            ArchiveCardData archiveCardData = new ArchiveCardData(custID);
+
+            // Assuming setArchiveKitchenCardData expects an ArchiveCardData parameter
+            archiveCardController.setArchiveKitchenCardData(archiveCardData);
+
+            // Add the loaded content to the archiveGP GridPane
+            archiveGP.getChildren().add(root);
+
+            // Add your code to show the new FXML content in archiveGP
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isDefaultImageViewVisible = true;
+
+// ...
+    private void handleTableClickforDefault() throws SQLException {
+        ArchiveInvoice selectedInvoice = archiveTV.getSelectionModel().getSelectedItem();
+        if (selectedInvoice != null) {
+            String custID = String.valueOf(selectedInvoice.getCustID());
+            // Now you can pass custID to your ArchiveCardFXMLController
+            openArchiveCardFXML(custID);
+
+            // Set the visibility of the default ImageView
+            setDefaultImageViewVisibility(false);
+        }
+    }
+
+    private void setDefaultImageViewVisibility(boolean isVisible) {
+        if (clickHereIV != null) {
+            clickHereIV.setVisible(isVisible);
+            isDefaultImageViewVisible = isVisible;
+        }
+    }
+
+    // Method to be called when the system is closed or restarted
+    private void restoreDefaultImageViewVisibility() {
+        setDefaultImageViewVisibility(true);
+    }
+
+
+    /*
     public void getArchive() throws SQLException {
         System.out.println("getArchive method called.");
 
@@ -439,5 +654,5 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
             }
         }
     }
-
+     */
 }
