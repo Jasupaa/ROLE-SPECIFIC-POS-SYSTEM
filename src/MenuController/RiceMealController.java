@@ -42,6 +42,8 @@ public class RiceMealController {
 
     @FXML
     private Label foodLabel;
+     @FXML
+    private Label StatusLbl;
 
     @FXML
     private Spinner spinnerQuantity;
@@ -75,11 +77,12 @@ public class RiceMealController {
         // Assuming you have a method in MilkteaItemData to get the image name or title
         String itemName = riceMealsItemData.getItemName();
         Integer price = riceMealsItemData.getPrice();
+         String status = riceMealsItemData.getStatus();
 
         // Set data to corresponding components
         foodLabel.setText(itemName);
 
-
+        StatusLbl.setText( status);
         /* para doon sa image */
         Blob imageBlob = riceMealsItemData.getImage();
         byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());

@@ -40,6 +40,9 @@ public class SnacksController {
 
     @FXML
     private ImageView foodImg;
+    
+    @FXML
+    private Label StatusLbl;
 
     @FXML
     private Label foodLabel;
@@ -77,10 +80,12 @@ public class SnacksController {
 
         // Assuming you have a method in MilkteaItemData to get the image name or title
         String itemName = snacksItemData.getItemName();
+         String status = snacksItemData.getStatus();
         Integer price = snacksItemData.getPrice();
 
         // Set data to corresponding components
         foodLabel.setText(itemName);
+         StatusLbl.setText( status);
 
 
         /* para doon sa image */

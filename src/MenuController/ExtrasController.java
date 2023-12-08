@@ -37,6 +37,9 @@ public class ExtrasController {
 
     @FXML
     private Button confirmButton1;
+    
+    @FXML
+    private Label StatusLbl;
 
     @FXML
     private ImageView foodImg;
@@ -72,13 +75,16 @@ public class ExtrasController {
     public void setExtrasItemData(ExtrasItemData extrasItemData) throws SQLException {
         // Set data to components
         this.extrasItemData = extrasItemData;
+          
 
         // Assuming you have a method in MilkteaItemData to get the image name or title
         String itemName = extrasItemData.getItemName();
+         String status = extrasItemData.getStatus();
         Integer price = extrasItemData.getPrice();
 
         // Set data to corresponding components
         foodLabel.setText(itemName);
+         StatusLbl.setText( status);
 
 
         /* para doon sa image */

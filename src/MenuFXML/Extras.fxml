@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="382.0" prefWidth="393.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuController.ExtrasController">
    <children>
@@ -27,7 +28,13 @@
                      </children>
                   </VBox>
                </children>
+               
             </VBox>
+             <Label fx:id="StatusLbl" layoutX="15.0" layoutY="14.0" prefHeight="27.0" prefWidth="153.0" text="Status">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
          </children></Pane>
    </children>
 </AnchorPane>

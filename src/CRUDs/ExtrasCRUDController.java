@@ -25,6 +25,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -73,6 +74,15 @@ public class ExtrasCRUDController implements Initializable {
     private Button updtBTN;
 
     private Image selectedImage;
+    
+     @FXML
+    private ComboBox<String> statusComboBox;
+     
+       private String getSelectedStatus() {
+        
+    return statusComboBox.getValue();
+}
+
 
     private ObservableList<ExtrasItemData> extrasItemData = FXCollections.observableArrayList();
 
@@ -80,7 +90,8 @@ public class ExtrasCRUDController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         displayExtras();
         restrictLetter(txtPrice);
-       
+        statusComboBox.setValue("InStock");
+        initializeStatusComboBox();
 
         extrasTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
@@ -121,6 +132,7 @@ public class ExtrasCRUDController implements Initializable {
                 /* para sa mga CRUD para di nakakalito tignan sa sample_database */
                 String itemName = txtItemName.getText();
                 String price = txtPrice.getText();
+                 String status = getSelectedStatus();
 
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
@@ -131,7 +143,7 @@ public class ExtrasCRUDController implements Initializable {
                  switch (buttonId) {
                 case "addBTN" -> {
            if (!isProductAlreadyExists(connection, itemName)) {
-                    insertExtrasItem(connection, itemName, price,imageInputStream);
+                    insertExtrasItem(connection, itemName, price,imageInputStream, status);
                     System.out.println("Data inserted.");
                      clearTextFields();
                 } else {
@@ -146,7 +158,7 @@ public class ExtrasCRUDController implements Initializable {
                 int itemID = selectedItem.getItemID();
                if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
                     selectedItem.setItemID(itemID);
-                     updateExtrasItem(connection, itemName, price, imageInputStream, itemID);
+                     updateExtrasItem(connection, itemName, price, imageInputStream, itemID, status);
                      System.out.println("Data updated.");
                      clearTextFields();
                 } else {
@@ -206,14 +218,15 @@ public class ExtrasCRUDController implements Initializable {
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
      */
-    private void insertExtrasItem(Connection connection, String itemName, String price, InputStream image) {
-        String sql = "INSERT INTO extras_items (item_name,price, image) VALUES (?, ?, ?)";
+    private void insertExtrasItem(Connection connection, String itemName, String price, InputStream image, String status) {
+        String sql = "INSERT INTO extras_items (item_name,price, image, staus) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, price);
 
             preparedStatement.setBlob(3, image); // Use setBlob for InputStream
+            preparedStatement.setString(4, status);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -222,26 +235,27 @@ public class ExtrasCRUDController implements Initializable {
         }
     }
 
-    private void updateExtrasItem(Connection connection, String itemName, String price, InputStream image, int itemID) {
+    private void updateExtrasItem(Connection connection, String itemName, String price, InputStream image, int itemID, String status) {
         String sql;
 
         if (image != null) {
 
-            sql = "UPDATE extras_items SET item_name=?, price=?, image=? WHERE item_ID=?";
+            sql = "UPDATE extras_items SET item_name=?, price=?, image=?, status=? WHERE item_ID=?";
         } else {
 
-            sql = "UPDATE extras_items SET item_name=?, price=? WHERE item_ID=?";
+            sql = "UPDATE extras_items SET item_name=?, price=?, status=? WHERE item_ID=?";
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, price);
+            preparedStatement.setString(3, status);
 
             if (image != null) {
-                preparedStatement.setBlob(3, image); // Use setBlob for InputStream
-                preparedStatement.setInt(4, itemID);
+                preparedStatement.setBlob(4, image); // Use setBlob for InputStream
+                preparedStatement.setInt(5, itemID);
             } else {
-                preparedStatement.setInt(6, itemID);
+                preparedStatement.setInt(4, itemID);
             }
 
             preparedStatement.executeUpdate();
@@ -279,7 +293,7 @@ public class ExtrasCRUDController implements Initializable {
     private ObservableList<ExtrasItemData> fetchDataFromDatabase() {
         ObservableList<ExtrasItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name, price, image FROM extras_items";
+        String sql = "SELECT item_id, item_name, price, image, status FROM extras_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
@@ -289,6 +303,7 @@ public class ExtrasCRUDController implements Initializable {
                 Integer price = result.getInt("price");
                 
                 Blob imageBlob = result.getBlob("image");
+                String status = result.getString("status");
 
                 InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
                 
@@ -296,6 +311,7 @@ public class ExtrasCRUDController implements Initializable {
                 extrasItemData.setItemID(itemID);
                 extrasItemData.setImage(imageBlob); // Set Blob if needed
                 extrasItemData.setImageInputStream(imageInputStream);
+                extrasItemData.setStatus(status);
 
                 listData.add(extrasItemData);
 
@@ -337,9 +353,12 @@ public class ExtrasCRUDController implements Initializable {
         ExtrasItemData selectedItem = extrasTV.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
+            
+            String status = selectedItem.getStatus();
             txtItemName.setText(selectedItem.getItemName());
 
             txtPrice.setText(String.valueOf(selectedItem.getPrice()));
+            statusComboBox.setValue(status);
 
              Blob imageBlob = selectedItem.getImage();
              
@@ -418,4 +437,15 @@ public class ExtrasCRUDController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     } 
+    
+    private void initializeStatusComboBox() {
+        // Populate the sugarlevelComboBox with items
+        ObservableList<String> status = FXCollections.observableArrayList(
+                "InStock",
+                "Out Of Stock"
+                
+        );
+        statusComboBox.setItems(status);
+    }
+
 }

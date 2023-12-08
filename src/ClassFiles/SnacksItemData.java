@@ -16,13 +16,16 @@ public class SnacksItemData {
     private Blob image;
     private Integer itemID;
     private InputStream imageInputStream;
+    private String status;
     
     
-    public SnacksItemData(String itemName, Integer price, Blob image, Integer itemID) {
+    public SnacksItemData(String itemName, Integer price, Blob image, Integer itemID, String status) {
         this.itemName = itemName;
         this.price = price;
         this.image = image;
         this.itemID = itemID;
+        this.status = status;
+        
     }
 
     public SnacksItemData(String itemName ,Integer price) {
@@ -70,7 +73,13 @@ public class SnacksItemData {
         this.imageInputStream = imageInputStream;
     }
     
-    
+        public String getStatus() {
+        return status;
+    }
+         public void setStatus (String status){
+             this.status= status;
+             
+}
    
 
     

@@ -18,9 +18,9 @@ public class CoffeeItemData {
     private Blob image;
     private Integer itemID;
     private InputStream imageInputStream;
+     private String status; 
     
-    
-      public CoffeeItemData(String itemName, String type, Integer smallPrice, Integer mediumPrice, Integer largePrice, Blob image, Integer itemID) {
+      public CoffeeItemData(String itemName, String type, Integer smallPrice, Integer mediumPrice, Integer largePrice, Blob image, Integer itemID, String status ){
         this.itemName = itemName;
         this.type = type;
         this.smallPrice = smallPrice;
@@ -28,6 +28,7 @@ public class CoffeeItemData {
         this.largePrice = largePrice;
         this.image = image;
         this.itemID = itemID;
+        this.status = status;
     }
 
     public CoffeeItemData(String itemName, String type, Integer smallPrice, Integer mediumPrice, Integer largePrice) {
@@ -102,5 +103,13 @@ public class CoffeeItemData {
      public void setImageInputStream(InputStream imageInputStream) {
         this.imageInputStream = imageInputStream;
     }
+     
+         public String getStatus() {
+        return status;
+    }
+         public void setStatus (String status){
+             this.status= status;
+             
+}
 }
 

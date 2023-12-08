@@ -54,6 +54,9 @@ public class MenuController {
 
     @FXML
     private Label foodLabel;
+    
+       @FXML
+    private Label StatusLbl;
 
     private MilkteaItemData milkteaItemData;
 
@@ -68,10 +71,13 @@ public class MenuController {
         initializeSizeComboBox();
         initializeSugarlevelComboBox();
 
+
         // Set the default value to "None" for all ComboBoxes
+       
         addonsComboBox.setValue("None");
         sizeComboBox.setValue("None");
         sugarlevelComboBox.setValue("None");
+        addonsComboBox.getItems().add("None");
 
         // Set the Spinner to allow only whole number values and set the default value to 0
         SpinnerValueFactory<Integer> valueFactory = new IntegerSpinnerValueFactory(0, 100, 0);
@@ -81,6 +87,7 @@ public class MenuController {
         StringConverter<Integer> converter = new IntegerStringConverter();
         spinnerQuantity.getValueFactory().setConverter(converter);
 
+        initializeaddonscombobox();
     }
 
     // Somewhere in your code (where you create or have access to the CashierFXMLController instance)
@@ -104,12 +111,15 @@ public class MenuController {
 
         // Assuming you have a method in MilkteaItemData to get the addons
         String addons = milkteaItemData.getAddons();
-
+        
+        String status = milkteaItemData.getStatus();
+        
         // Set data to corresponding components
         foodLabel.setText(itemName);
         addonsComboBox.getItems().clear();
         addonsComboBox.getItems().addAll(addons.split(", "));
-
+        StatusLbl.setText( status);
+        System.out.println("Status: " + status);
         /* para doon sa image */
         Blob imageBlob = milkteaItemData.getImage();
         byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
@@ -171,7 +181,7 @@ public class MenuController {
                 System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
             } else {
                 int customer_id = 0; // Initialize customer_id
-
+                 
                 if (existingCashierController != null) {
                     // Now, you can use the existing instance of CashierFXMLController
                     customer_id = existingCashierController.getCurrentCustomerID();
@@ -185,7 +195,7 @@ public class MenuController {
             }
 
             // Reset the ComboBoxes to "None"
-            addonsComboBox.setValue("None");
+            addonsComboBox.setValue("None"); 
             sizeComboBox.setValue("None");
             sugarlevelComboBox.setValue("None");
 
@@ -228,6 +238,13 @@ public class MenuController {
         );
         sugarlevelComboBox.setItems(sugarLevels);
     }
+    
+      private void initializeaddonscombobox() {
+      ObservableList<String> addons = FXCollections.observableArrayList(
+            "None"  // Add "None" as the default option
+    );
+    addonsComboBox.setItems(addons);
+      }
 
     private int calculateSizePrice(String selectedSize) {
         try (Connection conn = CRUDDatabase.getConnection()) {

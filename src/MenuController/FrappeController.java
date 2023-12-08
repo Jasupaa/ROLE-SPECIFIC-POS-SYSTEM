@@ -50,6 +50,8 @@ public class FrappeController {
 
     @FXML
     private ImageView foodImg;
+    @FXML
+    private Label StatusLbl;
 
     @FXML
     private Label foodLabel;
@@ -97,9 +99,10 @@ public class FrappeController {
 
         // Assuming you have a method in MilkteaItemData to get the image name or title
         String itemName = frappeItemData.getItemName();
-
+        String status = frappeItemData.getStatus();
         // Set data to corresponding components
         foodLabel.setText(itemName);
+        StatusLbl.setText( status);
 
         /* para doon sa image */
         Blob imageBlob = frappeItemData.getImage();

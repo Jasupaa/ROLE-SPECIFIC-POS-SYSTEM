@@ -470,8 +470,9 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                String status = result.getString("status");
                 // Create a MilkteaItemData object and add it to the list
-                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice, image, itemID);
+                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice, image, itemID, status);
                 listData.add(milkteaItemData);
 
             }
@@ -521,9 +522,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 String sinkers = result.getString("sinkers");
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                 String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                FruitDrinkItemData fruitDrinkItemData = new FruitDrinkItemData(itemName, smallPrice, mediumPrice, largePrice, fruitFlavor, sinkers, image, itemID);
+                FruitDrinkItemData fruitDrinkItemData = new FruitDrinkItemData(itemName, smallPrice, mediumPrice, largePrice, fruitFlavor, sinkers, image, itemID, status);
                 listData.add(fruitDrinkItemData);
 
             }
@@ -571,9 +573,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                 String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice, image, itemID);
+                FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice, image, itemID, status);
                 listData.add(frappeItemData);
 
             }
@@ -622,9 +625,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                 String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                CoffeeItemData coffeeItemData = new CoffeeItemData(itemName, type, smallPrice, mediumPrice, largePrice, image, itemID);
+                CoffeeItemData coffeeItemData = new CoffeeItemData(itemName, type, smallPrice, mediumPrice, largePrice, image, itemID, status);
                 listData.add(coffeeItemData);
 
             }
@@ -671,9 +675,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                RiceMealsItemData riceMealsItemData = new RiceMealsItemData(itemName, price, image, itemID);
+                RiceMealsItemData riceMealsItemData = new RiceMealsItemData(itemName, price, image, itemID, status);
                 listData.add(riceMealsItemData);
 
             }
@@ -721,9 +726,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                 String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                SnacksItemData snacksItemData = new SnacksItemData(itemName, price, image, itemID);
+                SnacksItemData snacksItemData = new SnacksItemData(itemName, price, image, itemID, status);
                 listData.add(snacksItemData);
 
             }
@@ -771,9 +777,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                 String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                ExtrasItemData extrasItemData = new ExtrasItemData(itemName, price, image, itemID);
+                ExtrasItemData extrasItemData = new ExtrasItemData(itemName, price, image, itemID, status);
                 listData.add(extrasItemData);
 
             }

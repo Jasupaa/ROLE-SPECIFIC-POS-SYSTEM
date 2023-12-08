@@ -43,6 +43,9 @@ public class CoffeeController {
 
     @FXML
     private RadioButton askmeRadioHead;
+    
+    @FXML
+    private Label StatusLbl;
 
     @FXML
     private Button confirmButton1;
@@ -90,6 +93,7 @@ public class CoffeeController {
 
         // Assuming you have a method in MilkteaItemData to get the image name or title
         String itemName = coffeeItemData.getItemName();
+         String status = coffeeItemData.getStatus();
 
         // Assuming you have a method in MilkteaItemData to get the addons
         String type = coffeeItemData.getType();
@@ -98,7 +102,7 @@ public class CoffeeController {
         foodLabel.setText(itemName);
         typeComboBox.getItems().clear();
         typeComboBox.getItems().addAll(type.split(", "));
-
+        StatusLbl.setText( status);
 
         /* para doon sa image */
         Blob imageBlob = (Blob) coffeeItemData.getImage();

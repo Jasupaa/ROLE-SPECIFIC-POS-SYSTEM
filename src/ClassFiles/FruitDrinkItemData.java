@@ -18,9 +18,9 @@ public class FruitDrinkItemData {
     private Blob image;
     private Integer itemID;
     private InputStream imageInputStream;
+     private String status; 
     
-    
-    public FruitDrinkItemData(String itemName, Integer smallPrice, Integer mediumPrice, Integer largePrice, String fruitFlavor, String sinkers, Blob image, Integer itemID) {
+    public FruitDrinkItemData(String itemName, Integer smallPrice, Integer mediumPrice, Integer largePrice, String fruitFlavor, String sinkers, Blob image, Integer itemID, String status) {
         this.itemName = itemName;
         this.smallPrice = smallPrice;
         this.mediumPrice = mediumPrice;
@@ -29,6 +29,8 @@ public class FruitDrinkItemData {
         this.sinkers = sinkers;
         this.image = image;
         this.itemID = itemID;
+        this.status = status;
+        
     }
 
     public FruitDrinkItemData(String itemName, Integer smallPrice, Integer mediumPrice, Integer largePrice, String fruitFlavor, String sinkers) {
@@ -112,4 +114,12 @@ public class FruitDrinkItemData {
         this.imageInputStream = imageInputStream;
     }
 
+     public String getStatus() {
+        return status;
+    }
+         public void setStatus (String status){
+             this.status= status;
+             
 }
+}
+  

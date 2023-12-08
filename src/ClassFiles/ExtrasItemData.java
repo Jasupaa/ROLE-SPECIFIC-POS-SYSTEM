@@ -15,13 +15,15 @@ public class ExtrasItemData {
     private Blob image;
     private Integer itemID;
     private InputStream imageInputStream;
+     private String status; 
     
     
-     public ExtrasItemData(String itemName, Integer price, Blob image, Integer itemID) {
+     public ExtrasItemData(String itemName, Integer price, Blob image, Integer itemID, String status) {
         this.itemName = itemName;
         this.price = price;
         this.image = image;
         this.itemID = itemID;
+          this.status = status;
     }
 
     public ExtrasItemData(String itemName, Integer price) {
@@ -69,5 +71,11 @@ public InputStream getImageInputStream() {
      public void setImageInputStream(InputStream imageInputStream) {
         this.imageInputStream = imageInputStream;
     }
-    
+        public String getStatus() {
+        return status;
+    }
+         public void setStatus (String status){
+             this.status= status;
+             
+}
 }

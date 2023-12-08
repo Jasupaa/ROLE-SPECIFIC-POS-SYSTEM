@@ -39,6 +39,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import java.io.InputStream;
+import javafx.scene.control.ComboBox;
 
 
 public class FrappeCRUDController implements Initializable {
@@ -93,6 +94,15 @@ public class FrappeCRUDController implements Initializable {
     private InputStream imageInputStream;
 
     private Image selectedImage;
+    
+     @FXML
+    private ComboBox<String> statusComboBox;
+     
+       private String getSelectedStatus() {
+        
+    return statusComboBox.getValue();
+}
+
 
     private ObservableList<FrappeItemData> frappeItemData = FXCollections.observableArrayList();
 
@@ -104,6 +114,8 @@ public class FrappeCRUDController implements Initializable {
         restrictLetter(txtLargePrice);
         restrictLetter(txtMediumPrice);
         restrictLetter(txtSmallPrice);
+          statusComboBox.setValue("InStock");
+          initializeStatusComboBox();
         
         frappeTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
@@ -145,6 +157,7 @@ public class FrappeCRUDController implements Initializable {
                 String smallPrice = txtSmallPrice.getText();
                 String mediumPrice = txtMediumPrice.getText();
                 String largePrice = txtLargePrice.getText();
+                 String status = getSelectedStatus();
 
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
@@ -155,7 +168,7 @@ public class FrappeCRUDController implements Initializable {
                switch (buttonId) {
                     case "addBTN" -> {
                      if (!isProductAlreadyExists(connection, itemName)) {
-                       insertFrappeDrinkItem(connection, itemName, smallPrice, mediumPrice, largePrice, imageInputStream);
+                       insertFrappeDrinkItem(connection, itemName, smallPrice, mediumPrice, largePrice, imageInputStream, status);
                         System.out.println("Data inserted.");
                         clearTextFields();
                         } else {
@@ -170,7 +183,7 @@ public class FrappeCRUDController implements Initializable {
                 int itemID = selectedItem.getItemID();
                if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
                     selectedItem.setItemID(itemID);
-                     updateFrappeItem(connection, itemName, smallPrice, mediumPrice, largePrice, imageInputStream, itemID);
+                     updateFrappeItem(connection, itemName, smallPrice, mediumPrice, largePrice, imageInputStream, itemID, status);
                      System.out.println("Data updated.");
                      clearTextFields();
                 } else {
@@ -233,8 +246,8 @@ public class FrappeCRUDController implements Initializable {
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
      */
-    private void insertFrappeDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice, InputStream image) {
-        String sql = "INSERT INTO frappe_items (item_name, small_price, medium_price, large_price, image) VALUES (?, ?, ?, ?, ?)";
+    private void insertFrappeDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice, InputStream image,String status) {
+        String sql = "INSERT INTO frappe_items (item_name, small_price, medium_price, large_price, image, status) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
@@ -242,6 +255,7 @@ public class FrappeCRUDController implements Initializable {
             preparedStatement.setString(3, mediumPrice);
             preparedStatement.setString(4, largePrice);
             preparedStatement.setBlob(5, image); // Use setBlob for InputStream
+            preparedStatement.setString(6, status);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -254,7 +268,7 @@ public class FrappeCRUDController implements Initializable {
     private ObservableList<FrappeItemData> fetchDataFromDatabase() {
         ObservableList<FrappeItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name, small_price, medium_price, large_price, image FROM frappe_items";
+        String sql = "SELECT item_id, item_name, small_price, medium_price, large_price, image, status FROM frappe_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
@@ -266,6 +280,8 @@ public class FrappeCRUDController implements Initializable {
                 Integer largePrice = result.getInt("large_price");
                 
                   Blob imageBlob = result.getBlob("image");
+                  
+                  String status = result.getString("status");
                 
               InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
 
@@ -274,6 +290,7 @@ public class FrappeCRUDController implements Initializable {
                 frappeItemData.setItemID(itemID);
                 frappeItemData.setImage(imageBlob); // Set Blob if needed
                 frappeItemData.setImageInputStream(imageInputStream); 
+                frappeItemData.setStatus(status);
 
 
                 listData.add(frappeItemData);
@@ -287,15 +304,15 @@ public class FrappeCRUDController implements Initializable {
         return listData;
     }
     
-    private void updateFrappeItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice, InputStream image, int itemID) {
+    private void updateFrappeItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice, InputStream image, int itemID, String status) {
         String sql;
 
         if (image != null) {
 
-            sql = "UPDATE Frappe_items SET item_name=?, small_price=?, medium_price=?, large_price=?,fruit_drink=?,sinkers=?, image=? WHERE item_ID=?";
+            sql = "UPDATE Frappe_items SET item_name=?, small_price=?, medium_price=?, large_price=?,fruit_drink=?,sinkers=?, image=?, status=? WHERE item_ID=?";
         } else {
 
-            sql = "UPDATE Frappe_items SET item_name=?, small_price=?, medium_price=?, large_price=? fruit_drink=?,sinkers=? WHERE item_ID=?";
+            sql = "UPDATE Frappe_items SET item_name=?, small_price=?, medium_price=?, large_price=? fruit_drink=?,sinkers=?, status=? WHERE item_ID=?";
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -303,14 +320,15 @@ public class FrappeCRUDController implements Initializable {
             preparedStatement.setString(2, smallPrice);
             preparedStatement.setString(3, mediumPrice);
             preparedStatement.setString(4, largePrice);
+              preparedStatement.setString(5, status);
             
             
 
             if (image != null) {
-                preparedStatement.setBlob(7, image); // Use setBlob for InputStream
-                preparedStatement.setInt(8, itemID);
+                preparedStatement.setBlob(6, image); // Use setBlob for InputStream
+                preparedStatement.setInt(7, itemID);
             } else {
-                preparedStatement.setInt(9, itemID);
+                preparedStatement.setInt(6, itemID);
             }
 
             preparedStatement.executeUpdate();
@@ -375,12 +393,14 @@ public class FrappeCRUDController implements Initializable {
         FrappeItemData selectedItem = frappeTV.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
+            
+            String status = selectedItem.getStatus();
             txtItemName.setText(selectedItem.getItemName());
 
             txtSmallPrice.setText(String.valueOf(selectedItem.getSmallPrice()));
             txtMediumPrice.setText(String.valueOf(selectedItem.getMediumPrice()));
             txtLargePrice.setText(String.valueOf(selectedItem.getLargePrice()));
-
+            statusComboBox.setValue(status);
             Blob imageBlob = selectedItem.getImage();
               try {
   
@@ -457,6 +477,16 @@ public class FrappeCRUDController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     } 
+    
+     private void initializeStatusComboBox() {
+        // Populate the sugarlevelComboBox with items
+        ObservableList<String> status = FXCollections.observableArrayList(
+                "InStock",
+                "Out Of Stock"
+                
+        );
+        statusComboBox.setItems(status);
+    }
 
 }
              

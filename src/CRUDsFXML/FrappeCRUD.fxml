@@ -8,6 +8,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ComboBox?>
 
 <AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.FrappeCRUDController">
    <children>
@@ -48,5 +49,8 @@
       <Button fx:id="addBTN1" layoutX="717.0" layoutY="375.0" mnemonicParsing="false" onAction="#clearInput" text="Clear" />
       <Button layoutX="655.0" layoutY="375.0" mnemonicParsing="false" text="Update" />
       <Button layoutX="598.0" layoutY="375.0" mnemonicParsing="false" text="Delete" />
+      <ComboBox fx:id="statusComboBox" layoutX="664.0" layoutY="47.0" prefWidth="150.0" />
+  
+
    </children>
 </AnchorPane>

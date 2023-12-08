@@ -54,6 +54,8 @@ public class FruitDrinkController {
 
     @FXML
     private Button confirmButton1;
+    @FXML
+    private Label StatusLbl;
 
     @FXML
     private ImageView foodImg;
@@ -105,12 +107,12 @@ public class FruitDrinkController {
 
         String sinkers = fruitDrinkItemData.getSinkers();
         String fruitf = fruitDrinkItemData.getFruitFlavor();
-
+        String status = fruitDrinkItemData.getStatus();
         // Set data to corresponding components
         foodLabel.setText(itemName);
         sinkersComboBox.getItems().clear();
         sinkersComboBox.getItems().addAll(sinkers.split(", "));
-
+        StatusLbl.setText( status);
         fruitfComboBox.getItems().clear();
         fruitfComboBox.getItems().addAll(fruitf.split(", "));
 
