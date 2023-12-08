@@ -57,6 +57,14 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.input.MouseEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+
+import java.sql.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import java.net.URL;
 import java.sql.*;
@@ -69,11 +77,33 @@ import java.util.ResourceBundle;
 import ClassFiles.EmployeeData;
 import ClassFiles.Role;
 import java.sql.Statement;
+import java.util.Collections;
+import java.util.Optional;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.StackedAreaChart;
+import javafx.scene.chart.StackedBarChart;
+import javafx.scene.control.ComboBox;
 
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
     double xOffset, yOffset;
+
+    @FXML
+    private ComboBox<String> categoryComboBox;
+
+    @FXML
+    private LineChart<String, Number> revenueLC;
+
+    @FXML
+    private AreaChart<String, Number> analysisBC;
+
+    @FXML
+    private CategoryAxis xAxis;
+
+    @FXML
+    private NumberAxis yAxis;
 
     @FXML
     private Label topEmpLBL;
@@ -440,6 +470,182 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         disIV.setVisible(true);
     }
 
+    private void updateTopProductsLabels() {
+        try (Connection connection = database.getConnection()) {
+            String[] tableNames = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
+
+            Map<String, Integer> productQuantities = new HashMap<>();
+
+            for (String tableName : tableNames) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT item_name, SUM(quantity) AS totalQuantity FROM " + tableName + " GROUP BY item_name ORDER BY totalQuantity DESC LIMIT 3"); ResultSet resultSet = statement.executeQuery()) {
+
+                    while (resultSet.next()) {
+                        String itemName = resultSet.getString("item_name");
+                        int quantity = resultSet.getInt("totalQuantity");
+                        productQuantities.put(itemName, quantity);
+                    }
+                }
+            }
+
+            List<Map.Entry<String, Integer>> sortedProducts = productQuantities.entrySet()
+                    .stream()
+                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                    .collect(Collectors.toList());
+
+            // Assuming you have labels named topOneLBL, topOneQTY, topTwoLBL, topTwoQTY, topThreeLBL, topThreeQTY
+            for (int rank = 1; rank <= 3 && rank <= sortedProducts.size(); rank++) {
+                Map.Entry<String, Integer> entry = sortedProducts.get(rank - 1);
+                String itemName = entry.getKey();
+                int quantity = entry.getValue();
+
+                // Update labels based on the rank
+                switch (rank) {
+                    case 1 ->
+                        updateLabel(topOneLBL, topOneQTY, itemName, quantity);
+                    case 2 ->
+                        updateLabel(topTwoLBL, topTwoQTY, itemName, quantity);
+                    case 3 ->
+                        updateLabel(topThreeLBL, topThreeQTY, itemName, quantity);
+                    // Add more cases if needed
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+    }
+
+    private void updateLabel(Label nameLabel, Label qtyLabel, String itemName, int quantity) {
+        // Update the labels as needed
+        nameLabel.setText(itemName);
+        String quantityText = "Quantity: " + quantity;
+        qtyLabel.setText(quantityText);
+    }
+
+    private void initializeChart() {
+        // Clear existing data
+        revenueLC.getData().clear();
+
+        // Query the database and update the chart
+        updateChart();
+    }
+
+    private void updateChart() {
+        // Get daily revenue data from the database for the 7 highest revenue dates
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT DATE(date_time) AS day, SUM(total) AS daily_sum FROM invoice_archive GROUP BY day ORDER BY day DESC LIMIT 7"); ResultSet resultSet = statement.executeQuery()) {
+
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+            while (resultSet.next()) {
+                String day = resultSet.getString("day");
+                double dailySum = resultSet.getDouble("daily_sum");
+
+                series.getData().add(new XYChart.Data<>(day, dailySum));
+            }
+
+            // Add the series to the chart
+            revenueLC.getData().clear();
+            revenueLC.getData().add(series);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the exception according to your needs
+        }
+    }
+
+    private List<String> getLast7Days(List<String> existingDates) {
+        List<String> last7Days = new ArrayList<>();
+
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+
+        // Iterate from currentDate to currentDate - 6 days
+        for (int i = 6; i >= 0; i--) {
+            LocalDate date = currentDate.minusDays(i);
+            last7Days.add(date.toString());
+        }
+
+        // Filter out dates that are not in the existingDates list
+        last7Days.removeIf(date -> !existingDates.contains(date));
+
+        return last7Days;
+    }
+
+    private void updateBarChart() {
+        // Get aggregated daily quantity and customer data from all seven tables for the latest 3 dates
+        try (Connection connection = database.getConnection()) {
+            // Create series for the aggregated quantity and total customers
+            XYChart.Series<String, Number> quantitySeries = new XYChart.Series<>();
+            XYChart.Series<String, Number> customerSeries = new XYChart.Series<>();
+
+            List<String> dates = new ArrayList<>();
+
+            try (PreparedStatement dateStatement = connection.prepareStatement("SELECT DISTINCT DATE(date_time) AS day "
+                    + "FROM (SELECT customer_id, quantity, date_time FROM milk_tea UNION SELECT customer_id, quantity, date_time FROM fruit_drink UNION SELECT customer_id, quantity, date_time FROM frappe UNION "
+                    + "SELECT customer_id, quantity, date_time FROM coffee UNION SELECT customer_id, quantity, date_time FROM rice_meal UNION SELECT customer_id, quantity, date_time FROM snacks UNION SELECT customer_id, quantity, date_time FROM extras) AS combined_tables "
+                    + "ORDER BY day DESC LIMIT 3"); ResultSet dateResultSet = dateStatement.executeQuery()) {
+
+                while (dateResultSet.next()) {
+                    String day = dateResultSet.getString("day");
+                    dates.add(day);
+                }
+            }
+
+            // Fetch aggregated quantity and customer data for the latest 3 distinct dates
+            try (PreparedStatement statement = connection.prepareStatement("SELECT DATE(date_time) AS day, "
+                    + "SUM(quantity) AS aggregated_quantity, "
+                    + "COUNT(DISTINCT customer_id) AS total_customers "
+                    + "FROM (SELECT customer_id, quantity, date_time FROM milk_tea UNION SELECT customer_id, quantity, date_time FROM fruit_drink UNION SELECT customer_id, quantity, date_time FROM frappe UNION "
+                    + "SELECT customer_id, quantity, date_time FROM coffee UNION SELECT customer_id, quantity, date_time FROM rice_meal UNION SELECT customer_id, quantity, date_time FROM snacks UNION SELECT customer_id, quantity, date_time FROM extras) AS combined_tables "
+                    + "WHERE DATE(date_time) IN (?, ?, ?) GROUP BY day ORDER BY day DESC")) {
+
+                for (String date : dates) {
+                    statement.setString(1, date);
+                    statement.setString(2, date);
+                    statement.setString(3, date);
+
+                    ResultSet resultSet = statement.executeQuery();
+
+                    if (resultSet.next()) {
+                        String day = resultSet.getString("day");
+                        double aggregatedQuantity = resultSet.getDouble("aggregated_quantity");
+                        double totalCustomers = resultSet.getDouble("total_customers");
+
+                        // Add data to the series
+                        quantitySeries.getData().add(new XYChart.Data<>(day + " (Qty)", aggregatedQuantity));
+                        customerSeries.getData().add(new XYChart.Data<>(day + " (Customers)", totalCustomers));
+                    }
+                }
+            }
+
+            // Add the series to the chart
+            analysisBC.getData().clear();
+            analysisBC.getData().addAll(quantitySeries, customerSeries);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the exception according to your needs
+        }
+    }
+
+    private void reorderSeries(XYChart.Series<String, Number> series, List<String> dates) {
+        List<XYChart.Data<String, Number>> sortedData = new ArrayList<>();
+
+        for (String date : dates) {
+            // Find the data with the matching date
+            Optional<XYChart.Data<String, Number>> matchingData = series.getData().stream()
+                    .filter(data -> data.getXValue().startsWith(date))
+                    .findFirst();
+
+            matchingData.ifPresent(sortedData::add);
+        }
+
+        // Clear the original data and add the sorted data
+        series.getData().clear();
+        series.getData().addAll(sortedData);
+    }
+
     private Map<String, Integer> calculateTotalQuantityByItem(String tableName) {
         Map<String, Integer> totalQuantityByItem = new HashMap<>();
 
@@ -649,6 +855,23 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         populateFrappePieChart();
         populateExtrasPieChart();
         populateCoffeePieChart();
+
+        updateTopProductsLabels();
+
+        initializeChart();
+        updateBarChart();
+
+        // Populate the combo box with categories
+        categoryComboBox.getItems().addAll("Milk Tea", "Fruit Drink", "Frappe", "Coffee", "Rice Meal", "Snacks", "Extras");
+
+        // Set default selection
+        categoryComboBox.getSelectionModel().selectFirst();
+
+        // Add listener to handle combo box selection changes
+        categoryComboBox.setOnAction(this::handleCategoryChange);
+
+        // Initialize pane visibility
+        showPaneBasedOnCategory(categoryComboBox.getValue());
 
         fetchHighestPerformingEmployee();
 
@@ -1154,77 +1377,19 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     }
 
-    @FXML
-    public void SwitchFormPieChart(ActionEvent event) {
-        Button clickedButton = (Button) event.getSource();
-
-        if (clickedButton == lastClickedButton) {
-            // Ignore the click if the same button was clicked twice in a row
-            return;
-        }
-
-        if (clickedButton == mtBTN) {
-            milkteaPANE.setVisible(true);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(false);
-            extrasPANE.setVisible(false);
-
-        } else if (clickedButton == ftBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(true);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(false);
-            extrasPANE.setVisible(false);
-
-        } else if (clickedButton == frBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(true);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(false);
-            extrasPANE.setVisible(false);
-
-        } else if (clickedButton == cfBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(true);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(false);
-            extrasPANE.setVisible(false);
-
-        } else if (clickedButton == rmBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(true);
-            snacksPANE.setVisible(false);
-            extrasPANE.setVisible(false);
-
-        } else if (clickedButton == snBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(true);
-            extrasPANE.setVisible(false);
-
-        } else if (clickedButton == exBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(false);
-            extrasPANE.setVisible(true);
-        }
+    private void handleCategoryChange(ActionEvent event) {
+        String selectedCategory = categoryComboBox.getValue();
+        showPaneBasedOnCategory(selectedCategory);
     }
+
+    private void showPaneBasedOnCategory(String category) {
+        milkteaPANE.setVisible("Milk Tea".equals(category));
+        fruitdrinkPANE.setVisible("Fruit Drink".equals(category));
+        frappePANE.setVisible("Frappe".equals(category));
+        coffeePANE.setVisible("Coffee".equals(category));
+        ricemealPANE.setVisible("Rice Meal".equals(category));
+        snacksPANE.setVisible("Snacks".equals(category));
+        extrasPANE.setVisible("Extras".equals(category));
+    }
+
 }

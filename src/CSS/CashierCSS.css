@@ -21,11 +21,21 @@
 
 .panedesign {
     -fx-padding: 60px;
+    -fx-background-radius: 10px;
+}
+
+#line {
+    -fx-stroke-dash-array: 5 5; /* 5px dash, 5px gap */
+    -fx-stroke-dash-offset: 2.5;
+}
+
+.panedesign .left-border {
     -fx-border-style: dotted;
     -fx-border-width: 2px;
     -fx-border-color: #4E4D55;
-    -fx-background-radius: 10px;
+    -fx-border-insets: 0 0 0 2px; /* Insets: top right bottom left */
 }
+
 
 .receiptdesign {
     -fx-border-style: dotted;
@@ -110,4 +120,12 @@
     -fx-border-width: 1px;
 
     /* Increased blur */
+}
+
+.table-view .column-header {
+    -fx-background-color: #D9D9D9;
+}
+
+.tablevReceipt {
+    
 }

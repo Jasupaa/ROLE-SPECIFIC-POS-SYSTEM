@@ -38,6 +38,8 @@ import ClassFiles.ItemData;
 import ClassFiles.OrderCardData;
 import MenuController.CoffeeController;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -62,6 +64,12 @@ public class SettlePaymentFXMLController implements Initializable {
 
     double xOffset, yOffset;
     private volatile boolean stop = false;
+
+    @FXML
+    private Label handlerName;
+
+    @FXML
+    private Label dateTime;
 
     @FXML
     private ImageView CloseButton;
@@ -101,9 +109,6 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     private Label appldDscLbl;
-
-    @FXML
-    private Label handlerName;
 
     @FXML
     private Label cashInput;
@@ -151,6 +156,8 @@ public class SettlePaymentFXMLController implements Initializable {
 
     private String employeeName;
 
+    private int customerID;
+
     private int employeeId;
 
     private String originalTotal;
@@ -170,6 +177,39 @@ public class SettlePaymentFXMLController implements Initializable {
     public void setOrderType(String orderType) {
         ordertypeTxtField.setText(orderType);
         ordertypeTxtField.setEditable(false); // Disable the TextFiel
+    }
+
+    // Setters for employeeName, employeeId, and customerID
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+        // Update the UI with the new employeeName
+        handlerName.setText(employeeName);
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
+        // Perform any other operations related to employeeId if needed
+    }
+
+    public void setCustomerID(int customerID) {
+        this.customerID = customerID;
+        // Perform any other operations related to customerID if needed
+    }
+
+    private void updateDateTimeLabel() {
+        // Get the current date and time
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        // Format the date and time using a DateTimeFormatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = currentDateTime.format(formatter);
+
+        // Set the formatted date and time to the dateTime label
+        dateTime.setText(formattedDateTime);
     }
 
     @FXML
@@ -225,10 +265,11 @@ public class SettlePaymentFXMLController implements Initializable {
             // Hide the stage
             cashierConfirm.hide();
 
-            // Move the setOrderDetails call here
+            String handlerName = getEmployeeName();
+            String dateTimeString = dateTime.getText().substring(1);
             int customerID = existingCashierController.getCurrentCustomerID();
             String orderType = ordertypeTxtField.getText();
-            
+
             double subtotal = Double.parseDouble(subTotal.getText().substring(1));
             String discountText = appldDscLbl.getText().substring(1);
             discountText = discountText.replaceAll("[^\\d.]", "");
@@ -239,7 +280,7 @@ public class SettlePaymentFXMLController implements Initializable {
             double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
 
             // Use the controller passed as a parameter
-            controller.setOrderDetails(customerID, orderType, subtotal, discountApplied, totalAmount, cashAmount, changeAmount);
+            controller.setOrderDetails(handlerName, dateTimeString, customerID, orderType, subtotal, discountApplied, totalAmount, cashAmount, changeAmount);
 
             // Trigger the print job
             triggerPrintJob(root, controller);
@@ -534,6 +575,9 @@ public class SettlePaymentFXMLController implements Initializable {
         discTxtLbl.setDisable(true); // Disable the TextField
         appldDscTxtLbl.setDisable(true); // Disable the TextField
         calculateTotal();
+
+        updateDateTimeLabel();
+
         CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -558,19 +602,6 @@ public class SettlePaymentFXMLController implements Initializable {
             }
         });
 
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-
-        handlerName.setText(employeeName);
-    }
-
-    public void setEmployee(String employeeName) {
-        this.employeeName = employeeName;
-        this.employeeId = employeeId;
-
-        handlerName.setText(employeeName);
     }
 
     private void calculateCustomTotal() {

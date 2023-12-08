@@ -46,19 +46,31 @@ public class CashierConfirmationFXMLController implements Initializable {
     private TableView<ItemData> receiptTV2;
 
     @FXML
-    private Label handlerName;
+    private Label handlerName1;
+
     @FXML
     private Label subTotal;
+
     @FXML
     private Label discount;
+
     @FXML
     private Label total;
+
     @FXML
     private Label cash;
+
     @FXML
     private Label change;
+
     @FXML
-    private Label handlerName1;
+    private Label orderType;
+
+    @FXML
+    private Label orderID;
+    
+    @FXML
+    private Label dateTime1;
 
     /**
      * Initializes the controller class.
@@ -69,7 +81,7 @@ public class CashierConfirmationFXMLController implements Initializable {
         this.settlePaymentController = controller;
     }
 
-    public void setOrderDetails(int customerID, String orderType, double subtotal, double discountApplied, double totalAmount, double cashAmount, double changeAmount) {
+    public void setOrderDetails(String handlerName, String dateTimeString, int customerID, String orderType, double subtotal, double discountApplied, double totalAmount, double cashAmount, double changeAmount) {
 
         // Concatenate peso sign to the values
         String pesoSign = "₱";
@@ -79,6 +91,9 @@ public class CashierConfirmationFXMLController implements Initializable {
         String cashText = pesoSign + String.valueOf(cashAmount);
         String changeText = pesoSign + String.valueOf(changeAmount);
 
+        dateTime1.setText(dateTimeString);
+        handlerName1.setText(handlerName);
+        orderID.setText(String.valueOf(customerID));
         subTotal.setText(subtotalText);
         discount.setText(discountText);
         total.setText(totalText);
@@ -89,6 +104,8 @@ public class CashierConfirmationFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        receiptTV2.setStyle("-fx-table-cell-border-color: transparent; -fx-table-header-border-color: transparent;");
+
         System.out.println("CashierConfirmationFXMLController initialized");
         try {
             setupTableView();

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -27,448 +32,478 @@
                 <Image url="@../Pictures/Good%20Morning,%20Admin!.png" />
             </image>
         </ImageView>
-      <ImageView fitHeight="26.0" fitWidth="28.0" layoutX="71.0" layoutY="48.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Pictures/icons8-burger-64.png" />
-         </image>
-      </ImageView>
+        <ImageView fitHeight="26.0" fitWidth="28.0" layoutX="71.0" layoutY="48.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../Pictures/icons8-burger-64.png" />
+            </image>
+        </ImageView>
         <AnchorPane layoutX="251.0" layoutY="148.0" prefHeight="450.0" prefWidth="830.0">
             <children>
-            <AnchorPane fx:id="home" layoutX="-218.0" layoutY="-5.0" onDragDetected="#SwitchForm" prefHeight="475.0" prefWidth="1058.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-218.0" AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-5.0">
-               <children>
-                  <Pane layoutX="30.0" layoutY="26.0">
-                     <children>
-                        <ImageView fx:id="salesReportIV11" fitHeight="199.0" fitWidth="205.0" layoutX="239.0" layoutY="212.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
-                           <image>
-                              <Image url="@../Pictures/Group%20156.png" />
-                           </image>
+                <AnchorPane fx:id="home" layoutX="-218.0" layoutY="-5.0" onDragDetected="#SwitchForm" prefHeight="475.0" prefWidth="1058.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-218.0" AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-5.0">
+                    <children>
+                        <Pane layoutX="30.0" layoutY="26.0">
+                            <children>
+                                <ImageView fx:id="salesReportIV11" fitHeight="199.0" fitWidth="205.0" layoutX="239.0" layoutY="212.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
+                                    <image>
+                                        <Image url="@../Pictures/Group%20156.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fx:id="salesReportIV2" fitHeight="199.0" fitWidth="205.0" layoutX="21.0" layoutY="212.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
+                                    <image>
+                                        <Image url="@../Pictures/Group%20154.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fx:id="salesReportIV1" fitHeight="199.0" fitWidth="205.0" layoutX="239.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
+                                    <image>
+                                        <Image url="@../Pictures/Group%20153.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fx:id="salesReportIV" fitHeight="199.0" fitWidth="205.0" layoutX="21.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
+                                    <image>
+                                        <Image url="@../Pictures/Group%20146%20(2).png" />
+                                    </image>
+                                </ImageView>
+                                <Button fx:id="salesRepBTN" mnemonicParsing="false" onAction="#SwitchForm" onMouseEntered="#handleMouseEnter" onMouseExited="#handleMouseExit" prefWidth="246.0" styleClass="buttonNavigation2" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fx:id="salesIV" fitHeight="199.0" fitWidth="205.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Group%20147%20(1).png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="invManageBTN" layoutX="218.0" mnemonicParsing="false" onAction="#SwitchForm" onMouseEntered="#handleMouseEnter1" onMouseExited="#handleMouseExit1" prefWidth="246.0" styleClass="buttonNavigation2" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fx:id="menuIV" fitHeight="199.0" fitWidth="205.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Group%20148%20(1).png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="empDetailsBTN" layoutY="207.0" mnemonicParsing="false" onAction="#SwitchForm" onMouseEntered="#handleMouseEnter2" onMouseExited="#handleMouseExit2" prefWidth="246.0" styleClass="buttonNavigation2" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fx:id="empIV" fitHeight="199.0" fitWidth="205.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Group%20151%20(2).png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="disCoupBTN" layoutX="218.0" layoutY="207.0" mnemonicParsing="false" onAction="#SwitchForm" onMouseEntered="#handleMouseEnter3" onMouseExited="#handleMouseExit3" prefWidth="246.0" styleClass="buttonNavigation2" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fx:id="disIV" fitHeight="199.0" fitWidth="205.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Group%20152.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </Pane>
+                        <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="5.0" layoutY="450.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Pictures/icons8-log-out-96.png" />
+                            </image>
                         </ImageView>
-                        <ImageView fx:id="salesReportIV2" fitHeight="199.0" fitWidth="205.0" layoutX="21.0" layoutY="212.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
-                           <image>
-                              <Image url="@../Pictures/Group%20154.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fx:id="salesReportIV1" fitHeight="199.0" fitWidth="205.0" layoutX="239.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
-                           <image>
-                              <Image url="@../Pictures/Group%20153.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fx:id="salesReportIV" fitHeight="199.0" fitWidth="205.0" layoutX="21.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
-                           <image>
-                              <Image url="@../Pictures/Group%20146%20(2).png" />
-                           </image>
-                        </ImageView>
-                        <Button fx:id="salesRepBTN" mnemonicParsing="false" onAction="#SwitchForm" onMouseEntered="#handleMouseEnter" onMouseExited="#handleMouseExit" prefWidth="246.0" styleClass="buttonNavigation2" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fx:id="salesIV" fitHeight="199.0" fitWidth="205.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Group%20147%20(1).png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="invManageBTN" layoutX="218.0" mnemonicParsing="false" onAction="#SwitchForm" onMouseEntered="#handleMouseEnter1" onMouseExited="#handleMouseExit1" prefWidth="246.0" styleClass="buttonNavigation2" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fx:id="menuIV" fitHeight="199.0" fitWidth="205.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Group%20148%20(1).png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="empDetailsBTN" layoutY="207.0" mnemonicParsing="false" onAction="#SwitchForm" onMouseEntered="#handleMouseEnter2" onMouseExited="#handleMouseExit2" prefWidth="246.0" styleClass="buttonNavigation2" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fx:id="empIV" fitHeight="199.0" fitWidth="205.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Group%20151%20(2).png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="disCoupBTN" layoutX="218.0" layoutY="207.0" mnemonicParsing="false" onAction="#SwitchForm" onMouseEntered="#handleMouseEnter3" onMouseExited="#handleMouseExit3" prefWidth="246.0" styleClass="buttonNavigation2" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fx:id="disIV" fitHeight="199.0" fitWidth="205.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Group%20152.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                  </Pane>
-                    <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="5.0" layoutY="450.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../Pictures/icons8-log-out-96.png" />
-                        </image>
-                    </ImageView>
-                  <Label layoutX="53.0" layoutY="2.0" text="NAVIGATION" textFill="#404040">
-                     <font>
-                        <Font size="9.0" />
-                     </font>
-                  </Label>
-                  <Pane layoutX="494.0" layoutY="31.0">
-                     <children>
-                        <ImageView fitHeight="401.0" fitWidth="285.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Group%20157%20(1).png" />
-                           </image>
-                        </ImageView>
-                        <HBox layoutX="91.0" layoutY="69.0">
-                           <children>
-                              <Label fx:id="homeREV" text="Label" textFill="WHITE" />
-                           </children>
-                        </HBox>
-                        <HBox layoutX="91.0" layoutY="115.0">
-                           <children>
-                              <Label fx:id="homeTO" text="Label" textFill="WHITE" />
-                           </children>
-                        </HBox>
-                        <HBox layoutX="91.0" layoutY="162.0">
-                           <children>
-                              <Label fx:id="homeNOC" text="Label" textFill="WHITE" />
-                           </children>
-                        </HBox>
-                        <HBox layoutX="91.0" layoutY="249.0">
-                           <children>
-                              <Label fx:id="topOneLBL" text="Name of Item No. 1" />
-                           </children>
-                        </HBox>
-                        <HBox layoutX="91.0" layoutY="295.0">
-                           <children>
-                              <Label fx:id="topTwoLBL" text="Name of Item No. 2" />
-                           </children>
-                        </HBox>
-                        <HBox layoutX="91.0" layoutY="342.0">
-                           <children>
-                              <Label fx:id="topThreeLBL" text="Name of Item No. 3" />
-                           </children>
-                        </HBox>
-                        <HBox layoutX="91.0" layoutY="264.0">
-                           <children>
-                              <Label fx:id="topOneQTY" text="Quantity" />
-                           </children>
-                        </HBox>
-                        <HBox layoutX="91.0" layoutY="310.0">
-                           <children>
-                              <Label fx:id="topTwoQTY" text="Quantity" />
-                           </children>
-                        </HBox>
-                        <HBox layoutX="91.0" layoutY="357.0">
-                           <children>
-                              <Label fx:id="topThreeQTY" text="Quantity" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </Pane>
-                  <Line endX="252.20001220703125" layoutX="219.0" layoutY="9.0" opacity="0.09" startX="-100.0" stroke="WHITE" />
-                  <Label layoutX="497.0" layoutY="3.0" text="SALES REPORT" textFill="#404040">
-                     <font>
-                        <Font size="9.0" />
-                     </font>
-                  </Label>
-                  <Line endX="104.4000244140625" layoutX="666.0" layoutY="10.0" opacity="0.09" startX="-100.0" stroke="WHITE" />
-                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="795.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fitHeight="588.0" fitWidth="230.0" layoutX="795.0" layoutY="-153.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Pictures/Group%20159%20(2).png" />
-                     </image>
-                  </ImageView>
-                  <HBox layoutX="915.0" layoutY="260.0" prefHeight="20.0" prefWidth="72.0">
-                     <children>
-                        <Label fx:id="topEmpLBL" text="Label" textFill="WHITE">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
+                        <Label layoutX="53.0" layoutY="2.0" text="NAVIGATION" textFill="#404040">
+                            <font>
+                                <Font size="9.0" />
+                            </font>
                         </Label>
-                     </children>
-                  </HBox>
-                  <HBox layoutX="915.0" layoutY="314.0" prefHeight="20.0" prefWidth="72.0">
-                     <children>
-                        <Label fx:id="totalOrdsHandledLBL" text="Label" textFill="WHITE">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
+                        <Pane layoutX="494.0" layoutY="31.0">
+                            <children>
+                                <ImageView fitHeight="401.0" fitWidth="285.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Pictures/Group%20157%20(1).png" />
+                                    </image>
+                                </ImageView>
+                                <HBox layoutX="91.0" layoutY="69.0">
+                                    <children>
+                                        <Label fx:id="homeREV" text="Label" textFill="WHITE" />
+                                    </children>
+                                </HBox>
+                                <HBox layoutX="91.0" layoutY="115.0">
+                                    <children>
+                                        <Label fx:id="homeTO" text="Label" textFill="WHITE" />
+                                    </children>
+                                </HBox>
+                                <HBox layoutX="91.0" layoutY="162.0">
+                                    <children>
+                                        <Label fx:id="homeNOC" text="Label" textFill="WHITE" />
+                                    </children>
+                                </HBox>
+                                <HBox layoutX="91.0" layoutY="249.0">
+                                    <children>
+                                        <Label fx:id="topOneLBL" text="Name of Item No. 1" textFill="WHITE" />
+                                    </children>
+                                </HBox>
+                                <HBox layoutX="91.0" layoutY="295.0">
+                                    <children>
+                                        <Label fx:id="topTwoLBL" text="Name of Item No. 2" textFill="WHITE" />
+                                    </children>
+                                </HBox>
+                                <HBox layoutX="91.0" layoutY="342.0">
+                                    <children>
+                                        <Label fx:id="topThreeLBL" text="Name of Item No. 3" textFill="WHITE" />
+                                    </children>
+                                </HBox>
+                                <HBox layoutX="91.0" layoutY="264.0">
+                                    <children>
+                                        <Label fx:id="topOneQTY" text="Quantity" textFill="WHITE" />
+                                    </children>
+                                </HBox>
+                                <HBox layoutX="91.0" layoutY="310.0">
+                                    <children>
+                                        <Label fx:id="topTwoQTY" text="Quantity" textFill="WHITE" />
+                                    </children>
+                                </HBox>
+                                <HBox layoutX="91.0" layoutY="357.0">
+                                    <children>
+                                        <Label fx:id="topThreeQTY" text="Quantity" textFill="WHITE" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </Pane>
+                        <Line endX="252.20001220703125" layoutX="219.0" layoutY="9.0" opacity="0.09" startX="-100.0" stroke="WHITE" />
+                        <Label layoutX="497.0" layoutY="3.0" text="SALES REPORT" textFill="#404040">
+                            <font>
+                                <Font size="9.0" />
+                            </font>
                         </Label>
-                     </children>
-                  </HBox>
-               </children>
-            </AnchorPane>
+                        <Line endX="104.4000244140625" layoutX="666.0" layoutY="10.0" opacity="0.09" startX="-100.0" stroke="WHITE" />
+                        <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="795.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="588.0" fitWidth="230.0" layoutX="795.0" layoutY="-153.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Pictures/Group%20159%20(2).png" />
+                            </image>
+                        </ImageView>
+                        <HBox layoutX="915.0" layoutY="260.0" prefHeight="20.0" prefWidth="72.0">
+                            <children>
+                                <Label fx:id="topEmpLBL" text="Label" textFill="WHITE">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+                        <HBox layoutX="915.0" layoutY="314.0" prefHeight="20.0" prefWidth="72.0">
+                            <children>
+                                <Label fx:id="totalOrdsHandledLBL" text="Label" textFill="WHITE">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+                    </children>
+                </AnchorPane>
                 <AnchorPane fx:id="salesRep" layoutX="-192.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1022.0" style="-fx-background-color: #111315;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-192.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
-               <children>
-                  <AnchorPane layoutX="787.0" layoutY="70.0" />
-                  <Pane layoutX="267.0" layoutY="107.0">
-                     <children>
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Group%20164.png" />
-                           </image>
-                        </ImageView>
-                        <HBox layoutX="117.0" layoutY="44.0">
-                           <children>
-                              <Label fx:id="Products" text="- - -" textFill="WHITE" />
-                           </children>
+                    <children>
+                        <AnchorPane layoutX="787.0" layoutY="70.0" />
+                        <Pane layoutX="267.0" layoutY="107.0">
+                            <children>
+                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Pictures/Group%20173.png" />
+                                    </image>
+                                </ImageView>
+                                <HBox layoutX="117.0" layoutY="44.0" />
+                                  <Label fx:id="Products" layoutX="61.0" layoutY="33.0" prefHeight="27.0" prefWidth="92.0" text="100" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                            </children>
+                        </Pane>
+                        <HBox alignment="CENTER_LEFT" layoutX="149.0" layoutY="47.0" prefHeight="18.0" prefWidth="64.0">
+                            <children>
+                                <Label fx:id="Daily" text="Revenue" textFill="WHITE" visible="false" />
+                            </children>
                         </HBox>
-                     </children>
-                  </Pane>
-                  <ImageView fitHeight="97.0" fitWidth="213.0" layoutX="545.0" layoutY="190.0" pickOnBounds="true" preserveRatio="true" />
-                  <HBox alignment="CENTER_LEFT" layoutX="149.0" layoutY="47.0" prefHeight="18.0" prefWidth="64.0">
-                     <children>
-                        <Label fx:id="Daily" text="Revenue" textFill="WHITE" visible="false" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="397.0" layoutY="46.0" prefHeight="18.0" prefWidth="70.0" />
-                  <HBox alignment="CENTER_LEFT" layoutX="645.0" layoutY="45.0" />
-                  <Button fx:id="SRhomeBTN" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Group%205_1.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Pane layoutX="47.0" layoutY="106.0">
-                     <children>
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Group%20163.png" />
-                           </image>
-                        </ImageView>
-                        <HBox layoutX="108.0" layoutY="44.0">
-                           <children>
-                              <Label fx:id="Daily" text="0.00" textFill="WHITE" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </Pane>
-                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="49.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true">
+                        <HBox alignment="CENTER_LEFT" layoutX="397.0" layoutY="46.0" prefHeight="18.0" prefWidth="70.0" />
+                        <HBox alignment="CENTER_LEFT" layoutX="645.0" layoutY="45.0" />
+                        <Button fx:id="SRhomeBTN" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
+                            <graphic>
+                                <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Pictures/Group%205_1.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Pane layoutX="47.0" layoutY="106.0">
+                            <children>
+                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Pictures/Group%20172.png" />
+                                    </image>
+                                </ImageView>
+                                <HBox layoutX="108.0" layoutY="44.0" />
+                                  <Label fx:id="Daily" layoutX="59.0" layoutY="33.0" prefHeight="27.0" prefWidth="117.0" text="0.00" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                            </children>
+                        </Pane>
+                        <Pane layoutX="488.0" layoutY="107.0">
+                            <children>
+                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Pictures/Group%20174.png" />
+                                    </image>
+                                </ImageView>
+                                <Label fx:id="Customer" layoutX="70.0" layoutY="33.0" prefHeight="27.0" prefWidth="92.0" text="100" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Label>
+                            </children>
+                        </Pane>
+                        <Pane fx:id="milkteaPANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0">
+                            <children>
+                                <PieChart fx:id="milkTeaPieChart" layoutX="14.0" layoutY="12.0" prefHeight="293.0" prefWidth="239.0" />
+                            </children>
+                        </Pane>
+                        <Pane fx:id="fruitdrinkPANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
+                            <children>
+                                <PieChart fx:id="fruitDrinkPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                            </children>
+                        </Pane>
+                        <Pane fx:id="frappePANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
+                            <children>
+                                <PieChart fx:id="frappePieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                            </children>
+                        </Pane>
+                        <Pane fx:id="coffeePANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
+                            <children>
+                                <PieChart fx:id="coffeePieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                            </children>
+                        </Pane>
+                        <Pane fx:id="ricemealPANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
+                            <children>
+                                <PieChart fx:id="riceMealPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                            </children>
+                        </Pane>
+                        <Pane fx:id="snacksPANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
+                            <children>
+                                <PieChart fx:id="snacksPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                            </children>
+                        </Pane>
+                        <Pane fx:id="extrasPANE" layoutX="724.0" layoutY="180.0" prefHeight="320.0" prefWidth="266.0" visible="false">
+                            <children>
+                                <PieChart fx:id="extrasPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
+                            </children>
+                        </Pane>
+                  <ImageView fitHeight="328.0" fitWidth="314.0" layoutX="49.0" layoutY="197.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../Pictures/Sales%20Report.png" />
+                        <Image url="@../Pictures/Group%2011.png" />
                      </image>
                   </ImageView>
-                  <Pane layoutX="488.0" layoutY="107.0">
-                     <children>
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Group%20165.png" />
-                           </image>
+                  <LineChart fx:id="revenueLC" layoutX="58.0" layoutY="260.0" prefHeight="238.0" prefWidth="287.0">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </LineChart>
+                  <ImageView fitHeight="325.0" fitWidth="307.0" layoutX="382.0" layoutY="196.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Pictures/Group%2010.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="452.0" fitWidth="298.0" layoutX="708.0" layoutY="108.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Pictures/Group%209.png" />
+                     </image>
+                  </ImageView>
+                  <ComboBox fx:id="categoryComboBox" layoutX="898.0" layoutY="136.0" prefHeight="14.0" prefWidth="92.0" />
+                        <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="14.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Pictures/Sales%20Report.png" />
+                            </image>
                         </ImageView>
-                        <Label fx:id="Customer" layoutX="108.0" layoutY="43.0" text="- - -" textFill="WHITE" />
-                     </children>
-                  </Pane>
-                  <Pane fx:id="milkteaPANE" layoutX="563.0" layoutY="214.0" prefHeight="311.0" prefWidth="430.0">
-                     <children>
-                        <PieChart fx:id="milkTeaPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
-                     </children>
-                  </Pane>
-                  <Pane fx:id="fruitdrinkPANE" layoutX="573.0" layoutY="224.0" prefHeight="311.0" prefWidth="430.0" visible="false">
-                     <children>
-                        <PieChart fx:id="fruitDrinkPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
-                     </children>
-                  </Pane>
-                  <Pane fx:id="frappePANE" layoutX="583.0" layoutY="234.0" prefHeight="311.0" prefWidth="430.0" visible="false">
-                     <children>
-                        <PieChart fx:id="frappePieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
-                     </children>
-                  </Pane>
-                  <Pane fx:id="coffeePANE" layoutX="593.0" layoutY="244.0" prefHeight="311.0" prefWidth="430.0" visible="false">
-                     <children>
-                        <PieChart fx:id="coffeePieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
-                     </children>
-                  </Pane>
-                  <Pane fx:id="ricemealPANE" layoutX="603.0" layoutY="254.0" prefHeight="311.0" prefWidth="430.0" visible="false">
-                     <children>
-                        <PieChart fx:id="riceMealPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
-                     </children>
-                  </Pane>
-                  <Pane fx:id="snacksPANE" layoutX="613.0" layoutY="264.0" prefHeight="311.0" prefWidth="430.0" visible="false">
-                     <children>
-                        <PieChart fx:id="snacksPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
-                     </children>
-                  </Pane>
-                  <Pane fx:id="extrasPANE" layoutX="623.0" layoutY="274.0" prefHeight="311.0" prefWidth="430.0" visible="false">
-                     <children>
-                        <PieChart fx:id="extrasPieChart" layoutX="72.0" layoutY="28.0" prefHeight="255.0" prefWidth="287.0" />
-                     </children>
-                  </Pane>
-                  <Button fx:id="mtBTN" layoutX="467.0" layoutY="202.0" mnemonicParsing="false" onAction="#SwitchFormPieChart" text="Milk Tea" />
-                  <Button fx:id="ftBTN" layoutX="467.0" layoutY="241.0" mnemonicParsing="false" onAction="#SwitchFormPieChart" text="Fruit Drink" />
-                  <Button fx:id="frBTN" layoutX="468.0" layoutY="280.0" mnemonicParsing="false" onAction="#SwitchFormPieChart" text="Frappe" />
-                  <Button fx:id="cfBTN" layoutX="468.0" layoutY="320.0" mnemonicParsing="false" onAction="#SwitchFormPieChart" text="Coffee" />
-                  <Button fx:id="rmBTN" layoutX="468.0" layoutY="357.0" mnemonicParsing="false" onAction="#SwitchFormPieChart" text="Rice Meal" />
-                  <Button fx:id="snBTN" layoutX="469.0" layoutY="395.0" mnemonicParsing="false" onAction="#SwitchFormPieChart" text="Snacks" />
-                  <Button fx:id="exBTN" layoutX="469.0" layoutY="434.0" mnemonicParsing="false" onAction="#SwitchFormPieChart" text="Extras" />
-               </children>
-            </AnchorPane>
+                  <AreaChart fx:id="analysisBC" layoutX="374.0" layoutY="262.0" prefHeight="238.0" prefWidth="306.0">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </AreaChart>
+
+                    </children>
+                </AnchorPane>
                 <AnchorPane fx:id="invManage" layoutX="-192.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1022.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-192.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
-               <children>
-                  <Pane layoutX="181.0" layoutY="147.0">
-                     <children>
-                        <Button fx:id="milkteaBTN" mnemonicParsing="false" onAction="#handleMilkteaButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
-                                 <image>
-                                    <Image url="@../Pictures/Milktea_Label.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
+                    <children>
+                        <Pane layoutX="181.0" layoutY="147.0">
+                            <children>
+                                <Button fx:id="milkteaBTN" mnemonicParsing="false" onAction="#handleMilkteaButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-radius: 20;">
+                                            <image>
+                                                <Image url="@../Pictures/Milktea_Label.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button layoutX="192.0" mnemonicParsing="false" onAction="#handleFruitDrinkButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Fruit_Drink_Label%20(1).png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button layoutX="384.0" mnemonicParsing="false" onAction="#handleFrappeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Frappe_Label.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button layoutX="576.0" mnemonicParsing="false" onAction="#handleCoffeeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Coffee_Label.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button layoutY="182.0" mnemonicParsing="false" onAction="#handleRiceMealsButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Rice_Meal_Label.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button layoutX="192.0" layoutY="182.0" mnemonicParsing="false" onAction="#handleSnacksButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Snacks_Label.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button layoutX="384.0" layoutY="182.0" mnemonicParsing="false" onAction="#handleExtrasButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Extras_Label.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button layoutX="576.0" layoutY="182.0" mnemonicParsing="false" onAction="#handleExtrasButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
+                                    <graphic>
+                                        <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Pictures/Group%20152%20(1).png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </Pane>
+                        <Button fx:id="MLhomeBTN" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
+                            <graphic>
+                                <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Pictures/Group%205_1.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
                         </Button>
-                        <Button layoutX="192.0" mnemonicParsing="false" onAction="#handleFruitDrinkButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Fruit_Drink_Label%20(1).png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button layoutX="384.0" mnemonicParsing="false" onAction="#handleFrappeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Frappe_Label.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button layoutX="576.0" mnemonicParsing="false" onAction="#handleCoffeeButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Coffee_Label.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button layoutY="182.0" mnemonicParsing="false" onAction="#handleRiceMealsButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Rice_Meal_Label.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button layoutX="192.0" layoutY="182.0" mnemonicParsing="false" onAction="#handleSnacksButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Snacks_Label.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button layoutX="384.0" layoutY="182.0" mnemonicParsing="false" onAction="#handleExtrasButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Extras_Label.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button layoutX="576.0" layoutY="182.0" mnemonicParsing="false" onAction="#handleExtrasButtonClick" styleClass="buttonNavigation" stylesheets="@../CSS/AdminCSS.css">
-                           <graphic>
-                              <ImageView fitHeight="179.0" fitWidth="174.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Pictures/Group%20152%20(1).png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                  </Pane>
-                  <Button fx:id="MLhomeBTN" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Group%205_1.png" />
-                           </image>
+                        <ImageView fitHeight="17.0" fitWidth="178.0" layoutX="59.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Pictures/1.png" />
+                            </image>
                         </ImageView>
-                     </graphic>
-                  </Button>
-                  <ImageView fitHeight="17.0" fitWidth="178.0" layoutX="59.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Pictures/1.png" />
-                     </image>
-                  </ImageView>
-               </children>
+                    </children>
                 </AnchorPane>
                 <AnchorPane fx:id="empDetails" layoutX="-182.0" layoutY="-96.0" prefHeight="560.0" prefWidth="1012.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-182.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-96.0">
-               <children>
-                  <ImageView fitHeight="36.0" fitWidth="46.0" layoutX="931.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/editEmployee.png" />
-                     </image>
-                  </ImageView>
-                  <Button fx:id="EMPhomeBTN" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Group%205_1.png" />
-                           </image>
+                    <children>
+                        <ImageView fitHeight="36.0" fitWidth="46.0" layoutX="931.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/editEmployee.png" />
+                            </image>
                         </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="addEmployee" layoutX="777.0" layoutY="93.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-                  <TableView fx:id="employeeTable" layoutX="24.0" layoutY="142.0" prefHeight="320.0" prefWidth="949.0" style="-fx-background-color: #111315;">
-                     <columns>
-                        <TableColumn fx:id="emp_id" prefWidth="46.0" text="ID" />
-                        <TableColumn fx:id="empFirstName" prefWidth="163.19996643066406" text="FirstName" />
-                        <TableColumn fx:id="empLastName" prefWidth="87.2000732421875" text="LastName" />
-                        <TableColumn fx:id="empStatus" prefWidth="140.800048828125" text="Status" />
-                        <TableColumn fx:id="empContact" prefWidth="172.0" text="Contact No." />
-                        <TableColumn fx:id="empEmail" prefWidth="127.20001220703125" text="E-mail" />
-                        <TableColumn fx:id="emp_role" prefWidth="96.7999267578125" text="Role" />
-                        <TableColumn fx:id="pin_code" prefWidth="112.79995117187502" text="PinCode" />
-                     </columns>
-                  </TableView>
-                  <Button fx:id="addEmployee1" layoutX="624.0" layoutY="93.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/CSS/AdminCSS.css" text="- Remove Employee" textFill="WHITE">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-                  <ImageView fitHeight="36.0" fitWidth="46.0" layoutX="766.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/editEmployee.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
+                        <Button fx:id="EMPhomeBTN" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
+                            <graphic>
+                                <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Pictures/Group%205_1.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="addEmployee" layoutX="777.0" layoutY="93.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/CSS/AdminCSS.css" text="+ Add Employee" textFill="WHITE">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+                        <TableView fx:id="employeeTable" layoutX="24.0" layoutY="142.0" prefHeight="320.0" prefWidth="949.0" style="-fx-background-color: #111315;">
+                            <columns>
+                                <TableColumn fx:id="emp_id" prefWidth="46.0" text="ID" />
+                                <TableColumn fx:id="empFirstName" prefWidth="163.19996643066406" text="FirstName" />
+                                <TableColumn fx:id="empLastName" prefWidth="87.2000732421875" text="LastName" />
+                                <TableColumn fx:id="empStatus" prefWidth="140.800048828125" text="Status" />
+                                <TableColumn fx:id="empContact" prefWidth="172.0" text="Contact No." />
+                                <TableColumn fx:id="empEmail" prefWidth="127.20001220703125" text="E-mail" />
+                                <TableColumn fx:id="emp_role" prefWidth="96.7999267578125" text="Role" />
+                                <TableColumn fx:id="pin_code" prefWidth="112.79995117187502" text="PinCode" />
+                            </columns>
+                        </TableView>
+                        <Button fx:id="addEmployee1" layoutX="624.0" layoutY="93.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="146.0" style="-fx-background-color: #FFB6C1;" styleClass="buttonPink" stylesheets="@../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/CSS/AdminCSS.css" text="- Remove Employee" textFill="WHITE">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+                        <ImageView fitHeight="36.0" fitWidth="46.0" layoutX="766.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../../New%20Folder%20(2)/ROLE-SPECIFIC-POS-SYSTEM/src/Pictures/editEmployee.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </AnchorPane>
                 <AnchorPane fx:id="disCoup" layoutX="-200.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1030.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
-               <children>
-                  <TableView fx:id="discountTableView" layoutX="59.0" layoutY="112.0" prefHeight="394.0" prefWidth="906.0">
-                     <columns>
-                        <TableColumn fx:id="codeColumn" prefWidth="127.20001220703125" text="Code" />
-                        <TableColumn fx:id="discountColumn" prefWidth="68.80001831054688" text="Discount" />
-                        <TableColumn fx:id="descriptionColumn" prefWidth="299.9999694824219" text="Description" />
-                        <TableColumn fx:id="createdAtColumn" prefWidth="118.39996337890625" text="Created At" />
-                        <TableColumn fx:id="validAtColumn" prefWidth="124.79998779296875" text="Valid At" />
-                        <TableColumn fx:id="UsageColumn" prefWidth="167.20001220703125" text="Usage Limit" />
-                     </columns>
-                  </TableView>
-                  <Button fx:id="AddCoup" layoutX="801.0" layoutY="66.0" mnemonicParsing="false" onAction="#handleDiscountButtonClick" prefHeight="27.0" prefWidth="164.0" styleClass="homeButton" stylesheets="@../../../RoleSpecific_POS_System-COPY/src/CSS/AdminCSS.css" text="+ Add Coupon" />
-                  <Button fx:id="DelBtn" layoutX="681.0" layoutY="66.0" mnemonicParsing="false" onAction="#handleDeleteButtonAction" prefHeight="26.0" prefWidth="105.0" styleClass="homeButton" stylesheets="@../../../RoleSpecific_POS_System-COPY/src/CSS/AdminCSS.css" text="Delete" />
-                  <Button fx:id="EditBtn" layoutX="566.0" layoutY="66.0" mnemonicParsing="false" onAction="#handleEditButtonAction" prefHeight="27.0" prefWidth="106.0" styleClass="homeButton" stylesheets="@../../../RoleSpecific_POS_System-COPY/src/CSS/AdminCSS.css" text="Edit" />
-                  <Button fx:id="DChomeBTN" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
-                     <graphic>
-                        <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Pictures/Group%205_1.png" />
-                           </image>
+                    <children>
+                        <TableView fx:id="discountTableView" layoutX="59.0" layoutY="112.0" prefHeight="394.0" prefWidth="906.0">
+                            <columns>
+                                <TableColumn fx:id="codeColumn" prefWidth="127.20001220703125" text="Code" />
+                                <TableColumn fx:id="discountColumn" prefWidth="68.80001831054688" text="Discount" />
+                                <TableColumn fx:id="descriptionColumn" prefWidth="299.9999694824219" text="Description" />
+                                <TableColumn fx:id="createdAtColumn" prefWidth="118.39996337890625" text="Created At" />
+                                <TableColumn fx:id="validAtColumn" prefWidth="124.79998779296875" text="Valid At" />
+                                <TableColumn fx:id="UsageColumn" prefWidth="167.20001220703125" text="Usage Limit" />
+                            </columns>
+                        </TableView>
+                        <Button fx:id="AddCoup" layoutX="801.0" layoutY="66.0" mnemonicParsing="false" onAction="#handleDiscountButtonClick" prefHeight="27.0" prefWidth="164.0" styleClass="homeButton" stylesheets="@../../../RoleSpecific_POS_System-COPY/src/CSS/AdminCSS.css" text="+ Add Coupon" />
+                        <Button fx:id="DelBtn" layoutX="681.0" layoutY="66.0" mnemonicParsing="false" onAction="#handleDeleteButtonAction" prefHeight="26.0" prefWidth="105.0" styleClass="homeButton" stylesheets="@../../../RoleSpecific_POS_System-COPY/src/CSS/AdminCSS.css" text="Delete" />
+                        <Button fx:id="EditBtn" layoutX="566.0" layoutY="66.0" mnemonicParsing="false" onAction="#handleEditButtonAction" prefHeight="27.0" prefWidth="106.0" styleClass="homeButton" stylesheets="@../../../RoleSpecific_POS_System-COPY/src/CSS/AdminCSS.css" text="Edit" />
+                        <Button fx:id="DChomeBTN" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#SwitchForm" prefHeight="27.0" prefWidth="92.0" styleClass="homeButton" stylesheets="@../CSS/AdminCSS.css">
+                            <graphic>
+                                <ImageView fitHeight="12.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../Pictures/Group%205_1.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <ImageView fitHeight="50.0" fitWidth="298.0" layoutX="59.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Pictures/2.png" />
+                            </image>
                         </ImageView>
-                     </graphic>
-                  </Button>
-                  <ImageView fitHeight="50.0" fitWidth="298.0" layoutX="59.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Pictures/2.png" />
-                     </image>
-                  </ImageView>
-               </children>
+                    </children>
                 </AnchorPane>
             </children>
         </AnchorPane>

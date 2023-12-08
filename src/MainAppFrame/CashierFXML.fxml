@@ -13,9 +13,10 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
+<AnchorPane id="AnchorPane" fx:id="Cashierpane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" style="-fx-background-color: #111315; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.CashierFXMLController">
     <children>
       <ScrollPane fx:id="receiptScrollPane" layoutX="211.0" layoutY="151.0" prefHeight="450.0" prefWidth="449.0" styleClass="scrollPane" stylesheets="@../CSS/CashierCSS.css" AnchorPane.topAnchor="151.0">
          <content>
@@ -28,60 +29,69 @@
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding></ScrollPane>
-      <Pane layoutX="705.0" prefHeight="660.0" prefWidth="442.0" styleClass="panedesign" stylesheets="@../CSS/CashierCSS.css">
+      <Pane layoutX="705.0" styleClass="left-border" stylesheets="@../CSS/CashierCSS.css">
          <children>
-            <Button fx:id="takeOrderButton" layoutX="231.0" layoutY="561.0" mnemonicParsing="false" onAction="#takeOrder" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
-               <graphic>
-                  <ImageView fitHeight="14.0" fitWidth="96.0" onDragDetected="#takeOutOrder" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Pictures/receipt_g3.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <TableView fx:id="receiptTable" layoutX="53.0" layoutY="151.0" prefHeight="337.0" prefWidth="337.0">
-              <columns>
-                
-                <TableColumn fx:id="columnItemName" prefWidth="183.0" resizable="false" text="Item" />
-                <TableColumn fx:id="columnItemQuantity" prefWidth="65.0" resizable="false" text="Quant" />
-                  <TableColumn fx:id="columnItemPrice" prefWidth="90.0" resizable="false" text="Price" />
-                  <TableColumn minWidth="5.0" prefWidth="5.0" text="Column X" />
-              </columns>
-            </TableView>
-            <ImageView fitHeight="58.0" fitWidth="56.0" layoutX="194.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../Pictures/cashier_g1.png" />
-               </image>
-            </ImageView>
-            <Button fx:id="takeOutOrderButton" layoutX="60.0" layoutY="561.0" mnemonicParsing="false" onAction="#takeOutOrder" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
-               <graphic>
-                  <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Pictures/receipt_g4.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <Button fx:id="deleteItemButton" layoutX="60.0" layoutY="516.0" mnemonicParsing="false" onAction="#onDeleteItemButtonClicked" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
-               <graphic>
-                  <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Pictures/receipt_g2.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <Button fx:id="deleteAllitemsButton" layoutX="231.0" layoutY="516.0" mnemonicParsing="false" onAction="#onDeleteAllitemsButtonClicked" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
-               <graphic>
-                  <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Pictures/receipt_g1.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <Label layoutX="53.0" layoutY="117.0" text="For Customer Number:" textFill="WHITE" />
-            <VBox alignment="CENTER_RIGHT" layoutX="280.0" layoutY="107.0" prefHeight="36.0" prefWidth="109.0">
+            <Pane prefHeight="660.0" prefWidth="442.0" styleClass="left-border" stylesheets="@../CSS/CashierCSS.css">
                <children>
-                  <Label fx:id="customerLabel" text="Label" textFill="WHITE" />
+                  <Button fx:id="takeOrderButton" layoutX="231.0" layoutY="561.0" mnemonicParsing="false" onAction="#takeOrder" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="14.0" fitWidth="96.0" onDragDetected="#takeOutOrder" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Pictures/receipt_g3.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <TableView fx:id="receiptTable" layoutX="53.0" layoutY="151.0" prefHeight="337.0" prefWidth="337.0">
+                    <columns>
+                      
+                      <TableColumn fx:id="columnItemName" prefWidth="183.0" resizable="false" text="Item" />
+                      <TableColumn fx:id="columnItemQuantity" prefWidth="65.0" resizable="false" text="Quant" />
+                        <TableColumn fx:id="columnItemPrice" prefWidth="90.0" resizable="false" text="Price" />
+                        <TableColumn minWidth="5.0" prefWidth="5.0" text="Column X" />
+                    </columns>
+                  </TableView>
+                  <ImageView fitHeight="58.0" fitWidth="56.0" layoutX="194.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Pictures/cashier_g1.png" />
+                     </image>
+                  </ImageView>
+                  <Button fx:id="takeOutOrderButton" layoutX="60.0" layoutY="561.0" mnemonicParsing="false" onAction="#takeOutOrder" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Pictures/receipt_g4.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="deleteItemButton" layoutX="60.0" layoutY="516.0" mnemonicParsing="false" onAction="#onDeleteItemButtonClicked" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Pictures/receipt_g2.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="deleteAllitemsButton" layoutX="231.0" layoutY="516.0" mnemonicParsing="false" onAction="#onDeleteAllitemsButtonClicked" prefHeight="36.0" prefWidth="153.0" styleClass="receiptButton" stylesheets="@../CSS/CashierCSS.css" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="14.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Pictures/receipt_g1.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Label layoutX="53.0" layoutY="117.0" text="For Customer Number:" textFill="WHITE" />
+                  <VBox alignment="CENTER_RIGHT" layoutX="280.0" layoutY="107.0" prefHeight="36.0" prefWidth="109.0">
+                     <children>
+                        <Label fx:id="customerLabel" text="Label" textFill="WHITE" />
+                     </children>
+                  </VBox>
+                  <Line id="line" endX="186.4311065673828" endY="4.153542518615723" fill="WHITE" layoutX="131.0" layoutY="325.0" opacity="0.19" rotate="90.0" startX="-436.8671875" startY="3.7262773513793945" stroke="WHITE" />
                </children>
-            </VBox>
+            </Pane>
          </children>
       </Pane>
       <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="48.0" layoutY="570.0" pickOnBounds="true" preserveRatio="true">
@@ -145,7 +155,7 @@
             <Font size="9.0" />
          </font>
       </Label>
-      <Pane fx:id="blurPane" prefHeight="660.0" prefWidth="1136.0" styleClass="card" stylesheets="@../CSS/CashierCSS.css" visible="false" />
+      <Pane fx:id="blurPane" prefHeight="660.0" prefWidth="1147.0" styleClass="card" stylesheets="@../CSS/CashierCSS.css" visible="false" />
       <Label fx:id="empName" layoutX="493.0" layoutY="101.0" text="Label" textFill="WHITE" />
       <Label fx:id="empName1" layoutX="400.0" layoutY="101.0" text="Cashier Handler:" textFill="WHITE" />
    </children>

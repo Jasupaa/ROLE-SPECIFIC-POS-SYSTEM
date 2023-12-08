@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxWidth="1.7976931348623157E308" prefHeight="614.0" prefWidth="866.0" style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 30 30 30 30;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.SettlePaymentFXMLController">
+<AnchorPane id="AnchorPane" maxWidth="1.7976931348623157E308" prefHeight="614.0" prefWidth="866.0" style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 30 30 30 30;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.SettlePaymentFXMLController">
    <children>
       <Pane layoutX="506.0" layoutY="72.0">
          <children>
@@ -70,69 +70,95 @@
             <Button fx:id="printButton" layoutX="216.0" layoutY="434.0" mnemonicParsing="false" onAction="#printButton" prefHeight="25.0" prefWidth="53.0" text="Print" />
          </children>
       </Pane>
-      <AnchorPane layoutX="80.0" layoutY="47.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="510.0" prefWidth="366.0" style="-fx-border-radius: 5px;" styleClass="receiptdesign" stylesheets="@../CSS/CashierCSS.css">
+      <AnchorPane layoutX="80.0" layoutY="47.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="522.0" prefWidth="366.0" style="-fx-border-radius: 5px;" styleClass="receiptdesign" stylesheets="@../CSS/CashierCSS.css">
          <children>
-            <Pane layoutX="159.0" layoutY="14.0" prefHeight="558.4" prefWidth="365.6" style="-fx-background-color: #FFFFFF; -fx-border-color: #FFFFFF; -fx-border-style: dashed; -fx-border-radius: 5px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Pane layoutX="4.0" layoutY="4.0" prefHeight="510.0" prefWidth="362.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #FFFFFF; -fx-border-style: dashed; -fx-border-radius: 5px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
                <children>
-                  <AnchorPane layoutX="-2.0" prefHeight="510.0" prefWidth="363.0" style="-fx-border-radius: 5px;">
+                  <AnchorPane layoutX="-2.0" prefHeight="516.0" prefWidth="363.0" style="-fx-border-radius: 5px;">
                      <children>
-                        <TableView fx:id="receiptTV" layoutX="14.0" layoutY="114.0" prefHeight="235.0" prefWidth="336.0" style="-fx-background-color: transparent;">
+                        <TableView fx:id="receiptTV" layoutX="14.0" layoutY="129.0" prefHeight="260.0" prefWidth="336.0" style="-fx-background-color: transparent;">
                            <columns>
-                              <TableColumn fx:id="receiptProduct" prefWidth="169.60003662109375" text="Product" />
-                              <TableColumn fx:id="receiptQuantity" prefWidth="68.7999267578125" text="Quantity" />
-                              <TableColumn fx:id="receiptPrice" prefWidth="58.4000244140625" text="Price" />
+                              <TableColumn fx:id="receiptProduct" prefWidth="166.40000915527344" text="Product" />
+                              <TableColumn fx:id="receiptQuantity" prefWidth="72.79998779296875" text="Quantity" />
+                              <TableColumn fx:id="receiptPrice" prefWidth="96.0" text="Price" />
                            </columns>
                         </TableView>
-                        <Label layoutX="17.0" layoutY="89.0" text="Cashier Handler:" />
-                        <VBox layoutX="196.0" layoutY="366.0" spacing="2.0">
+                        <Label layoutX="17.0" layoutY="108.0" text="Cashier Handler:">
+                           <font>
+                              <Font size="10.0" />
+                           </font></Label>
+                        <VBox layoutX="210.0" layoutY="397.0" spacing="2.0">
                            <children>
-                              <Label text="SUBTOTAL:" />
-                              <Label text="DISCOUNT:" />
-                              <Label text="TOTAL:" />
-                              <Label text="CASH:" />
-                              <Label text="CHANGE DUE:" />
+                              <Label text="SUBTOTAL:">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font></Label>
+                              <Label text="DISCOUNT:">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font></Label>
+                              <Label text="TOTAL:">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font></Label>
+                              <Label text="CASH:">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font></Label>
+                              <Label text="CHANGE DUE:">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font></Label>
                            </children>
                         </VBox>
                         <HBox layoutX="109.0" layoutY="93.0" />
-                        <VBox layoutX="278.0" layoutY="367.0">
+                        <VBox layoutX="304.0" layoutY="397.0" spacing="2.0">
                            <children>
                               <Label fx:id="subTotal" text="Subtotal">
                                  <font>
-                                    <Font size="13.0" />
+                                    <Font size="11.0" />
                                  </font>
                               </Label>
                               <Label fx:id="appldDscLbl" text="Discount">
                                  <font>
-                                    <Font size="13.0" />
+                                    <Font size="11.0" />
                                  </font>
                               </Label>
                               <Label fx:id="customTotalLabel" text="Total">
                                  <font>
-                                    <Font size="13.0" />
+                                    <Font size="11.0" />
                                  </font>
                               </Label>
                               <Label fx:id="cashInput" text="Cash">
                                  <font>
-                                    <Font size="13.0" />
+                                    <Font size="11.0" />
                                  </font>
                               </Label>
                               <Label fx:id="changeLbl" text="Change">
                                  <font>
-                                    <Font size="13.0" />
+                                    <Font size="11.0" />
                                  </font>
                               </Label>
                            </children>
                         </VBox>
-                        <ImageView fitHeight="47.0" fitWidth="74.0" layoutX="143.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                        <ImageView fitHeight="47.0" fitWidth="74.0" layoutX="146.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
                            <image>
                               <Image url="@../Pictures/Splashscreen%20(2).png" />
                            </image>
                         </ImageView>
                         <HBox alignment="CENTER_RIGHT" layoutX="253.0" layoutY="95.0" prefWidth="54.0" />
-                        <Label layoutX="315.0" layoutY="89.0" text="00-00" />
-                        <Label fx:id="handlerName" layoutX="111.0" layoutY="88.0" text="Jasper">
+                        <Label fx:id="dateTime" alignment="CENTER_RIGHT" layoutX="181.0" layoutY="105.0" prefHeight="18.0" prefWidth="165.0" text="00-00">
                            <font>
-                              <Font size="13.0" />
+                              <Font size="10.0" />
+                           </font></Label>
+                        <Label fx:id="handlerName" layoutX="96.0" layoutY="108.0" prefHeight="15.0" prefWidth="71.0" text="[ Name ]">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="18.0" layoutY="90.0" text="Order No.">
+                           <font>
+                              <Font size="10.0" />
                            </font>
                         </Label>
                      </children>
