@@ -46,6 +46,8 @@ import java.io.IOException;
 import java.util.List;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -81,6 +83,12 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     private AnchorPane orderTab;
 
     @FXML
+    private Label pendingOrders;
+
+    @FXML
+    private Label completeOrders;
+
+    @FXML
     private Button orderTabBTN;
 
     @FXML
@@ -88,6 +96,9 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
 
     @FXML
     private GridPane ordersTabGP;
+
+    @FXML
+    private ScrollPane ordersTabSP;
 
     @FXML
     private GridPane archiveGP;
@@ -151,6 +162,7 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     private void handleMouseEnter(MouseEvent event) {
         // Handle mouse enter (hover in)
         archiveIV.setVisible(false);
+        updateCompleteOrdersLabel();
     }
 
     @FXML
@@ -276,37 +288,96 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     }
 
     public void orderTabsGrid() throws SQLException {
-        ordersTabGP.getChildren().clear();
+        kitchenCardData.clear();
         int column = 0;
-        int row = 1;
+        int row = 0; // Start from 0
 
-        for (KitchenCardData kitchenCardData : kitchenCardDataList) {
+        // Assuming you have a GridPane inside ordersTabSP
+        GridPane gridPane = new GridPane();
+
+        for (KitchenCardData cardData : kitchenCardDataList) {
             try {
                 // Check if the data for the customer is present
-                if (isCustomerDataPresent(kitchenCardData.getCustomerID())) {
+                if (isCustomerDataPresent(cardData.getCustomerID())) {
                     FXMLLoader loader = new FXMLLoader();
                     loader.setLocation(getClass().getResource("/Kitchen/KitchenCardFXML.fxml"));
                     AnchorPane pane = loader.load();
 
                     // Access the controller and set the data
                     KitchenCardFXMLController kitchenCardFXMLController = loader.getController();
-                    kitchenCardFXMLController.setKitchenCardData(kitchenCardData);
+                    kitchenCardFXMLController.setKitchenCardData(cardData);
 
                     // Set the reference to KitchenFXMLController
                     kitchenCardFXMLController.setKitchenController(this);
+
+                    kitchenCardData.add(cardData); // Add KitchenCardData to the list
+
+                    gridPane.add(pane, column++, row); // Use row directly
 
                     if (column == 1) {
                         column = 0;
                         ++row;
                     }
 
-                    ordersTabGP.add(pane, column++, row);
                     GridPane.setMargin(pane, new Insets(10));
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
+
+        // Assuming you have a GridPane inside ordersTabSP
+        ordersTabSP.setContent(gridPane);
+
+        // Update the pendingOrders label
+        updatePendingOrdersLabel();
+    }
+
+    public void updatePendingOrdersLabel() {
+        int totalOrders = kitchenCardData.size();
+        pendingOrders.setText(": " + totalOrders);
+    }
+
+    private void updateCompleteOrdersLabel() {
+        try {
+            // Fetch the total count for the latest date from the invoice_archive table
+            int totalCount = getLatestArchiveCount();
+
+            // Update the completeOrders label with the total count
+            completeOrders.setText(": " + totalCount);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getLatestArchiveCount() throws SQLException {
+        int totalCount = 0;
+
+        // Use DATE() function to extract only the date part
+        String sql = "SELECT COUNT(*) AS total_count FROM invoice_archive WHERE DATE(date_time) = (SELECT MAX(DATE(date_time)) FROM invoice_archive)";
+
+        try (Connection connection = database.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            if (resultSet.next()) {
+                totalCount = resultSet.getInt("total_count");
+            }
+        }
+
+        return totalCount;
+    }
+
+
+    /*GAME */
+    private int getOrdersCountFromScrollPane() {
+        int totalOrders = 0;
+
+        for (Node node : ordersTabSP.getContent().lookupAll(".pane")) {
+            if (node instanceof AnchorPane) {
+                totalOrders++;
+            }
+        }
+
+        return totalOrders;
     }
 
     @Override

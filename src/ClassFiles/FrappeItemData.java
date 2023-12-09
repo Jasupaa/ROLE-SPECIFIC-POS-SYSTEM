@@ -19,15 +19,18 @@ public class FrappeItemData {
     private Integer largePrice;
     private Blob image;
     private Integer itemID;
-    private InputStream imageInputStream;
+    private InputStream imageInputStream; 
+    private String status; 
+    
 
-    public FrappeItemData(String itemName, Integer smallPrice, Integer mediumPrice, Integer largePrice, Blob image, int itemID) {
+    public FrappeItemData(String itemName, Integer smallPrice, Integer mediumPrice, Integer largePrice, Blob image, int itemID, String status) {
         this.itemName = itemName;
         this.smallPrice = smallPrice;
         this.mediumPrice = mediumPrice;
         this.largePrice = largePrice;
         this.image = image;
-         this.itemID = itemID;
+        this.itemID = itemID;
+        this.status = status;
     }
 
     public FrappeItemData(String itemName, Integer smallPrice, Integer mediumPrice, Integer largePrice) {
@@ -90,5 +93,13 @@ public class FrappeItemData {
      public void setImageInputStream(InputStream imageInputStream) {
         this.imageInputStream = imageInputStream;
     }
+     
+     public String getStatus() {
+        return status;
+    }
+         public void setStatus (String status){
+             this.status= status;
+             
+}
 
 }

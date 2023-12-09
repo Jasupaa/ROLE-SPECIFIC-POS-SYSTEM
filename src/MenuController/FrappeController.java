@@ -26,6 +26,7 @@ import Databases.CRUDDatabase;
 import java.sql.Blob;
 import java.io.ByteArrayInputStream;
 import java.sql.ResultSet;
+import javafx.scene.control.Alert;
 
 /**
  *
@@ -50,6 +51,8 @@ public class FrappeController {
 
     @FXML
     private ImageView foodImg;
+    @FXML
+    private Label StatusLbl;
 
     @FXML
     private Label foodLabel;
@@ -97,9 +100,10 @@ public class FrappeController {
 
         // Assuming you have a method in MilkteaItemData to get the image name or title
         String itemName = frappeItemData.getItemName();
-
+        String status = frappeItemData.getStatus();
         // Set data to corresponding components
         foodLabel.setText(itemName);
+        StatusLbl.setText(status);
 
         /* para doon sa image */
         Blob imageBlob = frappeItemData.getImage();
@@ -141,10 +145,7 @@ public class FrappeController {
         }
     }
 
-    
-    
-    
-     @FXML
+    @FXML
     public void confirmButton1(ActionEvent event) {
 
         CashierFXMLController cashierController = ControllerManager.getCashierController();
@@ -159,7 +160,7 @@ public class FrappeController {
             String selectedSugarLevel = sugarlevelComboBox.getValue();
             Integer selectedQuantity = (Integer) spinnerQuantity.getValue();
 
-            if ( "None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
+            if ("None".equals(selectedSize) || "None".equals(selectedSugarLevel) || selectedQuantity == 0) {
                 System.out.println("Please select valid options for all ComboBoxes and ensure quantity is greater than 0.");
             } else {
                 int customer_id = 0; // Initialize customer_id
@@ -171,13 +172,23 @@ public class FrappeController {
                     System.out.println("Cashier controller not available.");
                 }
 
+                String status = StatusLbl.getText();
+                if ("Out Of Stock".equals(status)) {
+
+                    Alert outOfStockAlert = new Alert(Alert.AlertType.ERROR);
+                    outOfStockAlert.setTitle("Out of Stock");
+                    outOfStockAlert.setHeaderText(null);
+                    outOfStockAlert.setContentText("Sorry, the selected product is out of stock.");
+                    outOfStockAlert.showAndWait();
+                    return;
+                }
+
                 // Move insertOrderToDatabase inside the else block to ensure customer_id is properly assigned
                 insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedSugarLevel, askmeRadioSelected);
                 System.out.println("Data inserted into the database.");
             }
 
             // Reset the ComboBoxes to "None"
-   
             sizeComboBox.setValue("None");
             sugarlevelComboBox.setValue("None");
 
@@ -197,12 +208,7 @@ public class FrappeController {
         }
 
     }
-    
-    
-    
-    
-    
-    
+
     private void initializeSizeComboBox() {
         // Populate the sizeComboBox with items
         ObservableList<String> sizes = FXCollections.observableArrayList(
@@ -224,8 +230,6 @@ public class FrappeController {
         );
         sugarlevelComboBox.setItems(sugarLevels);
     }
-    
-    
 
     private int calculateSizePrice(String selectedSize) {
         try (Connection conn = CRUDDatabase.getConnection()) {
@@ -246,7 +250,5 @@ public class FrappeController {
         // Return 0 if an unknown size is selected, the item_name is not found, or if an error occurred
         return 0;
     }
-
- 
 
 }

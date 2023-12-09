@@ -26,6 +26,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -99,6 +100,14 @@ public class FruitDrinkCRUDController implements Initializable {
 
     @FXML
     private Button updtBTN;
+    
+    @FXML
+    private ComboBox<String> statusComboBox;
+    
+     private String getSelectedStatus() {
+        
+    return statusComboBox.getValue();
+}
 
     private ObservableList<FruitDrinkItemData> fruitDrinkItemData = FXCollections.observableArrayList();
 
@@ -108,6 +117,8 @@ public class FruitDrinkCRUDController implements Initializable {
          restrictLetter(txtLargePrice);
         restrictLetter(txtMediumPrice);
         restrictLetter(txtSmallPrice);
+        initializeStatusComboBox();
+        statusComboBox.setValue("InStock");
 
         fruitDrinkTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
@@ -151,7 +162,7 @@ public class FruitDrinkCRUDController implements Initializable {
                 String largePrice = txtLargePrice.getText();
                 String fruitFlavor = txtFruitFlavor.getText();
                 String sinkers = txtSinkers.getText();
-
+                String status = getSelectedStatus();
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
                
@@ -162,7 +173,7 @@ public class FruitDrinkCRUDController implements Initializable {
                 switch (buttonId) {
                 case "addBTN" -> {
            if (!isProductAlreadyExists(connection, itemName)) {
-                  insertFruitDrinkItem(connection, itemName,smallPrice, mediumPrice, largePrice,fruitFlavor, sinkers , imageInputStream);
+                  insertFruitDrinkItem(connection, itemName,smallPrice, mediumPrice, largePrice,fruitFlavor, sinkers , imageInputStream, status);
                     System.out.println("Data inserted.");
                      clearTextFields();
                 } else {
@@ -177,7 +188,7 @@ public class FruitDrinkCRUDController implements Initializable {
                 int itemID = selectedItem.getItemID();
                 if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
                     selectedItem.setItemID(itemID);
-                        updateFruitDrinkItem(connection, itemName,smallPrice, mediumPrice, largePrice,fruitFlavor, sinkers , imageInputStream, itemID);
+                        updateFruitDrinkItem(connection, itemName,smallPrice, mediumPrice, largePrice,fruitFlavor, sinkers , imageInputStream, itemID, status);
                         System.out.println("Data updated.");
                      clearTextFields();
                 } else {
@@ -240,8 +251,8 @@ public class FruitDrinkCRUDController implements Initializable {
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
      */
-    private void insertFruitDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice, String fruitFlavor, String sinkers,InputStream image) {
-        String sql = "INSERT INTO fruitdrink_items (item_name, small_price, medium_price, large_price,fruit_flavor, sinkers, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private void insertFruitDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice, String fruitFlavor, String sinkers,InputStream image, String status) {
+        String sql = "INSERT INTO fruitdrink_items (item_name, small_price, medium_price, large_price,fruit_flavor, sinkers, image, string) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
@@ -251,6 +262,7 @@ public class FruitDrinkCRUDController implements Initializable {
             preparedStatement.setString(5, fruitFlavor);
             preparedStatement.setString(6, sinkers);
             preparedStatement.setBlob(7, image); // Use setBlob for InputStream
+             preparedStatement.setString(8, status);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -259,15 +271,15 @@ public class FruitDrinkCRUDController implements Initializable {
         }
     }
 
-    private void updateFruitDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice,String fruitFlavor,String sinkers, InputStream image, int itemID) {
+    private void updateFruitDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice,String fruitFlavor,String sinkers, InputStream image, int itemID, String status) {
         String sql;
 
         if (image != null) {
 
-            sql = "UPDATE fruitdrink_items SET item_name=?, small_price=?, medium_price=?, large_price=?,fruit_drink=?,sinkers=?, image=? WHERE item_ID=?";
+            sql = "UPDATE fruitdrink_items SET item_name=?, small_price=?, medium_price=?, large_price=?, fruit_flavor=?, sinkers=?, image=?, status=? WHERE item_ID=?";
         } else {
 
-            sql = "UPDATE fruitdrink_items SET item_name=?, small_price=?, medium_price=?, large_price=? fruit_drink=?,sinkers=? WHERE item_ID=?";
+            sql = "UPDATE fruitdrink_items SET item_name=?, small_price=?, medium_price=?, large_price=?, fruit_flavor=?, sinkers=?, status=? WHERE item_ID=?";
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -277,13 +289,14 @@ public class FruitDrinkCRUDController implements Initializable {
             preparedStatement.setString(4, largePrice);
             preparedStatement.setString(5, fruitFlavor);
             preparedStatement.setString(6, sinkers);
+             preparedStatement.setString(7, status);
             
 
             if (image != null) {
-                preparedStatement.setBlob(7, image); // Use setBlob for InputStream
-                preparedStatement.setInt(8, itemID);
-            } else {
+                preparedStatement.setBlob(8, image); // Use setBlob for InputStream
                 preparedStatement.setInt(9, itemID);
+            } else {
+                preparedStatement.setInt(8, itemID);
             }
 
             preparedStatement.executeUpdate();
@@ -321,7 +334,7 @@ public class FruitDrinkCRUDController implements Initializable {
     private ObservableList<FruitDrinkItemData> fetchDataFromDatabase() {
         ObservableList<FruitDrinkItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name, small_price, medium_price, large_price, fruit_flavor, sinkers, image FROM fruitdrink_items";
+        String sql = "SELECT item_id, item_name, small_price, medium_price, large_price, fruit_flavor, sinkers, image, status FROM fruitdrink_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
@@ -334,6 +347,8 @@ public class FruitDrinkCRUDController implements Initializable {
                 String fruitFlavor = result.getString("fruit_flavor");
                 String sinkers = result.getString("sinkers");
                 
+                String status = result.getString("status");
+                
                 Blob imageBlob = result.getBlob("image");
 
             
@@ -343,6 +358,7 @@ public class FruitDrinkCRUDController implements Initializable {
                 fruitDrinkItemData.setItemID(itemID);
                 fruitDrinkItemData.setImage(imageBlob);
                 fruitDrinkItemData.setImageInputStream(imageInputStream);
+                fruitDrinkItemData.setStatus(status);
                
                 
                 listData.add(fruitDrinkItemData);
@@ -393,6 +409,9 @@ public class FruitDrinkCRUDController implements Initializable {
         FruitDrinkItemData selectedItem = fruitDrinkTV.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
+            
+            String status = selectedItem.getStatus();
+            
             txtItemName.setText(selectedItem.getItemName());
 
             txtSmallPrice.setText(String.valueOf(selectedItem.getSmallPrice()));
@@ -400,6 +419,7 @@ public class FruitDrinkCRUDController implements Initializable {
             txtLargePrice.setText(String.valueOf(selectedItem.getLargePrice()));
             txtFruitFlavor.setText(selectedItem.getFruitFlavor()); 
             txtSinkers.setText(selectedItem.getSinkers());  
+            statusComboBox.setValue(status);
 
             Blob imageBlob = selectedItem.getImage();
              
@@ -479,6 +499,15 @@ public class FruitDrinkCRUDController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     } 
-
+    
+        private void initializeStatusComboBox() {
+        // Populate the sugarlevelComboBox with items
+        ObservableList<String> status = FXCollections.observableArrayList(
+                "InStock",
+                "Out Of Stock"
+                
+        );
+        statusComboBox.setItems(status);
     }
 
+    }

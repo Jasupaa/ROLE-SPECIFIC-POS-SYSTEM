@@ -15,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -43,6 +44,9 @@ public class CoffeeController {
 
     @FXML
     private RadioButton askmeRadioHead;
+    
+    @FXML
+    private Label StatusLbl;
 
     @FXML
     private Button confirmButton1;
@@ -90,6 +94,7 @@ public class CoffeeController {
 
         // Assuming you have a method in MilkteaItemData to get the image name or title
         String itemName = coffeeItemData.getItemName();
+         String status = coffeeItemData.getStatus();
 
         // Assuming you have a method in MilkteaItemData to get the addons
         String type = coffeeItemData.getType();
@@ -98,7 +103,7 @@ public class CoffeeController {
         foodLabel.setText(itemName);
         typeComboBox.getItems().clear();
         typeComboBox.getItems().addAll(type.split(", "));
-
+        StatusLbl.setText( status);
 
         /* para doon sa image */
         Blob imageBlob = (Blob) coffeeItemData.getImage();
@@ -166,6 +171,17 @@ public class CoffeeController {
                 } else {
                     System.out.println("Cashier controller not available.");
                 }
+                
+                 String status = StatusLbl.getText(); 
+            if ("Out Of Stock".equals(status)) {
+                
+                Alert outOfStockAlert = new Alert(Alert.AlertType.ERROR);
+                outOfStockAlert.setTitle("Out of Stock");
+                outOfStockAlert.setHeaderText(null);
+                outOfStockAlert.setContentText("Sorry, the selected product is out of stock.");
+                outOfStockAlert.showAndWait();
+                return;
+            }
 
                 // Move insertOrderToDatabase inside the else block to ensure customer_id is properly assigned
                 insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedType, askmeRadioSelected);

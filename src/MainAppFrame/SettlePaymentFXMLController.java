@@ -678,7 +678,14 @@ public class SettlePaymentFXMLController implements Initializable {
                     String[] tables = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
 
                     for (String table : tables) {
-                        String orderQuery = "SELECT * FROM " + table + " WHERE customer_id = ?";
+                        String orderQuery;
+                        if ("milk_tea".equals(table)) {
+                            orderQuery = "SELECT order_id, item_name, final_price, quantity, size, add_ons FROM " + table + " WHERE customer_id = ?";
+                        } else if ("frappe".equals(table) || "fruit_drink".equals(table) || "coffee".equals(table)) {
+                            orderQuery = "SELECT order_id, item_name, final_price, quantity, size, '' AS add_ons FROM " + table + " WHERE customer_id = ?";
+                        } else {
+                            orderQuery = "SELECT order_id, item_name, final_price, quantity, '' AS size, '' AS add_ons FROM " + table + " WHERE customer_id = ?";
+                        }
 
                         try (PreparedStatement orderStmt = conn.prepareStatement(orderQuery)) {
                             orderStmt.setInt(1, currentCustomerID);
@@ -691,8 +698,12 @@ public class SettlePaymentFXMLController implements Initializable {
                                     double finalPrice = orderRs.getDouble("final_price");
                                     int quantity = orderRs.getInt("quantity");
 
+                                    // Check if size and add_ons columns are available
+                                    String size = orderRs.getString("size") != null ? orderRs.getString("size") : "";
+                                    String addons = orderRs.getString("add_ons") != null ? orderRs.getString("add_ons") : "";
+
                                     // Create an ItemData instance with the fetched data
-                                    ItemData itemData = new ItemData(orderId, productName, finalPrice, quantity);
+                                    ItemData itemData = new ItemData(orderId, combineWithAddons(size, productName, addons), finalPrice, quantity);
 
                                     // Add the ItemData to the list
                                     orderDetailsList.add(itemData);
@@ -709,6 +720,18 @@ public class SettlePaymentFXMLController implements Initializable {
             }
         }
         return orderDetailsList;
+    }
+
+// Helper method for combining item name with add-ons
+    private String combineWithAddons(String size, String itemName, String addons) {
+        // Check if addons is not empty or contains only whitespace
+        if (!addons.trim().isEmpty()) {
+            // Concatenate with add-ons
+            return size + " " + itemName + " with " + addons;
+        } else {
+            // Return without add-ons
+            return size + " " + itemName;
+        }
     }
 
     private void setupTableView() throws SQLException {
