@@ -46,19 +46,31 @@ public class CashierConfirmationFXMLController implements Initializable {
     private TableView<ItemData> receiptTV2;
 
     @FXML
-    private Label handlerName;
-    @FXML
-    private Label subTotal2;
-    @FXML
-    private Label applDsc2;
-    @FXML
-    private Label customTotal2;
-    @FXML
-    private Label cashInput2;
-    @FXML
-    private Label changeLbl2;
-    @FXML
     private Label handlerName1;
+
+    @FXML
+    private Label subTotal;
+
+    @FXML
+    private Label discount;
+
+    @FXML
+    private Label total;
+
+    @FXML
+    private Label cash;
+
+    @FXML
+    private Label change;
+
+    @FXML
+    private Label orderType;
+
+    @FXML
+    private Label orderID;
+
+    @FXML
+    private Label dateTime1;
 
     /**
      * Initializes the controller class.
@@ -69,7 +81,7 @@ public class CashierConfirmationFXMLController implements Initializable {
         this.settlePaymentController = controller;
     }
 
-    public void setOrderDetails(int customerID, String orderType, double subtotal, double discountApplied, double totalAmount, double cashAmount, double changeAmount) {
+    public void setOrderDetails(String handlerName, String dateTimeString, int customerID, String orderType, double subtotal, double discountApplied, double totalAmount, double cashAmount, double changeAmount) {
 
         // Concatenate peso sign to the values
         String pesoSign = "₱";
@@ -79,16 +91,21 @@ public class CashierConfirmationFXMLController implements Initializable {
         String cashText = pesoSign + String.valueOf(cashAmount);
         String changeText = pesoSign + String.valueOf(changeAmount);
 
-        subTotal2.setText(subtotalText);
-        applDsc2.setText(discountText);
-        customTotal2.setText(totalText);
-        cashInput2.setText(cashText);
-        changeLbl2.setText(changeText);
+        dateTime1.setText(dateTimeString);
+        handlerName1.setText(handlerName);
+        orderID.setText(String.valueOf(customerID));
+        subTotal.setText(subtotalText);
+        discount.setText(discountText);
+        total.setText(totalText);
+        cash.setText(cashText);
+        change.setText(changeText);
 
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        receiptTV2.setStyle("-fx-table-cell-border-color: transparent; -fx-table-header-border-color: transparent;");
+
         System.out.println("CashierConfirmationFXMLController initialized");
         try {
             setupTableView();
@@ -100,9 +117,7 @@ public class CashierConfirmationFXMLController implements Initializable {
     }
 
     private ObservableList<ItemData> fetchOrderDetails() throws SQLException {
-        System.out.println("Fetching order details...");
-
-        ObservableList<ItemData> orderDetailsList1 = FXCollections.observableArrayList();
+        ObservableList<ItemData> orderDetailsList = FXCollections.observableArrayList();
 
         CashierFXMLController cashierController = ControllerManager.getCashierController();
         int currentCustomerID = cashierController.getCurrentCustomerID();
@@ -114,8 +129,14 @@ public class CashierConfirmationFXMLController implements Initializable {
                     String[] tables = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
 
                     for (String table : tables) {
-                        System.out.println("Fetching from table: " + table);
-                        String orderQuery = "SELECT * FROM " + table + " WHERE customer_id = ?";
+                        String orderQuery;
+                        if ("milk_tea".equals(table)) {
+                            orderQuery = "SELECT order_id, item_name, final_price, quantity, size, add_ons FROM " + table + " WHERE customer_id = ?";
+                        } else if ("frappe".equals(table) || "fruit_drink".equals(table) || "coffee".equals(table)) {
+                            orderQuery = "SELECT order_id, item_name, final_price, quantity, size, '' AS add_ons FROM " + table + " WHERE customer_id = ?";
+                        } else {
+                            orderQuery = "SELECT order_id, item_name, final_price, quantity, '' AS size, '' AS add_ons FROM " + table + " WHERE customer_id = ?";
+                        }
 
                         try (PreparedStatement orderStmt = conn.prepareStatement(orderQuery)) {
                             orderStmt.setInt(1, currentCustomerID);
@@ -128,14 +149,15 @@ public class CashierConfirmationFXMLController implements Initializable {
                                     double finalPrice = orderRs.getDouble("final_price");
                                     int quantity = orderRs.getInt("quantity");
 
+                                    // Check if size and add_ons columns are available
+                                    String size = orderRs.getString("size") != null ? orderRs.getString("size") : "";
+                                    String addons = orderRs.getString("add_ons") != null ? orderRs.getString("add_ons") : "";
+
                                     // Create an ItemData instance with the fetched data
-                                    ItemData itemData = new ItemData(orderId, productName, finalPrice, quantity);
+                                    ItemData itemData = new ItemData(orderId, combineWithAddons(size, productName, addons), finalPrice, quantity);
 
                                     // Add the ItemData to the list
-                                    orderDetailsList1.add(itemData);
-
-                                    // Print the fetched data
-                                    System.out.println("Fetched data: " + itemData);
+                                    orderDetailsList.add(itemData);
                                 }
                             }
                         }
@@ -148,21 +170,29 @@ public class CashierConfirmationFXMLController implements Initializable {
                 // Handle database-related exceptions
             }
         }
-        return orderDetailsList1;
+        return orderDetailsList;
+    }
+
+// Helper method for combining item name with add-ons
+    private String combineWithAddons(String size, String itemName, String addons) {
+        // Check if addons is not empty or contains only whitespace
+        if (!addons.trim().isEmpty()) {
+            // Concatenate with add-ons
+            return size + " " + itemName + " with " + addons;
+        } else {
+            // Return without add-ons
+            return size + " " + itemName;
+        }
     }
 
     public void setupTableView() throws SQLException {
-        // Obtain the customer ID
-        CashierFXMLController cashierController = ControllerManager.getCashierController();
-        int currentCustomerID = cashierController.getCurrentCustomerID();
-
         ObservableList<ItemData> orderDetailsList = fetchOrderDetails();
         for (ItemData itemData : orderDetailsList) {
+
             System.out.println("Product Name: " + itemData.getItemName());
             System.out.println("Final Price: " + itemData.getItemPrice());
             System.out.println("Quantity: " + itemData.getItemQuantity());
         }
-
         try {
             receiptProduct.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getItemName()));
             receiptPrice2.setCellValueFactory(f -> new SimpleDoubleProperty(f.getValue().getItemPrice()).asObject());
@@ -170,78 +200,10 @@ public class CashierConfirmationFXMLController implements Initializable {
 
             // Bind the TableView to the combined ObservableList
             receiptTV2.setItems(fetchOrderDetails());
-
-            // Pass the customer ID to fetchChangeAmountFromDatabase method
-            double changeAmount = fetchChangeAmountFromDatabase(currentCustomerID);
-
-            // Populate the changeLbl and transfer the same data to changeLbl2
-            changeLbl2.setText(String.format("₱%.2f", changeAmount));
         } catch (SQLException e) {
             e.printStackTrace();
             // Handle exceptions accordingly
         }
-    }
-
-    private int fetchCustomerID() {
-    CashierFXMLController cashierController = ControllerManager.getCashierController();
-    int currentCustomerID = cashierController.getCurrentCustomerID();
-    System.out.println("Fetched Customer ID: " + currentCustomerID);
-    return currentCustomerID;
-}
-
-private double fetchChangeAmountFromDatabase() {
-    int customerID = fetchCustomerID();
-    System.out.println("Fetching change amount for Customer ID: " + customerID);
-
-    try (Connection conn = database.getConnection()) {
-        if (conn != null) {
-            String sql = "SELECT `change` FROM invoice WHERE customer_id = ?";
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // Set the customer ID parameter
-                stmt.setInt(1, customerID);
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        double changeAmount = rs.getDouble("change");
-                        System.out.println("Fetched change amount: " + changeAmount);
-                        return changeAmount;
-                    }
-                }
-            }
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-        // Handle database-related exceptions
-    }
-
-    System.out.println("No change amount found. Returning default value: 0.0");
-    return 0.0; // Default value if no data is found
-}
-
-
-    private double fetchChangeAmountFromDatabase(int customerID) {
-        try (Connection conn = database.getConnection()) {
-            if (conn != null) {
-                String sql = "SELECT `change` FROM invoice WHERE customer_id = ?";
-
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    // Set the customer ID parameter
-                    stmt.setInt(1, customerID);
-
-                    try (ResultSet rs = stmt.executeQuery()) {
-                        if (rs.next()) {
-                            return rs.getDouble("change");
-                        }
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Handle database-related exceptions
-        }
-
-        return 0.0; // Default value if no data is found
     }
 
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -9,7 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.FrappeCRUDController">
+<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.FrappeCRUDController">
    <children>
       <TableView fx:id="frappeTV" layoutX="39.0" layoutY="51.0" prefHeight="350.0" prefWidth="285.0">
         <columns>
@@ -46,7 +47,9 @@
       </AnchorPane>
       <Button fx:id="attachimageBTN" layoutX="378.0" layoutY="256.0" mnemonicParsing="false" onAction="#onAttachImageButtonClick" text="Attach Image" />
       <Button fx:id="addBTN1" layoutX="717.0" layoutY="375.0" mnemonicParsing="false" onAction="#clearInput" text="Clear" />
-      <Button layoutX="655.0" layoutY="375.0" mnemonicParsing="false" text="Update" />
+      <Button fx:id="updtBTN" layoutX="655.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Update" />
       <Button layoutX="598.0" layoutY="375.0" mnemonicParsing="false" text="Delete" />
+      <ComboBox fx:id="statusComboBox" layoutX="674.0" layoutY="57.0" prefHeight="26.0" prefWidth="145.0" />
+      <Label layoutX="625.0" layoutY="60.0" text="Status:" />
    </children>
 </AnchorPane>

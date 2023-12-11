@@ -29,5 +29,6 @@
                </children>
             </VBox>
          </children></Pane>
+      <Label fx:id="StatusLbl" layoutX="37.0" layoutY="32.0" prefHeight="17.0" prefWidth="150.0" text="Label" />
    </children>
 </AnchorPane>

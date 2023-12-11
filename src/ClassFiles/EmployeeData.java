@@ -93,6 +93,26 @@ public class EmployeeData {
         this.empStatus.set(empStatus);
     }
 
+    public void setEmpFirstName(String empFirstName) {
+        this.empFirstName.set(empFirstName);
+    }
+
+    public void setEmpLastName(String empLastName) {
+        this.empLastName.set(empLastName);
+    }
+
+    public void setEmpContact(long empContact) {
+        this.empContact.set(empContact);
+    }
+
+    public void setEmpEmail(String empEmail) {
+        this.empEmail.set(empEmail);
+    }
+
+    public void setEmpRole(String empRole) {
+        this.emp_role.set(empRole);
+    }
+
     private static final String INSERT_EMPLOYEES_SQL
             = "INSERT INTO `employees` (`empFirstName`, `empContact`, `empEmail`, `emp_role`, `pin_code`, `empLastName`, `empStatus`) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -119,4 +139,15 @@ public class EmployeeData {
         this.pin_code = new SimpleIntegerProperty(pin_code);
         this.empStatus = new SimpleStringProperty("Active");
     }
+
+    private int orderInList;
+
+    public int getOrderInList() {
+        return orderInList;
+    }
+
+    public void setOrderInList(int orderInList) {
+        this.orderInList = orderInList;
+    }
+
 }

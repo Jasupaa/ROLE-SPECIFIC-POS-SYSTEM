@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="KitchenPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.KitchenFXMLController">
+<AnchorPane id="AnchorPane" fx:id="KitchenPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/KitchenEmpsCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.KitchenFXMLController">
     <children>
       <ImageView fx:id="CloseButton" fitHeight="25.0" fitWidth="19.0" layoutX="49.0" layoutY="599.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -73,16 +73,8 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Label fx:id="completeOrders" layoutX="31.0" layoutY="198.0" text=": 0" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label fx:id="pendingOrders" layoutX="31.0" layoutY="96.0" text=": 0" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
+            <Label fx:id="pendingOrders" layoutX="32.0" layoutY="93.0" prefHeight="18.0" prefWidth="115.0" text=": 0" textFill="WHITE" />
+            <Label fx:id="completeOrders" layoutX="32.0" layoutY="193.0" prefHeight="18.0" prefWidth="115.0" text=": 0" textFill="WHITE" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="archiveTab" layoutX="50.0" layoutY="143.0" prefHeight="482.0" prefWidth="1036.0" style="-fx-background-color: #111315;" visible="false">

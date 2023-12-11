@@ -1,6 +1,5 @@
 package CRUDs;
 
-
 import ClassFiles.RiceMealsItemData;
 import Databases.CRUDDatabase;
 import MainAppFrame.CashierFXMLController;
@@ -32,6 +31,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -79,14 +79,23 @@ public class RiceMealsCRUDController implements Initializable {
 
     private Image selectedImage;
 
+    @FXML
+    private ComboBox<String> statusComboBox;
+
+    private String getSelectedStatus() {
+
+        return statusComboBox.getValue();
+    }
+
     private ObservableList<RiceMealsItemData> ricemealsItemData = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         displayRiceMeals();
-         restrictLetter(txtPrice);
-        
+        restrictLetter(txtPrice);
 
+        initializeStatusComboBox();
+        statusComboBox.setValue("InStock");
         ricemealsTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 handleTableView();
@@ -126,6 +135,7 @@ public class RiceMealsCRUDController implements Initializable {
                 /* para sa mga CRUD para di nakakalito tignan sa sample_database */
                 String itemName = txtItemName.getText();
                 String price = txtPrice.getText();
+                String status = getSelectedStatus();
 
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
@@ -135,32 +145,32 @@ public class RiceMealsCRUDController implements Initializable {
 
                 switch (buttonId) {
                     case "addBTN" -> {
-                    if (!isProductAlreadyExists(connection, itemName)) {
-                    insertRiceMealsItem(connection, itemName, price, imageInputStream);
-                    System.out.println("Data inserted.");
-                     clearTextFields();
-                } else {
-                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
-                    System.out.println("Product already exists.");
-                    return; 
-                }
-                       
+                        if (!isProductAlreadyExists(connection, itemName)) {
+                            insertRiceMealsItem(connection, itemName, price, imageInputStream, status);
+                            System.out.println("Data inserted.");
+                            clearTextFields();
+                        } else {
+                            showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                            System.out.println("Product already exists.");
+                            return;
+                        }
+
                     }
                     case "updtBTN" -> {
-                         if (selectedItem != null) {
-                int itemID = selectedItem.getItemID();
-                if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
-                     selectedItem.setItemID(itemID);
-                            updateRiceMealsItem(connection, itemName, price, imageInputStream, itemID);
-                            System.out.println("Data updated.");
-                     clearTextFields();
-                } else {
-                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
-                    System.out.println("Product already exists.");
-                    return; 
-                     
+                        if (selectedItem != null) {
+                            int itemID = selectedItem.getItemID();
+                            if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
+                                selectedItem.setItemID(itemID);
+                                updateRiceMealsItem(connection, itemName, price, imageInputStream, itemID, status);
+                                System.out.println("Data updated.");
+                                clearTextFields();
+                            } else {
+                                showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                                System.out.println("Product already exists.");
+                                return;
+
+                            }
                         }
-                    }
                     }
                     case "dltBtn" -> {
 
@@ -210,14 +220,15 @@ public class RiceMealsCRUDController implements Initializable {
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
      */
-    private void insertRiceMealsItem(Connection connection, String itemName, String price, InputStream image) {
-        String sql = "INSERT INTO ricemeals_items (item_name,price, image) VALUES (?, ?, ?)";
+    private void insertRiceMealsItem(Connection connection, String itemName, String price, InputStream image, String status) {
+        String sql = "INSERT INTO ricemeals_items (item_name,price, image, status) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, price);
 
             preparedStatement.setBlob(3, image); // Use setBlob for InputStream
+            preparedStatement.setString(4, status);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -226,26 +237,27 @@ public class RiceMealsCRUDController implements Initializable {
         }
     }
 
-    private void updateRiceMealsItem(Connection connection, String itemName, String price, InputStream image, int itemID) {
+    private void updateRiceMealsItem(Connection connection, String itemName, String price, InputStream image, int itemID, String status) {
         String sql;
 
         if (image != null) {
 
-            sql = "UPDATE ricemeals_items SET item_name=?, price=?, image=? WHERE item_ID=?";
+            sql = "UPDATE ricemeals_items SET item_name=?, price=?, image=?, status=? WHERE item_ID=?";
         } else {
 
-            sql = "UPDATE ricemeals_items SET item_name=?, price=? WHERE item_ID=?";
+            sql = "UPDATE ricemeals_items SET item_name=?, price=?, status=?  WHERE item_ID=?";
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, price);
+            preparedStatement.setString(3, status);
 
             if (image != null) {
-                preparedStatement.setBlob(3, image); // Use setBlob for InputStream
-                preparedStatement.setInt(4, itemID);
+                preparedStatement.setBlob(4, image); // Use setBlob for InputStream
+                preparedStatement.setInt(5, itemID);
             } else {
-                preparedStatement.setInt(6, itemID);
+                preparedStatement.setInt(4, itemID);
             }
 
             preparedStatement.executeUpdate();
@@ -283,7 +295,7 @@ public class RiceMealsCRUDController implements Initializable {
     private ObservableList<RiceMealsItemData> fetchDataFromDatabase() {
         ObservableList<RiceMealsItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name, price, image FROM ricemeals_items";
+        String sql = "SELECT item_id, item_name, price, image, status FROM ricemeals_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
@@ -291,20 +303,17 @@ public class RiceMealsCRUDController implements Initializable {
                 int itemID = result.getInt("item_id");
                 String itemName = result.getString("item_name");
                 Integer price = result.getInt("price");
-                
-                 Blob imageBlob = result.getBlob("image");
+                String status = result.getString("status");
+                Blob imageBlob = result.getBlob("image");
 
-                 InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
-
-   
-   
+                InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
 
                 RiceMealsItemData riceMealsItemData = new RiceMealsItemData(itemName, price);
                 riceMealsItemData.setItemID(itemID);
                 riceMealsItemData.setImage(imageBlob); // Set Blob if needed
                 riceMealsItemData.setImageInputStream(imageInputStream);
+                riceMealsItemData.setStatus(status);
 
-                
                 listData.add(riceMealsItemData);
 
             }
@@ -345,43 +354,46 @@ public class RiceMealsCRUDController implements Initializable {
         RiceMealsItemData selectedItem = ricemealsTV.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
+
+            String status = selectedItem.getStatus();
+
             txtItemName.setText(selectedItem.getItemName());
 
             txtPrice.setText(String.valueOf(selectedItem.getPrice()));
 
-        Blob imageBlob = selectedItem.getImage();
-             
-        try {
-  
-    InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
+            Blob imageBlob = selectedItem.getImage();
+            statusComboBox.setValue(status);
+            try {
 
-    selectedItem.setImageInputStream(imageInputStream);
+                InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
 
-  
-    if (imageInputStream != null) {
-        Image selectedItemImage = new Image(imageInputStream);
-        itemIV.setImage(selectedItemImage);
-        iconIV.setVisible(false);
-    } else {
-       
-        itemIV.setImage(null);
-        iconIV.setVisible(true);
+                selectedItem.setImageInputStream(imageInputStream);
+
+                if (imageInputStream != null) {
+                    Image selectedItemImage = new Image(imageInputStream);
+                    itemIV.setImage(selectedItemImage);
+                    iconIV.setVisible(false);
+                } else {
+
+                    itemIV.setImage(null);
+                    iconIV.setVisible(true);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+            }
+
+        }
     }
-} catch (SQLException e) {
-    e.printStackTrace();
-   
-}
-        
-}
- }
-     public void restrictLetter(TextField textField) {
+
+    public void restrictLetter(TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*\\.?\\d*")) {
                 textField.setText(oldValue);
             }
         });
     }
-     
+
     private boolean isProductAlreadyExists(Connection connection, String itemName) {
         String sql = "SELECT COUNT(*) FROM ricemeals_items WHERE item_name = ?";
 
@@ -400,27 +412,26 @@ public class RiceMealsCRUDController implements Initializable {
 
         return false;
     }
- private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
-    String sql = "SELECT COUNT(*) FROM ricemeals_items WHERE item_name = ? AND item_id != ?";
 
-    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-        preparedStatement.setString(1, itemName);
-        preparedStatement.setInt(2, itemID);
-        ResultSet resultSet = preparedStatement.executeQuery();
+    private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
+        String sql = "SELECT COUNT(*) FROM ricemeals_items WHERE item_name = ? AND item_id != ?";
 
-        if (resultSet.next()) {
-            int count = resultSet.getInt(1);
-            return count > 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, itemName);
+            preparedStatement.setInt(2, itemID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return false;
     }
-
-    return false;
-}
-
-
 
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -428,11 +439,15 @@ public class RiceMealsCRUDController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
-    } 
-    
-    
-    
-    
-    
-    
+    }
+
+    private void initializeStatusComboBox() {
+        // Populate the sugarlevelComboBox with items
+        ObservableList<String> status = FXCollections.observableArrayList(
+                "InStock",
+                "Out Of Stock"
+        );
+        statusComboBox.setItems(status);
+    }
+
 }

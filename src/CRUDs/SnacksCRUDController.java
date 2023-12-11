@@ -25,6 +25,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -73,6 +74,15 @@ public class SnacksCRUDController implements Initializable {
     private Button updtBTN;
 
     private Image selectedImage;
+    
+    @FXML
+    private ComboBox<String> statusComboBox;
+     
+    private String getSelectedStatus() {
+        
+    return statusComboBox.getValue();
+}
+
 
     private ObservableList<SnacksItemData> snacksItemData = FXCollections.observableArrayList();
 
@@ -81,6 +91,8 @@ public class SnacksCRUDController implements Initializable {
         displaySnacks();
          restrictLetter(txtPrice);
         
+        initializeStatusComboBox();
+        statusComboBox.setValue("InStock");
 
         snacksTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
@@ -121,6 +133,7 @@ public class SnacksCRUDController implements Initializable {
                 /* para sa mga CRUD para di nakakalito tignan sa sample_database */
                 String itemName = txtItemName.getText();
                 String price = txtPrice.getText();
+                 String status = getSelectedStatus();
 
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
@@ -131,7 +144,7 @@ public class SnacksCRUDController implements Initializable {
                 switch (buttonId) {
                     case "addBTN" -> {
                      if (!isProductAlreadyExists(connection, itemName)) {
-                        insertSnacksItem(connection, itemName, price, imageInputStream);
+                        insertSnacksItem(connection, itemName, price, imageInputStream, status);
                         System.out.println("Data inserted.");
                         clearTextFields();
                         } else {
@@ -146,7 +159,7 @@ public class SnacksCRUDController implements Initializable {
                 int itemID = selectedItem.getItemID();
                if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
                     selectedItem.setItemID(itemID);
-                     updateSnacksItem(connection, itemName, price, imageInputStream, itemID);
+                     updateSnacksItem(connection, itemName, price, imageInputStream, itemID, status);
                      System.out.println("Data updated.");
                      clearTextFields();
                 } else {
@@ -208,14 +221,15 @@ public class SnacksCRUDController implements Initializable {
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
      */
-    private void insertSnacksItem(Connection connection, String itemName, String price, InputStream image) {
-        String sql = "INSERT INTO snacks_items (item_name,price, image) VALUES (?, ?, ?)";
+    private void insertSnacksItem(Connection connection, String itemName, String price, InputStream image, String status) {
+        String sql = "INSERT INTO snacks_items (item_name,price, image, status) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, price);
 
             preparedStatement.setBlob(3, image); // Use setBlob for InputStream
+            preparedStatement.setString(4, status);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -224,26 +238,27 @@ public class SnacksCRUDController implements Initializable {
         }
     }
 
-    private void updateSnacksItem(Connection connection, String itemName, String price, InputStream image, int itemID) {
+    private void updateSnacksItem(Connection connection, String itemName, String price, InputStream image, int itemID, String status) {
         String sql;
 
         if (image != null) {
 
-            sql = "UPDATE snacks_items SET item_name=?, price=?, image=? WHERE item_ID=?";
+            sql = "UPDATE snacks_items SET item_name=?, price=?, image=?, status=? WHERE item_ID=?";
         } else {
 
-            sql = "UPDATE snacks_items SET item_name=?, price=? WHERE item_ID=?";
+            sql = "UPDATE snacks_items SET item_name=?, price=?, status=? WHERE item_ID=?";
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, price);
+              preparedStatement.setString(3, status);
 
             if (image != null) {
-                preparedStatement.setBlob(3, image); // Use setBlob for InputStream
-                preparedStatement.setInt(4, itemID);
+                preparedStatement.setBlob(4, image); // Use setBlob for InputStream
+                preparedStatement.setInt(5, itemID);
             } else {
-                preparedStatement.setInt(6, itemID);
+                preparedStatement.setInt(4, itemID);
             }
 
             preparedStatement.executeUpdate();
@@ -281,7 +296,7 @@ public class SnacksCRUDController implements Initializable {
     private ObservableList<SnacksItemData> fetchDataFromDatabase() {
         ObservableList<SnacksItemData> listData = FXCollections.observableArrayList();
 
-        String sql = "SELECT item_id, item_name ,price, image FROM snacks_items";
+        String sql = "SELECT item_id, item_name ,price, image, status FROM snacks_items";
 
         try (Connection connect = CRUDDatabase.getConnection(); PreparedStatement prepare = connect.prepareStatement(sql); ResultSet result = prepare.executeQuery()) {
 
@@ -289,6 +304,7 @@ public class SnacksCRUDController implements Initializable {
                 int itemID = result.getInt("item_id");
                 String itemName = result.getString("item_name");
                 Integer price = result.getInt("price");
+                String status = result.getString("status");
                 
                  Blob imageBlob = result.getBlob("image");
 
@@ -299,6 +315,7 @@ public class SnacksCRUDController implements Initializable {
                 snacksItemData.setItemID(itemID);
                 snacksItemData.setImage(imageBlob); // Set Blob if needed
                 snacksItemData.setImageInputStream(imageInputStream);
+                snacksItemData.setStatus(status);
 
                 
                 listData.add(snacksItemData);
@@ -341,11 +358,13 @@ public class SnacksCRUDController implements Initializable {
         SnacksItemData selectedItem = snacksTV.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
+            String status = selectedItem.getStatus();
             txtItemName.setText(selectedItem.getItemName());
 
             txtPrice.setText(String.valueOf(selectedItem.getPrice()));
 
           Blob imageBlob = selectedItem.getImage();
+            statusComboBox.setValue(status);
              
                try {
   
@@ -423,6 +442,17 @@ public class SnacksCRUDController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     } 
+    
+    private void initializeStatusComboBox() {
+        // Populate the sugarlevelComboBox with items
+        ObservableList<String> status = FXCollections.observableArrayList(
+                "InStock",
+                "Out Of Stock"
+                
+        );
+        statusComboBox.setItems(status);
+    }
+
     
 
 

@@ -154,13 +154,22 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
     private SettlePaymentFXMLController settlePaymentController;
 
+    private CashierFXMLController existingCashierController;
+
     private volatile boolean stop = false;
     private LocalDate currentDate = LocalDate.now();
 
     public void setEmployeeName(String employeeName) {
         this.employeeName = employeeName;
+        System.out.println("CashierFXMLController - setEmployeeName: " + employeeName);
 
         empName.setText(employeeName);
+    }
+
+    public void setExistingCashierController(CashierFXMLController cashierController, String employeeName, int employeeId) {
+        this.existingCashierController = cashierController;
+        this.employeeName = employeeName;
+        this.employeeId = employeeId;
     }
 
     private ObservableList<MilkteaItemData> milkteaListData = FXCollections.observableArrayList();
@@ -184,6 +193,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         this.employeeId = employeeId;
 
         empName.setText(employeeName);
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
     }
 
     private int customerID = 0;
@@ -274,7 +287,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
             // Set stage properties to make it transparent and non-resizable
             settlePaymentStage.initStyle(StageStyle.TRANSPARENT);
-            settlePaymentStage.initStyle(StageStyle.UNDECORATED); // Removes the title bar
             settlePaymentStage.setResizable(false);
 
             // Set the scene fill to transparent
@@ -286,6 +298,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
             // Get the controller for SettlePaymentFXML
             SettlePaymentFXMLController settlePaymentController = loader.getController();
+            settlePaymentController.setEmployeeName(employeeName);
             settlePaymentController.setExistingCashierController(this, employeeName, employeeId);
 
             // Set the order type
@@ -311,7 +324,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
             // Set stage properties to make it transparent and non-resizable
             settlePaymentStage.initStyle(StageStyle.TRANSPARENT);
-            settlePaymentStage.initStyle(StageStyle.UNDECORATED); // Removes the title bar
             settlePaymentStage.setResizable(false);
 
             // Set the scene fill to transparent
@@ -323,6 +335,7 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
             // Get the controller for SettlePaymentFXML
             SettlePaymentFXMLController settlePaymentController = loader.getController();
+            settlePaymentController.setEmployeeName(employeeName);
             settlePaymentController.setExistingCashierController(this, employeeName, employeeId);
 
             // Set the order type
@@ -465,13 +478,15 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 // Replace these column names with your actual column names from the "milktea_items" table
                 String itemName = result.getString("item_name");
                 String addons = result.getString("addons");
+                String addonsPrice = result.getString("addons_price");
                 Integer smallPrice = result.getInt("small_price");
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                String status = result.getString("status");
                 // Create a MilkteaItemData object and add it to the list
-                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, smallPrice, mediumPrice, largePrice, image, itemID);
+                MilkteaItemData milkteaItemData = new MilkteaItemData(itemName, addons, addonsPrice, smallPrice, mediumPrice, largePrice, image, itemID, status);
                 listData.add(milkteaItemData);
 
             }
@@ -521,9 +536,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 String sinkers = result.getString("sinkers");
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                FruitDrinkItemData fruitDrinkItemData = new FruitDrinkItemData(itemName, smallPrice, mediumPrice, largePrice, fruitFlavor, sinkers, image, itemID);
+                FruitDrinkItemData fruitDrinkItemData = new FruitDrinkItemData(itemName, smallPrice, mediumPrice, largePrice, fruitFlavor, sinkers, image, itemID, status);
                 listData.add(fruitDrinkItemData);
 
             }
@@ -571,9 +587,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice, image, itemID);
+                FrappeItemData frappeItemData = new FrappeItemData(itemName, smallPrice, mediumPrice, largePrice, image, itemID, status);
                 listData.add(frappeItemData);
 
             }
@@ -622,9 +639,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
                 Integer largePrice = result.getInt("large_price");
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                CoffeeItemData coffeeItemData = new CoffeeItemData(itemName, type, smallPrice, mediumPrice, largePrice, image, itemID);
+                CoffeeItemData coffeeItemData = new CoffeeItemData(itemName, type, smallPrice, mediumPrice, largePrice, image, itemID, status);
                 listData.add(coffeeItemData);
 
             }
@@ -671,9 +689,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                RiceMealsItemData riceMealsItemData = new RiceMealsItemData(itemName, price, image, itemID);
+                RiceMealsItemData riceMealsItemData = new RiceMealsItemData(itemName, price, image, itemID, status);
                 listData.add(riceMealsItemData);
 
             }
@@ -721,9 +740,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                SnacksItemData snacksItemData = new SnacksItemData(itemName, price, image, itemID);
+                SnacksItemData snacksItemData = new SnacksItemData(itemName, price, image, itemID, status);
                 listData.add(snacksItemData);
 
             }
@@ -771,9 +791,10 @@ public class CashierFXMLController implements Initializable, ControllerInterface
 
                 Blob image = (Blob) result.getBlob("image");
                 Integer itemID = result.getInt("item_ID");
+                String status = result.getString("status");
 
                 // Create a MilkteaItemData object and add it to the list
-                ExtrasItemData extrasItemData = new ExtrasItemData(itemName, price, image, itemID);
+                ExtrasItemData extrasItemData = new ExtrasItemData(itemName, price, image, itemID, status);
                 listData.add(extrasItemData);
 
             }
@@ -814,19 +835,19 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         }
 
         // For milk_tea
-        String combinedSql = "SELECT order_id, size, item_name, final_price, quantity, date_time FROM milk_tea WHERE customer_id = ? "
+        String combinedSql = "SELECT order_id, size, item_name, add_ons, final_price, quantity, date_time FROM milk_tea WHERE customer_id = ? "
                 + "UNION "
-                + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? "
+                + "SELECT order_id, size, item_name, '' AS add_ons, final_price, quantity, date_time FROM fruit_drink WHERE customer_id = ? "
                 + "UNION "
-                + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM frappe WHERE customer_id = ? "
+                + "SELECT order_id, size, item_name, '' AS add_ons, final_price, quantity, date_time FROM frappe WHERE customer_id = ? "
                 + "UNION "
-                + "SELECT order_id, size, item_name, final_price, quantity, date_time FROM coffee WHERE customer_id = ? "
+                + "SELECT order_id, size, item_name, '' AS add_ons, final_price, quantity, date_time FROM coffee WHERE customer_id = ? "
                 + "UNION "
-                + "SELECT order_id, ' ' AS size, item_name, final_price, quantity, date_time FROM rice_meal WHERE customer_id = ? "
+                + "SELECT order_id, '' AS size, item_name, '' AS add_ons, final_price, quantity, date_time FROM rice_meal WHERE customer_id = ? "
                 + "UNION "
-                + "SELECT order_id, ' ' AS size, item_name, final_price, quantity, date_time FROM snacks WHERE customer_id = ? "
+                + "SELECT order_id, '' AS size, item_name, '' AS add_ons, final_price, quantity, date_time FROM snacks WHERE customer_id = ? "
                 + "UNION "
-                + "SELECT order_id, ' ' AS size, item_name, final_price, quantity, date_time FROM extras WHERE customer_id = ? "
+                + "SELECT order_id, '' AS size, item_name, '' AS add_ons, final_price, quantity, date_time FROM extras WHERE customer_id = ? "
                 + "ORDER BY date_time Asc";
 
         try (Connection connect = database.getConnection(); PreparedStatement combinedPrepare = connect.prepareStatement(combinedSql)) {
@@ -842,12 +863,14 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             ResultSet combinedResult = combinedPrepare.executeQuery();
             while (combinedResult.next()) {
                 int orderID = combinedResult.getInt("order_id");
-                String itemName = combinedResult.getString("size") + " " + combinedResult.getString("item_name");
+                String size = combinedResult.getString("size");
+                String itemName = size.trim().isEmpty() ? combinedResult.getString("item_name") : combineWithAddons(size, combinedResult.getString("item_name"), combinedResult.getString("add_ons"));
                 double itemPrice = combinedResult.getDouble("final_price");
                 int itemQuantity = combinedResult.getInt("quantity");
 
                 ItemData item = new ItemData(orderID, itemName, itemPrice, itemQuantity);
                 listData.add(item);
+
             }
 
         } catch (Exception e) {
@@ -855,6 +878,17 @@ public class CashierFXMLController implements Initializable, ControllerInterface
         }
 
         return listData;
+    }
+
+    private String combineWithAddons(String size, String itemName, String addon) {
+        // Check if addon is not empty or contains non-whitespace characters
+        if (addon != null && !addon.trim().isEmpty()) {
+            // Concatenate with milk tea item
+            return size + " " + itemName + " with " + addon;
+        } else {
+            // Not an add-on, return as is
+            return size.trim().isEmpty() ? itemName : size + " " + itemName;
+        }
     }
 
     private ObservableList<ItemData> menuMilkteaAndFrappeListData;
@@ -978,7 +1012,6 @@ public class CashierFXMLController implements Initializable, ControllerInterface
             System.out.println("Rows affected (delete all fruit drink): " + rowsAffectedFD);
         }
     } */
-
     private void refreshMenuGrid() throws SQLException {
 
         menuGrid.getChildren().clear();

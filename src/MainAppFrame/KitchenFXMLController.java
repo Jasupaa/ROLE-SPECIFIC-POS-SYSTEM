@@ -351,22 +351,20 @@ public class KitchenFXMLController implements Initializable, ControllerInterface
     }
 
     private int getLatestArchiveCount() throws SQLException {
-    int totalCount = 0;
+        int totalCount = 0;
 
-    // Use DATE() function to extract only the date part
-    String sql = "SELECT COUNT(*) AS total_count FROM invoice_archive WHERE DATE(date_time) = (SELECT MAX(DATE(date_time)) FROM invoice_archive)";
+        // Use DATE() function to extract only the date part
+        String sql = "SELECT COUNT(*) AS total_count FROM invoice_archive WHERE DATE(date_time) = (SELECT MAX(DATE(date_time)) FROM invoice_archive)";
 
-    try (Connection connection = database.getConnection();
-         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-         ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (Connection connection = database.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
 
-        if (resultSet.next()) {
-            totalCount = resultSet.getInt("total_count");
+            if (resultSet.next()) {
+                totalCount = resultSet.getInt("total_count");
+            }
         }
-    }
 
-    return totalCount;
-}
+        return totalCount;
+    }
 
 
     /*GAME */

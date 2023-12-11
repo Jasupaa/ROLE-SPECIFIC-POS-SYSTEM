@@ -1,6 +1,7 @@
 package MainAppFrame;
 
 import Admin.DiscountCRUDController;
+import Admin.EditEmployeeFXMLController;
 import ClassFiles.Discount;
 import ClassFiles.EmployeeData;
 import Login.ControllerInterface;
@@ -57,6 +58,14 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.input.MouseEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+
+import java.sql.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import java.net.URL;
 import java.sql.*;
@@ -68,12 +77,37 @@ import java.util.ResourceBundle;
 
 import ClassFiles.EmployeeData;
 import ClassFiles.Role;
+import Databases.CRUDDatabase;
 import java.sql.Statement;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Optional;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.StackedAreaChart;
+import javafx.scene.chart.StackedBarChart;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableRow;
 
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
     double xOffset, yOffset;
+
+    @FXML
+    private ComboBox<String> categoryComboBox;
+
+    @FXML
+    private LineChart<String, Number> revenueLC;
+
+    @FXML
+    private AreaChart<String, Number> analysisBC;
+
+    @FXML
+    private CategoryAxis xAxis;
+
+    @FXML
+    private NumberAxis yAxis;
 
     @FXML
     private Label topEmpLBL;
@@ -347,6 +381,220 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     @FXML
     private PieChart coffeePieChart;
 
+    private ObservableList<EmployeeData> employeeDataList;
+
+    public void disableEmployeeCell(EmployeeData employeeData) {
+        int index = employeeDataList.indexOf(employeeData);
+        if (index >= 0) {
+            // Set the employee status to "Terminated"
+            employeeData.setEmpStatus("Terminated");
+
+            // Update the order and status in the database
+            updateEmployeeOrderAndStatus();
+
+            // Refresh the TableView
+            employeeTable.refresh();
+        }
+    }
+
+    private void updateEmployeeOrderAndStatus() {
+        try {
+            Connection connection = CRUDDatabase.getConnection(); // Assuming your CRUDDatabase class provides the getConnection method
+
+            // Iterate through the list and update the status in the database
+            String updateQuery = "UPDATE employees SET empStatus=? WHERE emp_id=?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+                for (EmployeeData employeeData : employeeDataList) {
+                    preparedStatement.setString(1, "Terminated".equals(employeeData.getEmpStatus()) ? "Terminated" : "Active");
+                    preparedStatement.setInt(2, employeeData.getEmp_id());
+                    preparedStatement.addBatch();
+                }
+                preparedStatement.executeBatch();
+            }
+
+            // Close the connection
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ObservableList<EmployeeData> fetchExistingDataFromDatabase() {
+        ObservableList<EmployeeData> employeeDataList = FXCollections.observableArrayList();
+
+        String sql = "SELECT * FROM employees";
+
+        try (Connection connection = CRUDDatabase.getConnection(); // Assuming your CRUDDatabase class provides the getConnection method
+                 PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            // Clear the list before populating it
+            employeeDataList.clear();
+
+            while (resultSet.next()) {
+                int empId = resultSet.getInt("emp_id");
+                int pinCode = resultSet.getInt("pin_code");
+                String empFirstName = resultSet.getString("empFirstName");
+                String empLastName = resultSet.getString("empLastName");
+                String empEmail = resultSet.getString("empEmail");
+                long empContact = resultSet.getLong("empContact");
+                String emp_role = resultSet.getString("emp_role");
+                String empStatus = resultSet.getString("empStatus");
+
+                EmployeeData employee = new EmployeeData(empId, empFirstName, empLastName, empEmail, empContact, emp_role, pinCode, empStatus);
+                employeeDataList.add(employee);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return employeeDataList;
+    }
+
+    public void setUpEmployeeTable() {
+        emp_id.setCellValueFactory(new PropertyValueFactory<>("emp_id"));
+        empFirstName.setCellValueFactory(new PropertyValueFactory<>("empFirstName"));
+        empLastName.setCellValueFactory(new PropertyValueFactory<>("empLastName"));
+        empStatus.setCellValueFactory(new PropertyValueFactory<>("empStatus"));
+        empContact.setCellValueFactory(new PropertyValueFactory<>("empContact"));
+        empEmail.setCellValueFactory(new PropertyValueFactory<>("empEmail"));
+        emp_role.setCellValueFactory(new PropertyValueFactory<>("emp_role"));
+        pin_code.setCellValueFactory(new PropertyValueFactory<>("pin_code"));
+
+        applyCellStyling(employeeDataList);
+    }
+
+    public void loadEmpDataFromDatabase() {
+        List<EmployeeData> employeeList = fetchExistingDataFromDatabase();
+        employeeDataList.clear();
+        employeeDataList.addAll(employeeList);
+
+        // Sort the list by order_in_list, assuming your EmployeeData class has a method getOrderInList()
+        employeeDataList.sort(Comparator.comparingInt(EmployeeData::getOrderInList));
+
+        // Apply the list to the TableView
+        employeeTable.setItems(employeeDataList);
+
+        // Apply styling to cells
+        applyCellStyling(employeeDataList);
+    }
+
+    private void applyCellStyling(ObservableList<EmployeeData> employeeDataList) {
+        employeeTable.setRowFactory(tv -> new TableRow<EmployeeData>() {
+            @Override
+            protected void updateItem(EmployeeData item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null && "Terminated".equals(item.getEmpStatus())) {
+                    setStyle("-fx-background-color: #E0E0E0;"); // Use the desired grayish color
+                } else {
+                    setStyle(""); // Reset the style for non-terminated rows
+                }
+            }
+        });
+    }
+
+    ////////////////////////////////// ADD
+    @FXML
+    private void openAddEmployeeDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEmployee.fxml"));
+            Parent root = loader.load();
+            AddEmployeeFXMLController addEmployeeController = loader.getController();
+            addEmployeeController.setAdminController(this);
+            Stage stage = new Stage();
+            stage.setTitle("Add Employee");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addEmployee(EmployeeData employee) {
+        // Assuming employeeTable is your TableView and employeeDataList is your underlying list
+        if (!employeeDataList.contains(employee)) {
+            employeeTable.getItems().add(employee);
+
+        }
+    }
+
+    //////////////////////////////// EDIT
+    @FXML
+    void handleEditEmployeeButton(ActionEvent event) throws SQLException {
+        EmployeeData selectedEmployee = employeeTable.getSelectionModel().getSelectedItem();
+
+        if (selectedEmployee != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/EditEmployee.fxml"));
+                Parent root = loader.load();
+
+                EditEmployeeFXMLController editEmployeeController = loader.getController();
+                editEmployeeController.setParentController(this);
+                editEmployeeController.setEmployeeData(selectedEmployee);
+
+                // Set the connection before showing the stage
+                editEmployeeController.setConnection(CRUDDatabase.getConnection());
+
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Please select an employee to edit.");
+        }
+
+    }
+
+    private Connection connection; // Initialize this somewhere, maybe in your constructor
+
+    // Other methods...
+    public void UpdateEmployee(Connection connection, EmployeeData employeeData) throws SQLException {
+        String updateQuery = "UPDATE employees SET "
+                + "empFirstName=?, empLastName=?, empContact=?, empEmail=?, emp_role=?, empStatus=? "
+                + "WHERE emp_id=?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, employeeData.getEmpFirstName());
+            preparedStatement.setString(2, employeeData.getEmpLastName());
+            preparedStatement.setLong(3, employeeData.getEmpContact());
+            preparedStatement.setString(4, employeeData.getEmpEmail());
+            preparedStatement.setString(5, employeeData.getEmp_role());
+            preparedStatement.setString(6, employeeData.getEmpStatus());
+            preparedStatement.setInt(7, employeeData.getEmp_id());
+
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public void updateEmployeeTable() {
+        for (EmployeeData employee : employeeDataList) {
+            System.out.println("Employee ID: " + employee.getEmp_id() + ", Status: " + employee.getStatus());
+        }
+        employeeTable.setItems(employeeDataList);
+        employeeTable.refresh();
+    }
+
+// Sample updateEmployee method using PreparedStatement
+    public void updateEmployee(Connection connection, EmployeeData employeeData) throws SQLException {
+        String updateQuery = "UPDATE employees SET empFirstName=?, empLastName=?, empContact=?, empEmail=?, emp_role=?, empStatus=? WHERE emp_id=?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, employeeData.getEmpFirstName());
+            preparedStatement.setString(2, employeeData.getEmpLastName());
+            preparedStatement.setLong(3, employeeData.getEmpContact());
+            preparedStatement.setString(4, employeeData.getEmpEmail());
+            preparedStatement.setString(5, employeeData.getEmp_role());
+            preparedStatement.setString(6, employeeData.getEmpStatus());
+            preparedStatement.setInt(7, employeeData.getEmp_id());
+
+            preparedStatement.executeUpdate();
+        }
+    }
+
     @FXML
     private void handleMousePressed(MouseEvent event) {
         xOffset = event.getSceneX();
@@ -438,6 +686,182 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private void handleMouseExit3(MouseEvent event) {
         // Handle mouse exit (hover out)
         disIV.setVisible(true);
+    }
+
+    private void updateTopProductsLabels() {
+        try (Connection connection = database.getConnection()) {
+            String[] tableNames = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
+
+            Map<String, Integer> productQuantities = new HashMap<>();
+
+            for (String tableName : tableNames) {
+                try (PreparedStatement statement = connection.prepareStatement("SELECT item_name, SUM(quantity) AS totalQuantity FROM " + tableName + " GROUP BY item_name ORDER BY totalQuantity DESC LIMIT 3"); ResultSet resultSet = statement.executeQuery()) {
+
+                    while (resultSet.next()) {
+                        String itemName = resultSet.getString("item_name");
+                        int quantity = resultSet.getInt("totalQuantity");
+                        productQuantities.put(itemName, quantity);
+                    }
+                }
+            }
+
+            List<Map.Entry<String, Integer>> sortedProducts = productQuantities.entrySet()
+                    .stream()
+                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                    .collect(Collectors.toList());
+
+            // Assuming you have labels named topOneLBL, topOneQTY, topTwoLBL, topTwoQTY, topThreeLBL, topThreeQTY
+            for (int rank = 1; rank <= 3 && rank <= sortedProducts.size(); rank++) {
+                Map.Entry<String, Integer> entry = sortedProducts.get(rank - 1);
+                String itemName = entry.getKey();
+                int quantity = entry.getValue();
+
+                // Update labels based on the rank
+                switch (rank) {
+                    case 1 ->
+                        updateLabel(topOneLBL, topOneQTY, itemName, quantity);
+                    case 2 ->
+                        updateLabel(topTwoLBL, topTwoQTY, itemName, quantity);
+                    case 3 ->
+                        updateLabel(topThreeLBL, topThreeQTY, itemName, quantity);
+                    // Add more cases if needed
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle database exceptions
+        }
+    }
+
+    private void updateLabel(Label nameLabel, Label qtyLabel, String itemName, int quantity) {
+        // Update the labels as needed
+        nameLabel.setText(itemName);
+        String quantityText = "Quantity: " + quantity;
+        qtyLabel.setText(quantityText);
+    }
+
+    private void initializeChart() {
+        // Clear existing data
+        revenueLC.getData().clear();
+
+        // Query the database and update the chart
+        updateChart();
+    }
+
+    private void updateChart() {
+        // Get daily revenue data from the database for the 7 highest revenue dates
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT DATE(date_time) AS day, SUM(total) AS daily_sum FROM invoice_archive GROUP BY day ORDER BY day DESC LIMIT 7"); ResultSet resultSet = statement.executeQuery()) {
+
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+            while (resultSet.next()) {
+                String day = resultSet.getString("day");
+                double dailySum = resultSet.getDouble("daily_sum");
+
+                series.getData().add(new XYChart.Data<>(day, dailySum));
+            }
+
+            // Add the series to the chart
+            revenueLC.getData().clear();
+            revenueLC.getData().add(series);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the exception according to your needs
+        }
+    }
+
+    private List<String> getLast7Days(List<String> existingDates) {
+        List<String> last7Days = new ArrayList<>();
+
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+
+        // Iterate from currentDate to currentDate - 6 days
+        for (int i = 6; i >= 0; i--) {
+            LocalDate date = currentDate.minusDays(i);
+            last7Days.add(date.toString());
+        }
+
+        // Filter out dates that are not in the existingDates list
+        last7Days.removeIf(date -> !existingDates.contains(date));
+
+        return last7Days;
+    }
+
+    private void updateBarChart() {
+        // Get aggregated daily quantity and customer data from all seven tables for the latest 3 dates
+        try (Connection connection = database.getConnection()) {
+            // Create series for the aggregated quantity and total customers
+            XYChart.Series<String, Number> quantitySeries = new XYChart.Series<>();
+            XYChart.Series<String, Number> customerSeries = new XYChart.Series<>();
+
+            List<String> dates = new ArrayList<>();
+
+            try (PreparedStatement dateStatement = connection.prepareStatement("SELECT DISTINCT DATE(date_time) AS day "
+                    + "FROM (SELECT customer_id, quantity, date_time FROM milk_tea UNION SELECT customer_id, quantity, date_time FROM fruit_drink UNION SELECT customer_id, quantity, date_time FROM frappe UNION "
+                    + "SELECT customer_id, quantity, date_time FROM coffee UNION SELECT customer_id, quantity, date_time FROM rice_meal UNION SELECT customer_id, quantity, date_time FROM snacks UNION SELECT customer_id, quantity, date_time FROM extras) AS combined_tables "
+                    + "ORDER BY day DESC LIMIT 3"); ResultSet dateResultSet = dateStatement.executeQuery()) {
+
+                while (dateResultSet.next()) {
+                    String day = dateResultSet.getString("day");
+                    dates.add(day);
+                }
+            }
+
+            // Fetch aggregated quantity and customer data for the latest 3 distinct dates
+            try (PreparedStatement statement = connection.prepareStatement("SELECT DATE(date_time) AS day, "
+                    + "SUM(quantity) AS aggregated_quantity, "
+                    + "COUNT(DISTINCT customer_id) AS total_customers "
+                    + "FROM (SELECT customer_id, quantity, date_time FROM milk_tea UNION SELECT customer_id, quantity, date_time FROM fruit_drink UNION SELECT customer_id, quantity, date_time FROM frappe UNION "
+                    + "SELECT customer_id, quantity, date_time FROM coffee UNION SELECT customer_id, quantity, date_time FROM rice_meal UNION SELECT customer_id, quantity, date_time FROM snacks UNION SELECT customer_id, quantity, date_time FROM extras) AS combined_tables "
+                    + "WHERE DATE(date_time) IN (?, ?, ?) GROUP BY day ORDER BY day DESC")) {
+
+                for (String date : dates) {
+                    statement.setString(1, date);
+                    statement.setString(2, date);
+                    statement.setString(3, date);
+
+                    ResultSet resultSet = statement.executeQuery();
+
+                    if (resultSet.next()) {
+                        String day = resultSet.getString("day");
+                        double aggregatedQuantity = resultSet.getDouble("aggregated_quantity");
+                        double totalCustomers = resultSet.getDouble("total_customers");
+
+                        // Add data to the series
+                        quantitySeries.getData().add(new XYChart.Data<>(day + " (Qty)", aggregatedQuantity));
+                        customerSeries.getData().add(new XYChart.Data<>(day + " (Customers)", totalCustomers));
+                    }
+                }
+            }
+
+            // Add the series to the chart
+            analysisBC.getData().clear();
+            analysisBC.getData().addAll(quantitySeries, customerSeries);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the exception according to your needs
+        }
+    }
+
+    private void reorderSeries(XYChart.Series<String, Number> series, List<String> dates) {
+        List<XYChart.Data<String, Number>> sortedData = new ArrayList<>();
+
+        for (String date : dates) {
+            // Find the data with the matching date
+            Optional<XYChart.Data<String, Number>> matchingData = series.getData().stream()
+                    .filter(data -> data.getXValue().startsWith(date))
+                    .findFirst();
+
+            matchingData.ifPresent(sortedData::add);
+        }
+
+        // Clear the original data and add the sorted data
+        series.getData().clear();
+        series.getData().addAll(sortedData);
     }
 
     private Map<String, Integer> calculateTotalQuantityByItem(String tableName) {
@@ -649,6 +1073,27 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
         populateFrappePieChart();
         populateExtrasPieChart();
         populateCoffeePieChart();
+
+        updateTopProductsLabels();
+
+        initializeChart();
+        updateBarChart();
+
+        employeeDataList = FXCollections.observableArrayList();
+        setUpEmployeeTable();
+        loadEmpDataFromDatabase();
+
+        // Populate the combo box with categories
+        categoryComboBox.getItems().addAll("Milk Tea", "Fruit Drink", "Frappe", "Coffee", "Rice Meal", "Snacks", "Extras");
+
+        // Set default selection
+        categoryComboBox.getSelectionModel().selectFirst();
+
+        // Add listener to handle combo box selection changes
+        categoryComboBox.setOnAction(this::handleCategoryChange);
+
+        // Initialize pane visibility
+        showPaneBasedOnCategory(categoryComboBox.getValue());
 
         fetchHighestPerformingEmployee();
 
@@ -940,7 +1385,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     private double calculateTotalDailySales() {
         double totalSales = 0.0;
 
-        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT SUM(total) AS totalSales FROM invoice"); ResultSet resultSet = statement.executeQuery()) {
+        try (Connection connection = database.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT SUM(total) AS totalSales FROM invoice_archive"); ResultSet resultSet = statement.executeQuery()) {
 
             if (resultSet.next()) {
                 totalSales = resultSet.getDouble("totalSales");
@@ -1154,77 +1599,42 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     }
 
-    @FXML
-    public void SwitchFormPieChart(ActionEvent event) {
-        Button clickedButton = (Button) event.getSource();
+    private void handleCategoryChange(ActionEvent event) {
+        String selectedCategory = categoryComboBox.getValue();
+        showPaneBasedOnCategory(selectedCategory);
+    }
 
-        if (clickedButton == lastClickedButton) {
-            // Ignore the click if the same button was clicked twice in a row
-            return;
+    private void showPaneBasedOnCategory(String category) {
+        milkteaPANE.setVisible("Milk Tea".equals(category));
+        fruitdrinkPANE.setVisible("Fruit Drink".equals(category));
+        frappePANE.setVisible("Frappe".equals(category));
+        coffeePANE.setVisible("Coffee".equals(category));
+        ricemealPANE.setVisible("Rice Meal".equals(category));
+        snacksPANE.setVisible("Snacks".equals(category));
+        extrasPANE.setVisible("Extras".equals(category));
+
+        // Hide all other panes
+        if (!"Milk Tea".equals(category)) {
+            milkteaPANE.setVisible(false);
         }
-
-        if (clickedButton == mtBTN) {
-            milkteaPANE.setVisible(true);
+        if (!"Fruit Drink".equals(category)) {
             fruitdrinkPANE.setVisible(false);
+        }
+        if (!"Frappe".equals(category)) {
             frappePANE.setVisible(false);
+        }
+        if (!"Coffee".equals(category)) {
             coffeePANE.setVisible(false);
+        }
+        if (!"Rice Meal".equals(category)) {
             ricemealPANE.setVisible(false);
+        }
+        if (!"Snacks".equals(category)) {
             snacksPANE.setVisible(false);
-            extrasPANE.setVisible(false);   
-
-        } else if (clickedButton == ftBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(true);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(false);
+        }
+        if (!"Extras".equals(category)) {
             extrasPANE.setVisible(false);
-
-        } else if (clickedButton == frBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(true);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(false);
-            extrasPANE.setVisible(false);
-
-        } else if (clickedButton == cfBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(true);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(false);
-            extrasPANE.setVisible(false);
-
-        } else if (clickedButton == rmBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(true);
-            snacksPANE.setVisible(false);
-            extrasPANE.setVisible(false);
-
-        } else if (clickedButton == snBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(true);
-            extrasPANE.setVisible(false);
-
-        } else if (clickedButton == exBTN) {
-            milkteaPANE.setVisible(false);
-            fruitdrinkPANE.setVisible(false);
-            frappePANE.setVisible(false);
-            coffeePANE.setVisible(false);
-            ricemealPANE.setVisible(false);
-            snacksPANE.setVisible(false);
-            extrasPANE.setVisible(true);
         }
     }
+
 }

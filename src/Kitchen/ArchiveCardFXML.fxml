@@ -57,14 +57,14 @@
             <Label fx:id="datetimeLBL" alignment="CENTER" text="Label" />
          </children>
       </VBox>
-      <Label layoutX="66.0" layoutY="131.0" text="Item Name" />
-      <Label layoutX="151.0" layoutY="131.0" text="Qty" />
-      <Label layoutX="202.0" layoutY="131.0" text="Size" />
-      <Label layoutX="263.0" layoutY="131.0" text="Add-Ons" />
-      <Label layoutX="344.0" layoutY="131.0" text="Fruit Flavor" />
-      <Label layoutX="187.0" layoutY="107.0" text="Sinkers" />
-      <Label layoutX="260.0" layoutY="107.0" text="Sugar Level" />
-      <Label layoutX="347.0" layoutY="107.0" text="Ask Me" />
+      <Label layoutX="35.0" layoutY="133.0" text="Item Name" />
+      <Label layoutX="117.0" layoutY="133.0" text="Qty" />
+      <Label layoutX="168.0" layoutY="133.0" text="Size" />
+      <Label layoutX="211.0" layoutY="133.0" text="Add-Ons" />
+      <Label layoutX="283.0" layoutY="133.0" text="Fruit Flavor" />
+      <Label layoutX="369.0" layoutY="133.0" text="Sinkers" />
+      <Label layoutX="433.0" layoutY="133.0" text="Sugar Level" />
+      <Label layoutX="511.0" layoutY="133.0" text="Ask Me" />
    </children>
    <padding>
       <Insets bottom="35.0" right="20.0" />

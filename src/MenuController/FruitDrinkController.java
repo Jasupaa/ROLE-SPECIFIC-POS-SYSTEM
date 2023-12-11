@@ -30,6 +30,7 @@ import Databases.CRUDDatabase;
 import java.io.ByteArrayInputStream;
 import java.sql.Blob;
 import java.sql.ResultSet;
+import javafx.scene.control.Alert;
 
 /**
  *
@@ -54,6 +55,8 @@ public class FruitDrinkController {
 
     @FXML
     private Button confirmButton1;
+    @FXML
+    private Label StatusLbl;
 
     @FXML
     private ImageView foodImg;
@@ -105,12 +108,12 @@ public class FruitDrinkController {
 
         String sinkers = fruitDrinkItemData.getSinkers();
         String fruitf = fruitDrinkItemData.getFruitFlavor();
-
+        String status = fruitDrinkItemData.getStatus();
         // Set data to corresponding components
         foodLabel.setText(itemName);
         sinkersComboBox.getItems().clear();
         sinkersComboBox.getItems().addAll(sinkers.split(", "));
-
+        StatusLbl.setText( status);
         fruitfComboBox.getItems().clear();
         fruitfComboBox.getItems().addAll(fruitf.split(", "));
 
@@ -181,6 +184,17 @@ public class FruitDrinkController {
                 } else {
                     System.out.println("Cashier controller not available.");
                 }
+                
+                 String status = StatusLbl.getText(); 
+            if ("Out Of Stock".equals(status)) {
+                
+                Alert outOfStockAlert = new Alert(Alert.AlertType.ERROR);
+                outOfStockAlert.setTitle("Out of Stock");
+                outOfStockAlert.setHeaderText(null);
+                outOfStockAlert.setContentText("Sorry, the selected product is out of stock.");
+                outOfStockAlert.showAndWait();
+                return;
+            }
 
                 insertOrderToDatabase(customer_id, menuName, selectedQuantity, selectedSize, selectedfruit, selectedsinker, askmeRadioSelected);
                 System.out.println("Data inserted into the database.");

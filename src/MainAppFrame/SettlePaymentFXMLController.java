@@ -38,6 +38,8 @@ import ClassFiles.ItemData;
 import ClassFiles.OrderCardData;
 import MenuController.CoffeeController;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -62,6 +64,12 @@ public class SettlePaymentFXMLController implements Initializable {
 
     double xOffset, yOffset;
     private volatile boolean stop = false;
+
+    @FXML
+    private Label handlerName;
+
+    @FXML
+    private Label dateTime;
 
     @FXML
     private ImageView CloseButton;
@@ -101,9 +109,6 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     private Label appldDscLbl;
-
-    @FXML
-    private Label handlerName;
 
     @FXML
     private Label cashInput;
@@ -151,6 +156,8 @@ public class SettlePaymentFXMLController implements Initializable {
 
     private String employeeName;
 
+    private int customerID;
+
     private int employeeId;
 
     private String originalTotal;
@@ -170,6 +177,39 @@ public class SettlePaymentFXMLController implements Initializable {
     public void setOrderType(String orderType) {
         ordertypeTxtField.setText(orderType);
         ordertypeTxtField.setEditable(false); // Disable the TextFiel
+    }
+
+    // Setters for employeeName, employeeId, and customerID
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+        // Update the UI with the new employeeName
+        handlerName.setText(employeeName);
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
+        // Perform any other operations related to employeeId if needed
+    }
+
+    public void setCustomerID(int customerID) {
+        this.customerID = customerID;
+        // Perform any other operations related to customerID if needed
+    }
+
+    private void updateDateTimeLabel() {
+        // Get the current date and time
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        // Format the date and time using a DateTimeFormatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = currentDateTime.format(formatter);
+
+        // Set the formatted date and time to the dateTime label
+        dateTime.setText(formattedDateTime);
     }
 
     @FXML
@@ -225,10 +265,11 @@ public class SettlePaymentFXMLController implements Initializable {
             // Hide the stage
             cashierConfirm.hide();
 
-            // Move the setOrderDetails call here
+            String handlerName = getEmployeeName();
+            String dateTimeString = dateTime.getText().substring(1);
             int customerID = existingCashierController.getCurrentCustomerID();
             String orderType = ordertypeTxtField.getText();
-            
+
             double subtotal = Double.parseDouble(subTotal.getText().substring(1));
             String discountText = appldDscLbl.getText().substring(1);
             discountText = discountText.replaceAll("[^\\d.]", "");
@@ -239,7 +280,7 @@ public class SettlePaymentFXMLController implements Initializable {
             double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
 
             // Use the controller passed as a parameter
-            controller.setOrderDetails(customerID, orderType, subtotal, discountApplied, totalAmount, cashAmount, changeAmount);
+            controller.setOrderDetails(handlerName, dateTimeString, customerID, orderType, subtotal, discountApplied, totalAmount, cashAmount, changeAmount);
 
             // Trigger the print job
             triggerPrintJob(root, controller);
@@ -470,25 +511,20 @@ public class SettlePaymentFXMLController implements Initializable {
                 // Parse the new total amount only if it's not empty and properly initialized
                 double newTotalAmount = parseNewTotalAmount();
 
-                if (cashAmount < newTotalAmount) {
-                    changeTxtLbl.setText("Insufficient Amount, Please Try Again");
-                } else {
+                // Calculate the change
+                double change = cashAmount - newTotalAmount;
 
-                    // Calculate the change
-                    double change = cashAmount - newTotalAmount;
+                // Display the change in the changeTxtLbl with a minus sign
+                changeTxtLbl.setText(String.format("₱%.2f", change));
 
-                    // Display the change in the changeTxtLbl with a minus sign
-                    changeTxtLbl.setText(String.format("₱%.2f", change));
+                // Display the change in the changeLbl with a minus sign
+                changeLbl.setText(String.format("₱%.2f", change));
 
-                    // Display the change in the changeLbl with a minus sign
-                    changeLbl.setText(String.format("₱%.2f", change));
+                // Update the class-level variable with the calculated change
+                changeValue = change;
 
-                    // Update the class-level variable with the calculated change
-                    changeValue = change;
+                cashInput.setText(String.format("₱%.2f", cashAmount));
 
-                    cashInput.setText(String.format("₱%.2f", cashAmount));
-
-                }
             } catch (NumberFormatException e) {
                 // Handle the case when the user enters non-numeric or invalid input for cash
                 changeTxtLbl.setText("Invalid Cash Amount");
@@ -539,6 +575,9 @@ public class SettlePaymentFXMLController implements Initializable {
         discTxtLbl.setDisable(true); // Disable the TextField
         appldDscTxtLbl.setDisable(true); // Disable the TextField
         calculateTotal();
+
+        updateDateTimeLabel();
+
         CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -563,19 +602,6 @@ public class SettlePaymentFXMLController implements Initializable {
             }
         });
 
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-
-        handlerName.setText(employeeName);
-    }
-
-    public void setEmployee(String employeeName) {
-        this.employeeName = employeeName;
-        this.employeeId = employeeId;
-
-        handlerName.setText(employeeName);
     }
 
     private void calculateCustomTotal() {
@@ -652,7 +678,14 @@ public class SettlePaymentFXMLController implements Initializable {
                     String[] tables = {"milk_tea", "fruit_drink", "frappe", "coffee", "rice_meal", "snacks", "extras"};
 
                     for (String table : tables) {
-                        String orderQuery = "SELECT * FROM " + table + " WHERE customer_id = ?";
+                        String orderQuery;
+                        if ("milk_tea".equals(table)) {
+                            orderQuery = "SELECT order_id, item_name, final_price, quantity, size, add_ons FROM " + table + " WHERE customer_id = ?";
+                        } else if ("frappe".equals(table) || "fruit_drink".equals(table) || "coffee".equals(table)) {
+                            orderQuery = "SELECT order_id, item_name, final_price, quantity, size, '' AS add_ons FROM " + table + " WHERE customer_id = ?";
+                        } else {
+                            orderQuery = "SELECT order_id, item_name, final_price, quantity, '' AS size, '' AS add_ons FROM " + table + " WHERE customer_id = ?";
+                        }
 
                         try (PreparedStatement orderStmt = conn.prepareStatement(orderQuery)) {
                             orderStmt.setInt(1, currentCustomerID);
@@ -665,8 +698,12 @@ public class SettlePaymentFXMLController implements Initializable {
                                     double finalPrice = orderRs.getDouble("final_price");
                                     int quantity = orderRs.getInt("quantity");
 
+                                    // Check if size and add_ons columns are available
+                                    String size = orderRs.getString("size") != null ? orderRs.getString("size") : "";
+                                    String addons = orderRs.getString("add_ons") != null ? orderRs.getString("add_ons") : "";
+
                                     // Create an ItemData instance with the fetched data
-                                    ItemData itemData = new ItemData(orderId, productName, finalPrice, quantity);
+                                    ItemData itemData = new ItemData(orderId, combineWithAddons(size, productName, addons), finalPrice, quantity);
 
                                     // Add the ItemData to the list
                                     orderDetailsList.add(itemData);
@@ -683,6 +720,18 @@ public class SettlePaymentFXMLController implements Initializable {
             }
         }
         return orderDetailsList;
+    }
+
+// Helper method for combining item name with add-ons
+    private String combineWithAddons(String size, String itemName, String addons) {
+        // Check if addons is not empty or contains only whitespace
+        if (!addons.trim().isEmpty()) {
+            // Concatenate with add-ons
+            return size + " " + itemName + " with " + addons;
+        } else {
+            // Return without add-ons
+            return size + " " + itemName;
+        }
     }
 
     private void setupTableView() throws SQLException {
@@ -749,43 +798,4 @@ public class SettlePaymentFXMLController implements Initializable {
         return 0; // Return 0 if there is an error or the discount code is not found
     }
 
-    private int fetchCustomerID() {
-    CashierFXMLController cashierController = ControllerManager.getCashierController();
-    int currentCustomerID = cashierController.getCurrentCustomerID();
-    System.out.println("Fetched Customer ID: " + currentCustomerID);
-    return currentCustomerID;
 }
-
-private double fetchChangeAmountFromDatabase() {
-    int customerID = fetchCustomerID();
-    System.out.println("Fetching change amount for Customer ID: " + customerID);
-
-    try (Connection conn = database.getConnection()) {
-        if (conn != null) {
-            String sql = "SELECT `change` FROM invoice WHERE customer_id = ?";
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // Set the customer ID parameter
-                stmt.setInt(1, customerID);
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        double changeAmount = rs.getDouble("change");
-                        System.out.println("Fetched change amount: " + changeAmount);
-                        return changeAmount;
-                    }
-                }
-            }
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-        // Handle database-related exceptions
-    }
-        return 0;
-}
-    
-    
-
-
-}
-

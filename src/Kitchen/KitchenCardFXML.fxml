@@ -73,7 +73,8 @@
       <Label layoutX="344.0" layoutY="131.0" text="Fruit Flavor" />
       <Label layoutX="440.0" layoutY="131.0" text="Sinkers" />
       <Label layoutX="513.0" layoutY="131.0" text="Sugar Level" />
-      <Label layoutX="600.0" layoutY="131.0" text="Ask Me" />
+      <Label layoutX="635.0" layoutY="131.0" text="Ask Me" />
+      <Label layoutX="591.0" layoutY="131.0" text="Type" />
    </children>
    <padding>
       <Insets bottom="35.0" right="30.0" />
