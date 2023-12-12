@@ -90,6 +90,8 @@ public class SnacksCRUDController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         displaySnacks();
          restrictLetter(txtPrice);
+        limitCharacters(txtPrice, 4);
+        limitCharacters(txtItemName,50);
         
         initializeStatusComboBox();
         statusComboBox.setValue("InStock");
@@ -396,6 +398,17 @@ public class SnacksCRUDController implements Initializable {
             }
         });
     }
+     
+      public void limitCharacters(TextField textField, int maxLength) {
+    textField.textProperty().addListener((observable, oldValue, newValue) -> {
+        // Limit the length of the text
+        if (textField.getText().length() > maxLength) {
+            String limitedText = textField.getText().substring(0, maxLength);
+            textField.setText(limitedText);
+        }
+    });
+}
+
      
         private boolean isProductAlreadyExists(Connection connection, String itemName) {
         String sql = "SELECT COUNT(*) FROM snacks_items WHERE item_name = ?";

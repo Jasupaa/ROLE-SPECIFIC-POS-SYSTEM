@@ -109,6 +109,11 @@ public class CoffeeCRUDController implements Initializable {
         restrictLetter(txtLargePrice);
         restrictLetter(txtMediumPrice);
         restrictLetter(txtSmallPrice);
+        limitCharacters(txtLargePrice, 4);
+        limitCharacters(txtMediumPrice,4);
+        limitCharacters(txtSmallPrice, 4);
+        limitCharacters(txtItemName,50);
+       
 
         initializeStatusComboBox();
         statusComboBox.setValue("InStock");
@@ -432,6 +437,16 @@ public class CoffeeCRUDController implements Initializable {
             }
         });
     }
+    
+    public void limitCharacters(TextField textField, int maxLength) {
+    textField.textProperty().addListener((observable, oldValue, newValue) -> {
+     
+        if (textField.getText().length() > maxLength) {
+            String limitedText = textField.getText().substring(0, maxLength);
+            textField.setText(limitedText);
+        }
+    });
+}
 
     private boolean isProductAlreadyExists(Connection connection, String itemName) {
         String sql = "SELECT COUNT(*) FROM coffee_items WHERE item_name = ?";
