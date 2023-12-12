@@ -41,9 +41,15 @@ import javax.imageio.ImageIO;
 import java.io.InputStream;
 import javafx.scene.control.ComboBox;
 import ClassFiles.TxtUtils;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class FrappeCRUDController implements Initializable {
 
+    @FXML
+    private ImageView CloseButton;
     @FXML
     private Button addBTN;
 
@@ -113,15 +119,34 @@ public class FrappeCRUDController implements Initializable {
         TxtUtils.restrictLetter(txtMediumPrice);
         TxtUtils.restrictLetter(txtSmallPrice);
         TxtUtils.limitCharacters(txtLargePrice, 4);
-        TxtUtils.limitCharacters(txtMediumPrice,4);
+        TxtUtils.limitCharacters(txtMediumPrice, 4);
         TxtUtils.limitCharacters(txtSmallPrice, 4);
-        TxtUtils.limitCharacters(txtItemName,50);
+        TxtUtils.limitCharacters(txtItemName, 50);
         statusComboBox.setValue("InStock");
         initializeStatusComboBox();
 
         frappeTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 handleTableView();
+            }
+        });
+        
+         CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    Stage stage = (Stage) CloseButton.getScene().getWindow();
+                    stage.close();
+
+                    // Load the Admin FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/AdminFXML.fxml"));
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();  // Log the exception
+                }
+
+                // Consume the event to prevent it from propagating
+                event.consume();
             }
         });
     }
@@ -253,13 +278,13 @@ public class FrappeCRUDController implements Initializable {
             preparedStatement.setString(2, smallPrice);
             preparedStatement.setString(3, mediumPrice);
             preparedStatement.setString(4, largePrice);
-             if (image != null) {
-            preparedStatement.setBlob(5, image); // Use setBlob for InputStream
-        } else {  
-            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
-            preparedStatement.setBlob(5, defaultImageStream);
-           
-        }
+            if (image != null) {
+                preparedStatement.setBlob(5, image); // Use setBlob for InputStream
+            } else {
+                InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+                preparedStatement.setBlob(5, defaultImageStream);
+
+            }
             preparedStatement.setString(6, status);
 
             preparedStatement.executeUpdate();
@@ -428,7 +453,6 @@ public class FrappeCRUDController implements Initializable {
         }
     }
 
-  
     private boolean isProductAlreadyExists(Connection connection, String itemName) {
         String sql = "SELECT COUNT(*) FROM frappe_items WHERE item_name = ?";
 

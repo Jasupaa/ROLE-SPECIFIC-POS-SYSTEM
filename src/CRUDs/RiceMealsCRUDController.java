@@ -39,9 +39,15 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import ClassFiles.TxtUtils;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class RiceMealsCRUDController implements Initializable {
 
+    @FXML
+    private ImageView CloseButton;
     @FXML
     private Button addBTN;
 
@@ -95,13 +101,32 @@ public class RiceMealsCRUDController implements Initializable {
         displayRiceMeals();
         TxtUtils.restrictLetter(txtPrice);
         TxtUtils.limitCharacters(txtPrice, 4);
-        TxtUtils.limitCharacters(txtItemName,50);
+        TxtUtils.limitCharacters(txtItemName, 50);
 
         initializeStatusComboBox();
         statusComboBox.setValue("InStock");
         ricemealsTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 handleTableView();
+            }
+        });
+
+        CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    Stage stage = (Stage) CloseButton.getScene().getWindow();
+                    stage.close();
+
+                    // Load the Admin FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/AdminFXML.fxml"));
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();  // Log the exception
+                }
+
+                // Consume the event to prevent it from propagating
+                event.consume();
             }
         });
     }
@@ -230,13 +255,13 @@ public class RiceMealsCRUDController implements Initializable {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, price);
 
-        if (image != null) {
-            preparedStatement.setBlob(3, image); // Use setBlob for InputStream
-        } else {  
-            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
-            preparedStatement.setBlob(3, defaultImageStream);
-           
-        }
+            if (image != null) {
+                preparedStatement.setBlob(3, image); // Use setBlob for InputStream
+            } else {
+                InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+                preparedStatement.setBlob(3, defaultImageStream);
+
+            }
             preparedStatement.setString(4, status);
 
             preparedStatement.executeUpdate();
@@ -394,9 +419,6 @@ public class RiceMealsCRUDController implements Initializable {
 
         }
     }
-
-   
-
 
     private boolean isProductAlreadyExists(Connection connection, String itemName) {
         String sql = "SELECT COUNT(*) FROM ricemeals_items WHERE item_name = ?";

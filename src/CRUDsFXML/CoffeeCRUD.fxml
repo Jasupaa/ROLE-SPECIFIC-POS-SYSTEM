@@ -11,7 +11,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.CoffeeCRUDController">
+<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" style="-fx-background-radius: 5; -fx-border-radius: 30 30 30 30;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.CoffeeCRUDController">
    <children>
       <TableView fx:id="coffeeTV" layoutX="39.0" layoutY="51.0" prefHeight="350.0" prefWidth="285.0">
         <columns>
@@ -55,5 +55,10 @@
       <Button fx:id="dltBtn" layoutX="598.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Delete" />
       <ComboBox fx:id="statusComboBox" layoutX="663.0" layoutY="47.0" prefHeight="26.0" prefWidth="145.0" />
       <Label layoutX="614.0" layoutY="50.0" text="Status:" />
+      <ImageView fx:id="CloseButton" fitHeight="22.0" fitWidth="22.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Pictures/icons8-log-out-96%20(1).png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

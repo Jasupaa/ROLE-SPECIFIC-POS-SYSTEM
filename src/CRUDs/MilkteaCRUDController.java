@@ -39,9 +39,15 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import ClassFiles.TxtUtils;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class MilkteaCRUDController implements Initializable {
 
+    @FXML
+    private ImageView CloseButton;
     @FXML
     private Button dltBtn;
     @FXML
@@ -51,7 +57,7 @@ public class MilkteaCRUDController implements Initializable {
 
     @FXML
     private TableView<MilkteaItemData> milkteaTV;
-    
+
     @FXML
     private TableColumn<MilkteaItemData, Integer> addonsPriceMT;
     @FXML
@@ -88,23 +94,23 @@ public class MilkteaCRUDController implements Initializable {
     private Button attachimageBTN;
     @FXML
     private ComboBox<String> statusComboBox;
-    
+
     @FXML
     private ImageView iconIV;
 
     @FXML
     private ImageView itemIV;
-    
-     @FXML
+
+    @FXML
     private TextArea txtAddonsPrice;
 
     private Image selectedImage;
     private String status;
-    
+
     private String getSelectedStatus() {
-        
-    return statusComboBox.getValue();
-}
+
+        return statusComboBox.getValue();
+    }
 
     private ObservableList<MilkteaItemData> milkteaListData = FXCollections.observableArrayList();
 
@@ -114,12 +120,12 @@ public class MilkteaCRUDController implements Initializable {
         TxtUtils.restrictLetter(txtLargePrice);
         TxtUtils.restrictLetter(txtMediumPrice);
         TxtUtils.restrictLetter(txtSmallPrice);
-       
+
         TxtUtils.limitCharacters(txtLargePrice, 4);
-        TxtUtils.limitCharacters(txtMediumPrice,4);
+        TxtUtils.limitCharacters(txtMediumPrice, 4);
         TxtUtils.limitCharacters(txtSmallPrice, 4);
-        TxtUtils.limitCharacters(txtItemName,50);
-        
+        TxtUtils.limitCharacters(txtItemName, 50);
+
         initializeStatusComboBox();
         statusComboBox.setValue("InStock");
 
@@ -128,9 +134,26 @@ public class MilkteaCRUDController implements Initializable {
                 handleTableView();
             }
         });
+        
+         CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    Stage stage = (Stage) CloseButton.getScene().getWindow();
+                    stage.close();
+
+                    // Load the Admin FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/AdminFXML.fxml"));
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();  // Log the exception
+                }
+
+                // Consume the event to prevent it from propagating
+                event.consume();
+            }
+        });
     }
-    
-    
 
     /* ito yung action event para sa attach image button */
     @FXML
@@ -179,36 +202,36 @@ public class MilkteaCRUDController implements Initializable {
 
                 switch (buttonId) {
                     case "addBTN" -> {
-                    if (!isProductAlreadyExists(connection, itemName)) {
-                         if (selectedImage == null) {
-                imageInputStream = null;
-            }
-                        
-                    insertMilkteaItem(connection, itemName, addons, addonsPrice, smallPrice, mediumPrice, largePrice, imageInputStream, status);
-                    System.out.println("Data inserted.");
-                     clearTextFields();
-                } else {
-                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
-                    System.out.println("Product already exists.");
-                    return; 
-                }
+                        if (!isProductAlreadyExists(connection, itemName)) {
+                            if (selectedImage == null) {
+                                imageInputStream = null;
+                            }
+
+                            insertMilkteaItem(connection, itemName, addons, addonsPrice, smallPrice, mediumPrice, largePrice, imageInputStream, status);
+                            System.out.println("Data inserted.");
+                            clearTextFields();
+                        } else {
+                            showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                            System.out.println("Product already exists.");
+                            return;
+                        }
                     }
                     case "updtBTN" -> {
-                if (selectedItem != null) {
-                int itemID = selectedItem.getItemID();
-                if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
-                    selectedItem.setItemID(itemID);
-                    updateMilkteaItem(connection, itemName, addons, addonsPrice, smallPrice, mediumPrice, largePrice, imageInputStream, itemID, status);
-                    System.out.println("Data updated.");
-                     clearTextFields();
-                } else {
-                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
-                    System.out.println("Product already exists.");
-                    return; 
-                }
-            } else {
-                System.out.println("No item selected for update.");
-            }
+                        if (selectedItem != null) {
+                            int itemID = selectedItem.getItemID();
+                            if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
+                                selectedItem.setItemID(itemID);
+                                updateMilkteaItem(connection, itemName, addons, addonsPrice, smallPrice, mediumPrice, largePrice, imageInputStream, itemID, status);
+                                System.out.println("Data updated.");
+                                clearTextFields();
+                            } else {
+                                showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                                System.out.println("Product already exists.");
+                                return;
+                            }
+                        } else {
+                            System.out.println("No item selected for update.");
+                        }
                     }
                     case "dltBtn" -> {
 
@@ -219,7 +242,7 @@ public class MilkteaCRUDController implements Initializable {
                                 int itemID = selectedItem.getItemID();
                                 deleteMilkteaItem(connection, itemID);
                                 System.out.println("Data deleted.");
-                                 clearTextFields();
+                                clearTextFields();
                             } else {
                                 System.out.println("Deletion canceled.");
                             }
@@ -230,7 +253,6 @@ public class MilkteaCRUDController implements Initializable {
 
                 }
 
-               
                 displayMilktea();
 
                 // Optionally, you can update your TableView or perform other actions after insertion
@@ -259,7 +281,7 @@ public class MilkteaCRUDController implements Initializable {
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
      */
-    private void insertMilkteaItem(Connection connection, String itemName, String addons,String addonsPrice, String smallPrice, String mediumPrice, String largePrice, InputStream image, String status) {
+    private void insertMilkteaItem(Connection connection, String itemName, String addons, String addonsPrice, String smallPrice, String mediumPrice, String largePrice, InputStream image, String status) {
         String sql = "INSERT INTO milktea_items (item_name, addons, addons_price, small_price, medium_price, large_price, image, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -269,14 +291,14 @@ public class MilkteaCRUDController implements Initializable {
             preparedStatement.setString(4, smallPrice);
             preparedStatement.setString(5, mediumPrice);
             preparedStatement.setString(6, largePrice);
-             if (image != null) {
-            preparedStatement.setBlob(7, image); // Use setBlob for InputStream
-        } else {  
-            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
-            preparedStatement.setBlob(7, defaultImageStream);
-           
-        }
-             preparedStatement.setString(8, status);
+            if (image != null) {
+                preparedStatement.setBlob(7, image); // Use setBlob for InputStream
+            } else {
+                InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+                preparedStatement.setBlob(7, defaultImageStream);
+
+            }
+            preparedStatement.setString(8, status);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -303,7 +325,7 @@ public class MilkteaCRUDController implements Initializable {
             preparedStatement.setString(4, smallPrice);
             preparedStatement.setString(5, mediumPrice);
             preparedStatement.setString(6, largePrice);
-              preparedStatement.setString(7, status);
+            preparedStatement.setString(7, status);
 
             if (image != null) {
                 preparedStatement.setBlob(8, image); // Use setBlob for InputStream
@@ -311,8 +333,6 @@ public class MilkteaCRUDController implements Initializable {
             } else {
                 preparedStatement.setInt(8, itemID);
             }
-            
-              
 
             preparedStatement.executeUpdate();
 
@@ -361,7 +381,7 @@ public class MilkteaCRUDController implements Initializable {
                 Integer smallPrice = result.getInt("small_price");
                 Integer mediumPrice = result.getInt("medium_price");
                 Integer largePrice = result.getInt("large_price");
-                
+
                 String status = result.getString("status");
                 // Retrieve image as Blob
                 Blob imageBlob = result.getBlob("image");
@@ -374,8 +394,7 @@ public class MilkteaCRUDController implements Initializable {
                 milkteaItemData.setItemID(itemID);
                 milkteaItemData.setImage(imageBlob); // Set Blob if needed
                 milkteaItemData.setImageInputStream(imageInputStream); // Set InputStream
-                 milkteaItemData.setStatus(status);
-                 
+                milkteaItemData.setStatus(status);
 
                 // Add to the list
                 listData.add(milkteaItemData);
@@ -420,15 +439,13 @@ public class MilkteaCRUDController implements Initializable {
         itemIV.setImage(null);
         iconIV.setVisible(true);
     }
-    
-
 
     private void handleTableView() {
 
         MilkteaItemData selectedItem = milkteaTV.getSelectionModel().getSelectedItem();
 
-        if (selectedItem != null) { 
-            
+        if (selectedItem != null) {
+
             String status = selectedItem.getStatus();
             txtItemName.setText(selectedItem.getItemName());
 
@@ -444,22 +461,23 @@ public class MilkteaCRUDController implements Initializable {
 
                 InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
 
-            if (imageInputStream != null) {
-                Image selectedItemImage = new Image(imageInputStream);
-                itemIV.setImage(selectedItemImage);
-                iconIV.setVisible(false);
-            } else {
-                // Clear the image if it's null
-                itemIV.setImage(null);
-                iconIV.setVisible(true);
-            }
+                if (imageInputStream != null) {
+                    Image selectedItemImage = new Image(imageInputStream);
+                    itemIV.setImage(selectedItemImage);
+                    iconIV.setVisible(false);
+                } else {
+                    // Clear the image if it's null
+                    itemIV.setImage(null);
+                    iconIV.setVisible(true);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
 
             }
         }
     }
-      private boolean isProductAlreadyExists(Connection connection, String itemName) {
+
+    private boolean isProductAlreadyExists(Connection connection, String itemName) {
         String sql = "SELECT COUNT(*) FROM milktea_items WHERE item_name = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -477,25 +495,26 @@ public class MilkteaCRUDController implements Initializable {
 
         return false;
     }
-      private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
-    String sql = "SELECT COUNT(*) FROM milktea_items WHERE item_name = ? AND item_id != ?";
 
-    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-        preparedStatement.setString(1, itemName);
-        preparedStatement.setInt(2, itemID);
-        ResultSet resultSet = preparedStatement.executeQuery();
+    private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
+        String sql = "SELECT COUNT(*) FROM milktea_items WHERE item_name = ? AND item_id != ?";
 
-        if (resultSet.next()) {
-            int count = resultSet.getInt(1);
-            return count > 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, itemName);
+            preparedStatement.setInt(2, itemID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return false;
     }
-
-    return false;
-}
 
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -504,17 +523,14 @@ public class MilkteaCRUDController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
-    
-      private void initializeStatusComboBox() {
+
+    private void initializeStatusComboBox() {
         // Populate the sugarlevelComboBox with items
         ObservableList<String> status = FXCollections.observableArrayList(
                 "InStock",
                 "Out Of Stock"
-                
         );
         statusComboBox.setItems(status);
     }
 
-    
-    
 }

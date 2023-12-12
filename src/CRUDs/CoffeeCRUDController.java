@@ -37,9 +37,15 @@ import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import ClassFiles.TxtUtils;
 import java.sql.Types;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class CoffeeCRUDController implements Initializable {
 
+    @FXML
+    private ImageView CloseButton;
     @FXML
     private Button addBTN;
 
@@ -112,10 +118,9 @@ public class CoffeeCRUDController implements Initializable {
         TxtUtils.restrictLetter(txtMediumPrice);
         TxtUtils.restrictLetter(txtSmallPrice);
         TxtUtils.limitCharacters(txtLargePrice, 4);
-        TxtUtils.limitCharacters(txtMediumPrice,4);
+        TxtUtils.limitCharacters(txtMediumPrice, 4);
         TxtUtils.limitCharacters(txtSmallPrice, 4);
-        TxtUtils.limitCharacters(txtItemName,50);
-       
+        TxtUtils.limitCharacters(txtItemName, 50);
 
         initializeStatusComboBox();
         statusComboBox.setValue("InStock");
@@ -123,6 +128,25 @@ public class CoffeeCRUDController implements Initializable {
         coffeeTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 handleTableView();
+            }
+        });
+        
+        CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    Stage stage = (Stage) CloseButton.getScene().getWindow();
+                    stage.close();
+
+                    // Load the Admin FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/AdminFXML.fxml"));
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();  // Log the exception
+                }
+
+                // Consume the event to prevent it from propagating
+                event.consume();
             }
         });
     }
@@ -173,7 +197,7 @@ public class CoffeeCRUDController implements Initializable {
                 switch (buttonId) {
                     case "addBTN" -> {
                         if (!isProductAlreadyExists(connection, itemName)) {
-                           
+
                             insertCoffeeItem(connection, itemName, type, smallPrice, mediumPrice, largePrice, imageInputStream, status);
                             System.out.println("Data inserted.");
                             clearTextFields();
@@ -259,12 +283,12 @@ public class CoffeeCRUDController implements Initializable {
             preparedStatement.setString(4, mediumPrice);
             preparedStatement.setString(5, largePrice);
             if (image != null) {
-            preparedStatement.setBlob(6, image); // Use setBlob for InputStream
-        } else {  
-            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
-            preparedStatement.setBlob(6, defaultImageStream);
-           
-        }
+                preparedStatement.setBlob(6, image); // Use setBlob for InputStream
+            } else {
+                InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+                preparedStatement.setBlob(6, defaultImageStream);
+
+            }
             preparedStatement.setString(7, status);
 
             preparedStatement.executeUpdate();
@@ -298,7 +322,7 @@ public class CoffeeCRUDController implements Initializable {
                 preparedStatement.setString(8, status);
                 preparedStatement.setInt(9, itemID);
             } else {
-             
+
                 preparedStatement.setInt(7, itemID);
             }
 
@@ -439,7 +463,6 @@ public class CoffeeCRUDController implements Initializable {
         }
     }
 
-  
     private boolean isProductAlreadyExists(Connection connection, String itemName) {
         String sql = "SELECT COUNT(*) FROM coffee_items WHERE item_name = ?";
 

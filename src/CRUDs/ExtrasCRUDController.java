@@ -35,9 +35,15 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import ClassFiles.TxtUtils;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class ExtrasCRUDController implements Initializable {
 
+    @FXML
+    private ImageView CloseButton;
     @FXML
     private Button addBTN;
 
@@ -75,15 +81,14 @@ public class ExtrasCRUDController implements Initializable {
     private Button updtBTN;
 
     private Image selectedImage;
-    
-     @FXML
-    private ComboBox<String> statusComboBox;
-     
-       private String getSelectedStatus() {
-        
-    return statusComboBox.getValue();
-}
 
+    @FXML
+    private ComboBox<String> statusComboBox;
+
+    private String getSelectedStatus() {
+
+        return statusComboBox.getValue();
+    }
 
     private ObservableList<ExtrasItemData> extrasItemData = FXCollections.observableArrayList();
 
@@ -92,13 +97,32 @@ public class ExtrasCRUDController implements Initializable {
         displayExtras();
         TxtUtils.restrictLetter(txtPrice);
         TxtUtils.limitCharacters(txtPrice, 4);
-        TxtUtils.limitCharacters(txtItemName,50);
+        TxtUtils.limitCharacters(txtItemName, 50);
         statusComboBox.setValue("InStock");
         initializeStatusComboBox();
 
         extrasTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 handleTableView();
+            }
+        });
+
+        CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    Stage stage = (Stage) CloseButton.getScene().getWindow();
+                    stage.close();
+
+                    // Load the Admin FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/AdminFXML.fxml"));
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();  // Log the exception
+                }
+
+                // Consume the event to prevent it from propagating
+                event.consume();
             }
         });
     }
@@ -135,7 +159,7 @@ public class ExtrasCRUDController implements Initializable {
                 /* para sa mga CRUD para di nakakalito tignan sa sample_database */
                 String itemName = txtItemName.getText();
                 String price = txtPrice.getText();
-                 String status = getSelectedStatus();
+                String status = getSelectedStatus();
 
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
@@ -143,57 +167,55 @@ public class ExtrasCRUDController implements Initializable {
                 Button clickedButton = (Button) event.getSource();
                 String buttonId = clickedButton.getId();
 
-                 switch (buttonId) {
-                case "addBTN" -> {
-           if (!isProductAlreadyExists(connection, itemName)) {
-                    insertExtrasItem(connection, itemName, price,imageInputStream, status);
-                    System.out.println("Data inserted.");
-                     clearTextFields();
-                } else {
-                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
-                    System.out.println("Product already exists.");
-                    return; 
-                }
-                   
-                    }
-                case "updtBTN" -> {
-                   if (selectedItem != null) {
-                int itemID = selectedItem.getItemID();
-               if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
-                    selectedItem.setItemID(itemID);
-                     updateExtrasItem(connection, itemName, price, imageInputStream, itemID, status);
-                     System.out.println("Data updated.");
-                     clearTextFields();
-                } else {
-                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
-                    System.out.println("Product already exists.");
-                    return; 
-                }
-            } else {
-                System.out.println("No item selected for update.");
-            } }
-                case "dltBtn" -> {
-                
-                
-               if (selectedItem != null) {
-                        // Display confirmation dialog before deletion
-                        boolean confirmDelete = showDeleteConfirmation();
-                        if (confirmDelete) {
-                            int itemID = selectedItem.getItemID();
-                            deleteExtrasItem(connection, itemID);
-                            System.out.println("Data deleted.");
+                switch (buttonId) {
+                    case "addBTN" -> {
+                        if (!isProductAlreadyExists(connection, itemName)) {
+                            insertExtrasItem(connection, itemName, price, imageInputStream, status);
+                            System.out.println("Data inserted.");
+                            clearTextFields();
                         } else {
-                            System.out.println("Deletion canceled.");
+                            showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                            System.out.println("Product already exists.");
+                            return;
                         }
-                    } else {
-                        System.out.println("No item selected for deletion.");
+
                     }
+                    case "updtBTN" -> {
+                        if (selectedItem != null) {
+                            int itemID = selectedItem.getItemID();
+                            if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
+                                selectedItem.setItemID(itemID);
+                                updateExtrasItem(connection, itemName, price, imageInputStream, itemID, status);
+                                System.out.println("Data updated.");
+                                clearTextFields();
+                            } else {
+                                showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                                System.out.println("Product already exists.");
+                                return;
+                            }
+                        } else {
+                            System.out.println("No item selected for update.");
+                        }
+                    }
+                    case "dltBtn" -> {
+
+                        if (selectedItem != null) {
+                            // Display confirmation dialog before deletion
+                            boolean confirmDelete = showDeleteConfirmation();
+                            if (confirmDelete) {
+                                int itemID = selectedItem.getItemID();
+                                deleteExtrasItem(connection, itemID);
+                                System.out.println("Data deleted.");
+                            } else {
+                                System.out.println("Deletion canceled.");
+                            }
+                        } else {
+                            System.out.println("No item selected for deletion.");
+                        }
+                    }
+
                 }
-            
-                
-            }
-                
-               
+
                 displayExtras();
 
             } else {
@@ -229,12 +251,12 @@ public class ExtrasCRUDController implements Initializable {
             preparedStatement.setString(2, price);
 
             if (image != null) {
-            preparedStatement.setBlob(3, image); 
-        } else {  
-            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
-            preparedStatement.setBlob(3, defaultImageStream);
-           
-        }
+                preparedStatement.setBlob(3, image);
+            } else {
+                InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+                preparedStatement.setBlob(3, defaultImageStream);
+
+            }
             preparedStatement.setString(4, status);
 
             preparedStatement.executeUpdate();
@@ -310,12 +332,12 @@ public class ExtrasCRUDController implements Initializable {
                 int itemID = result.getInt("item_id");
                 String itemName = result.getString("item_name");
                 Integer price = result.getInt("price");
-                
+
                 Blob imageBlob = result.getBlob("image");
                 String status = result.getString("status");
 
                 InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
-                
+
                 ExtrasItemData extrasItemData = new ExtrasItemData(itemName, price);
                 extrasItemData.setItemID(itemID);
                 extrasItemData.setImage(imageBlob); // Set Blob if needed
@@ -362,40 +384,37 @@ public class ExtrasCRUDController implements Initializable {
         ExtrasItemData selectedItem = extrasTV.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
-            
+
             String status = selectedItem.getStatus();
             txtItemName.setText(selectedItem.getItemName());
 
             txtPrice.setText(String.valueOf(selectedItem.getPrice()));
             statusComboBox.setValue(status);
 
-             Blob imageBlob = selectedItem.getImage();
-             
-               try {
-  
-    InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
+            Blob imageBlob = selectedItem.getImage();
 
-    selectedItem.setImageInputStream(imageInputStream);
+            try {
 
-  
-    if (imageInputStream != null) {
-        Image selectedItemImage = new Image(imageInputStream);
-        itemIV.setImage(selectedItemImage);
-        iconIV.setVisible(false);
-    } else {
-       
-        itemIV.setImage(null);
-        iconIV.setVisible(true);
-    }
-} catch (SQLException e) {
-    e.printStackTrace();
-   
-}
+                InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
+
+                selectedItem.setImageInputStream(imageInputStream);
+
+                if (imageInputStream != null) {
+                    Image selectedItemImage = new Image(imageInputStream);
+                    itemIV.setImage(selectedItemImage);
+                    iconIV.setVisible(false);
+                } else {
+
+                    itemIV.setImage(null);
+                    iconIV.setVisible(true);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+            }
         }
     }
- 
 
-     
     private boolean isProductAlreadyExists(Connection connection, String itemName) {
         String sql = "SELECT COUNT(*) FROM extras_items WHERE item_name = ?";
 
@@ -414,25 +433,26 @@ public class ExtrasCRUDController implements Initializable {
 
         return false;
     }
-  private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
-    String sql = "SELECT COUNT(*) FROM extras_items WHERE item_name = ? AND item_id != ?";
 
-    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-        preparedStatement.setString(1, itemName);
-        preparedStatement.setInt(2, itemID);
-        ResultSet resultSet = preparedStatement.executeQuery();
+    private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
+        String sql = "SELECT COUNT(*) FROM extras_items WHERE item_name = ? AND item_id != ?";
 
-        if (resultSet.next()) {
-            int count = resultSet.getInt(1);
-            return count > 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, itemName);
+            preparedStatement.setInt(2, itemID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return false;
     }
-
-    return false;
-}
 
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -440,14 +460,13 @@ public class ExtrasCRUDController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
-    } 
-    
+    }
+
     private void initializeStatusComboBox() {
         // Populate the sugarlevelComboBox with items
         ObservableList<String> status = FXCollections.observableArrayList(
                 "InStock",
                 "Out Of Stock"
-                
         );
         statusComboBox.setItems(status);
     }

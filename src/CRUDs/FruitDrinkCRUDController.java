@@ -1,6 +1,5 @@
 package CRUDs;
 
-
 import ClassFiles.FruitDrinkItemData;
 import Databases.CRUDDatabase;
 import java.sql.Blob;
@@ -37,16 +36,21 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import ClassFiles.TxtUtils;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class FruitDrinkCRUDController implements Initializable {
 
+    @FXML
+    private ImageView CloseButton;
     @FXML
     private Button addBTN;
 
     @FXML
     private Button addBTN1;
 
-  
     @FXML
     private TableColumn<FruitDrinkItemData, String> fruitfFlavorMT;
 
@@ -101,34 +105,53 @@ public class FruitDrinkCRUDController implements Initializable {
 
     @FXML
     private Button updtBTN;
-    
+
     @FXML
     private ComboBox<String> statusComboBox;
-    
-     private String getSelectedStatus() {
-        
-    return statusComboBox.getValue();
-}
+
+    private String getSelectedStatus() {
+
+        return statusComboBox.getValue();
+    }
 
     private ObservableList<FruitDrinkItemData> fruitDrinkItemData = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         displayFruitDrink();
-         TxtUtils.restrictLetter(txtLargePrice);
+        TxtUtils.restrictLetter(txtLargePrice);
         TxtUtils.restrictLetter(txtMediumPrice);
         TxtUtils.restrictLetter(txtSmallPrice);
-       
+
         TxtUtils.limitCharacters(txtLargePrice, 4);
-        TxtUtils.limitCharacters(txtMediumPrice,4);
+        TxtUtils.limitCharacters(txtMediumPrice, 4);
         TxtUtils.limitCharacters(txtSmallPrice, 4);
-        TxtUtils.limitCharacters(txtItemName,50);
+        TxtUtils.limitCharacters(txtItemName, 50);
         initializeStatusComboBox();
         statusComboBox.setValue("InStock");
 
         fruitDrinkTV.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 handleTableView();
+            }
+        });
+
+        CloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    Stage stage = (Stage) CloseButton.getScene().getWindow();
+                    stage.close();
+
+                    // Load the Admin FXML file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/AdminFXML.fxml"));
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();  // Log the exception
+                }
+
+                // Consume the event to prevent it from propagating
+                event.consume();
             }
         });
     }
@@ -157,7 +180,7 @@ public class FruitDrinkCRUDController implements Initializable {
     /* ito yung para sa paginsert sa database, magvavary siya sa kung ano lang yung kinukuha sa CRUD */
     @FXML
     private void handleAddButtonClick(ActionEvent event) throws IOException {
- FruitDrinkItemData selectedItem = fruitDrinkTV.getSelectionModel().getSelectedItem();
+        FruitDrinkItemData selectedItem = fruitDrinkTV.getSelectionModel().getSelectedItem();
         try (Connection connection = CRUDDatabase.getConnection()) {
             /* gumawa ako bagong database class kasi bagong database gagamitin natin */
             if (connection != null) {
@@ -171,62 +194,60 @@ public class FruitDrinkCRUDController implements Initializable {
                 String status = getSelectedStatus();
                 // Convert Image to InputStream for database storage
                 InputStream imageInputStream = convertImageToInputStream(selectedImage);
-               
+
                 // Call the method to insert data into the database
                 Button clickedButton = (Button) event.getSource();
                 String buttonId = clickedButton.getId();
-                
+
                 switch (buttonId) {
-                case "addBTN" -> {
-           if (!isProductAlreadyExists(connection, itemName)) {
-                  insertFruitDrinkItem(connection, itemName,smallPrice, mediumPrice, largePrice,fruitFlavor, sinkers , imageInputStream, status);
-                    System.out.println("Data inserted.");
-                     clearTextFields();
-                } else {
-                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
-                    System.out.println("Product already exists.");
-                    return; 
-                }
-                    
-                    }
-                case "updtBTN" -> {
-                   if (selectedItem != null) {
-                int itemID = selectedItem.getItemID();
-                if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
-                    selectedItem.setItemID(itemID);
-                        updateFruitDrinkItem(connection, itemName,smallPrice, mediumPrice, largePrice,fruitFlavor, sinkers , imageInputStream, itemID, status);
-                        System.out.println("Data updated.");
-                     clearTextFields();
-                } else {
-                    showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
-                    System.out.println("Product already exists.");
-                    return; 
-                }
-            } else {
-                System.out.println("No item selected for update.");
-            }
-                             }
-                
-                case "dltBtn" -> {
-                
-                
-               if (selectedItem != null) {
-                        // Display confirmation dialog before deletion
-                        boolean confirmDelete = showDeleteConfirmation();
-                        if (confirmDelete) {
-                            int itemID = selectedItem.getItemID();
-                            deleteFruitDrinkItem(connection, itemID);
-                            System.out.println("Data deleted.");
+                    case "addBTN" -> {
+                        if (!isProductAlreadyExists(connection, itemName)) {
+                            insertFruitDrinkItem(connection, itemName, smallPrice, mediumPrice, largePrice, fruitFlavor, sinkers, imageInputStream, status);
+                            System.out.println("Data inserted.");
+                            clearTextFields();
                         } else {
-                            System.out.println("Deletion canceled.");
+                            showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                            System.out.println("Product already exists.");
+                            return;
                         }
-                    } else {
-                        System.out.println("No item selected for deletion.");
+
                     }
+                    case "updtBTN" -> {
+                        if (selectedItem != null) {
+                            int itemID = selectedItem.getItemID();
+                            if (!isProductAlreadyExistsforUpdt(connection, itemName, itemID)) {
+                                selectedItem.setItemID(itemID);
+                                updateFruitDrinkItem(connection, itemName, smallPrice, mediumPrice, largePrice, fruitFlavor, sinkers, imageInputStream, itemID, status);
+                                System.out.println("Data updated.");
+                                clearTextFields();
+                            } else {
+                                showAlert("Product Already Exists", "The product '" + itemName + "' already exists.");
+                                System.out.println("Product already exists.");
+                                return;
+                            }
+                        } else {
+                            System.out.println("No item selected for update.");
+                        }
+                    }
+
+                    case "dltBtn" -> {
+
+                        if (selectedItem != null) {
+                            // Display confirmation dialog before deletion
+                            boolean confirmDelete = showDeleteConfirmation();
+                            if (confirmDelete) {
+                                int itemID = selectedItem.getItemID();
+                                deleteFruitDrinkItem(connection, itemID);
+                                System.out.println("Data deleted.");
+                            } else {
+                                System.out.println("Deletion canceled.");
+                            }
+                        } else {
+                            System.out.println("No item selected for deletion.");
+                        }
+                    }
+
                 }
-            
-                
-            }
 
                 clearTextFields();
                 displayFruitDrink();
@@ -257,7 +278,7 @@ public class FruitDrinkCRUDController implements Initializable {
     /* ito sundin mo lang ano yung nasa CRUD UI ng mga food category, basta kapag combobox (like add ons) ang logic natin is
     gagamit tayo comma para ma-identify na iba't-ibang options siya
      */
-    private void insertFruitDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice, String fruitFlavor, String sinkers,InputStream image, String status) {
+    private void insertFruitDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice, String fruitFlavor, String sinkers, InputStream image, String status) {
         String sql = "INSERT INTO fruitdrink_items (item_name, small_price, medium_price, large_price,fruit_flavor, sinkers, image, string) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -267,14 +288,14 @@ public class FruitDrinkCRUDController implements Initializable {
             preparedStatement.setString(4, largePrice);
             preparedStatement.setString(5, fruitFlavor);
             preparedStatement.setString(6, sinkers);
-           if (image != null) {
-            preparedStatement.setBlob(7, image); 
-        } else {  
-            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
-            preparedStatement.setBlob(7, defaultImageStream);
-           
-        }
-             preparedStatement.setString(8, status);
+            if (image != null) {
+                preparedStatement.setBlob(7, image);
+            } else {
+                InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+                preparedStatement.setBlob(7, defaultImageStream);
+
+            }
+            preparedStatement.setString(8, status);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -283,7 +304,7 @@ public class FruitDrinkCRUDController implements Initializable {
         }
     }
 
-    private void updateFruitDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice,String fruitFlavor,String sinkers, InputStream image, int itemID, String status) {
+    private void updateFruitDrinkItem(Connection connection, String itemName, String smallPrice, String mediumPrice, String largePrice, String fruitFlavor, String sinkers, InputStream image, int itemID, String status) {
         String sql;
 
         if (image != null) {
@@ -301,8 +322,7 @@ public class FruitDrinkCRUDController implements Initializable {
             preparedStatement.setString(4, largePrice);
             preparedStatement.setString(5, fruitFlavor);
             preparedStatement.setString(6, sinkers);
-             preparedStatement.setString(7, status);
-            
+            preparedStatement.setString(7, status);
 
             if (image != null) {
                 preparedStatement.setBlob(8, image); // Use setBlob for InputStream
@@ -358,21 +378,19 @@ public class FruitDrinkCRUDController implements Initializable {
                 Integer largePrice = result.getInt("large_price");
                 String fruitFlavor = result.getString("fruit_flavor");
                 String sinkers = result.getString("sinkers");
-                
+
                 String status = result.getString("status");
-                
+
                 Blob imageBlob = result.getBlob("image");
 
-            
                 InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
-                
+
                 FruitDrinkItemData fruitDrinkItemData = new FruitDrinkItemData(itemName, smallPrice, mediumPrice, largePrice, fruitFlavor, sinkers);
                 fruitDrinkItemData.setItemID(itemID);
                 fruitDrinkItemData.setImage(imageBlob);
                 fruitDrinkItemData.setImageInputStream(imageInputStream);
                 fruitDrinkItemData.setStatus(status);
-               
-                
+
                 listData.add(fruitDrinkItemData);
 
             }
@@ -421,44 +439,42 @@ public class FruitDrinkCRUDController implements Initializable {
         FruitDrinkItemData selectedItem = fruitDrinkTV.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
-            
+
             String status = selectedItem.getStatus();
-            
+
             txtItemName.setText(selectedItem.getItemName());
 
             txtSmallPrice.setText(String.valueOf(selectedItem.getSmallPrice()));
             txtMediumPrice.setText(String.valueOf(selectedItem.getMediumPrice()));
             txtLargePrice.setText(String.valueOf(selectedItem.getLargePrice()));
-            txtFruitFlavor.setText(selectedItem.getFruitFlavor()); 
-            txtSinkers.setText(selectedItem.getSinkers());  
+            txtFruitFlavor.setText(selectedItem.getFruitFlavor());
+            txtSinkers.setText(selectedItem.getSinkers());
             statusComboBox.setValue(status);
 
             Blob imageBlob = selectedItem.getImage();
-             
-               try {
-  
-    InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
 
-    selectedItem.setImageInputStream(imageInputStream);
+            try {
 
-  
-    if (imageInputStream != null) {
-        Image selectedItemImage = new Image(imageInputStream);
-        itemIV.setImage(selectedItemImage);
-        iconIV.setVisible(false);
-    } else {
-       
-        itemIV.setImage(null);
-        iconIV.setVisible(true);
-    }
-} catch (SQLException e) {
-    e.printStackTrace();
-   
-}
+                InputStream imageInputStream = (imageBlob != null) ? imageBlob.getBinaryStream() : null;
+
+                selectedItem.setImageInputStream(imageInputStream);
+
+                if (imageInputStream != null) {
+                    Image selectedItemImage = new Image(imageInputStream);
+                    itemIV.setImage(selectedItemImage);
+                    iconIV.setVisible(false);
+                } else {
+
+                    itemIV.setImage(null);
+                    iconIV.setVisible(true);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+            }
         }
     }
-     
-     
+
     private boolean isProductAlreadyExists(Connection connection, String itemName) {
         String sql = "SELECT COUNT(*) FROM fruitdrink_items WHERE item_name = ?";
 
@@ -477,26 +493,26 @@ public class FruitDrinkCRUDController implements Initializable {
 
         return false;
     }
-    
-      private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
-    String sql = "SELECT COUNT(*) FROM fruitdrink_items WHERE item_name = ? AND item_id != ?";
 
-    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-        preparedStatement.setString(1, itemName);
-        preparedStatement.setInt(2, itemID);
-        ResultSet resultSet = preparedStatement.executeQuery();
+    private boolean isProductAlreadyExistsforUpdt(Connection connection, String itemName, int itemID) {
+        String sql = "SELECT COUNT(*) FROM fruitdrink_items WHERE item_name = ? AND item_id != ?";
 
-        if (resultSet.next()) {
-            int count = resultSet.getInt(1);
-            return count > 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, itemName);
+            preparedStatement.setInt(2, itemID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return false;
     }
-
-    return false;
-}
 
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -504,16 +520,15 @@ public class FruitDrinkCRUDController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
-    } 
-    
-        private void initializeStatusComboBox() {
+    }
+
+    private void initializeStatusComboBox() {
         // Populate the sugarlevelComboBox with items
         ObservableList<String> status = FXCollections.observableArrayList(
                 "InStock",
                 "Out Of Stock"
-                
         );
         statusComboBox.setItems(status);
     }
 
-    }
+}

@@ -90,6 +90,10 @@ import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableRow;
+import javafx.scene.paint.Color;
+import static javafx.scene.paint.Color.TRANSPARENT;
+import java.sql.Blob;
+import javafx.stage.StageStyle;
 
 public class AdminFXMLController implements Initializable, ControllerInterface {
 
@@ -1194,6 +1198,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Create a new stage for the MilkteaCRUDFXML
             Stage stage = new Stage();
             Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.initStyle(StageStyle.TRANSPARENT);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
@@ -1213,6 +1219,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Create a new stage for the MilkteaCRUDFXML
             Stage stage = new Stage();
             Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.initStyle(StageStyle.TRANSPARENT);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
@@ -1232,6 +1240,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Create a new stage for the MilkteaCRUDFXML
             Stage stage = new Stage();
             Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.initStyle(StageStyle.TRANSPARENT);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
@@ -1251,6 +1261,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Create a new stage for the MilkteaCRUDFXML
             Stage stage = new Stage();
             Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.initStyle(StageStyle.TRANSPARENT);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
@@ -1270,8 +1282,11 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Create a new stage for the MilkteaCRUDFXML
             Stage stage = new Stage();
             Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.initStyle(StageStyle.TRANSPARENT);
             stage.setScene(scene);
             stage.show();
+            
         } catch (IOException e) {
             e.printStackTrace();
             // Handle the exception (e.g., show an error dialog)
@@ -1289,6 +1304,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Create a new stage for the MilkteaCRUDFXML
             Stage stage = new Stage();
             Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.initStyle(StageStyle.TRANSPARENT);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
@@ -1308,6 +1325,8 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             // Create a new stage for the MilkteaCRUDFXML
             Stage stage = new Stage();
             Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            stage.initStyle(StageStyle.TRANSPARENT);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
