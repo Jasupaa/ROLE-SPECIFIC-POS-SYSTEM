@@ -30,6 +30,7 @@ import java.util.Random;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.DateCell;
 
 /**
  * FXML Controller class
@@ -73,6 +74,7 @@ public class DiscountCRUDController implements Initializable {
     
     @FXML
     private TextField Limit;
+  
     
     
     
@@ -83,6 +85,13 @@ public class DiscountCRUDController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        restrictLetter(Limit);
+        restrictLetter(DisCount);
+        limitCharacters(disCript, 50);
+        limitCharacters(Limit, 3);
+        limitCharacters(DisCode, 12);
+        limitCharacters(DisCount, 2);
         
          AGBtn.setOnAction(event -> generateAndSetCode());
         
@@ -111,7 +120,36 @@ public class DiscountCRUDController implements Initializable {
                 }
             }
         });
+          DatePicker.setDayCellFactory(picker -> new DateCell() {
+        @Override
+        public void updateItem(LocalDate date, boolean empty) {
+            super.updateItem(date, empty);
+
+            LocalDate currentDate = LocalDate.now();
+            setDisable(empty || date.isBefore(currentDate));
+        }
+    });
     }
+    
+      public void restrictLetter(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                textField.setText(oldValue);
+            }
+        });
+    }
+    
+    
+      public void limitCharacters(TextField textField, int maxLength) {
+    textField.textProperty().addListener((observable, oldValue, newValue) -> {
+        // Limit the length of the text
+        if (textField.getText().length() > maxLength) {
+            String limitedText = textField.getText().substring(0, maxLength);
+            textField.setText(limitedText);
+        }
+    });
+}
+
     
       @FXML
     private void handleCreateButtonAction(ActionEvent event) {
@@ -159,7 +197,7 @@ public class DiscountCRUDController implements Initializable {
     private void insertDiscountIntoDatabase(String discCode, double discValue, String descCoup, LocalDate dateCreated, LocalDate dateValid, int usageLim) {
         try (Connection connection = database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO discount (disc_code, disc_value, Desc_coup, Date_created, Date_valid, limit_usage, usageLim) VALUES (?, ?, ?, ?, ?)")) {
+                     "INSERT INTO discount (disc_code, disc_value, Desc_coup, Date_created, Date_valid, limit_usage) VALUES (?, ?, ?, ?, ?, ?)")) {
 
             preparedStatement.setString(1, discCode);
             preparedStatement.setDouble(2, discValue);
@@ -243,11 +281,13 @@ public class DiscountCRUDController implements Initializable {
         DisCode.setText(discount.getDiscCode());
         DisCount.setText(String.valueOf(discount.getDiscValue()));
         disCript.setText(discount.getDescCoup());
+        Limit.setText(String.valueOf(discount.getUsageLim()));
 
         // Set the DatePicker value
         if (discount.getDateValid() != null) {
             DatePicker.setValue(discount.getDateValid());
         }
+         DateCreate.setText(discount.getDateCreated().toString());
         // Set other fields as needed...
     }
     
@@ -301,4 +341,5 @@ private void showAlert(String title, String content) {
     alert.setContentText(content);
     alert.showAndWait();
 }
+
 }

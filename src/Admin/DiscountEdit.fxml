@@ -19,19 +19,21 @@
       <Text layoutX="259.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description" />
       <Text layoutX="260.0" layoutY="250.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Created At" />
       <Text layoutX="382.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Valid Until" />
-      <Button fx:id="EditBtn" layoutX="262.0" layoutY="309.0" mnemonicParsing="false" onAction="#updateCreateButtonAction" prefHeight="26.0" prefWidth="66.0" text="Edit" />
-      <Button fx:id="CLRBtn" layoutX="337.0" layoutY="309.0" mnemonicParsing="false" onAction="#handleClearButtonAction" prefHeight="26.0" prefWidth="66.0" text="Clear" />
+      <Button fx:id="EditBtn" layoutX="261.0" layoutY="341.0" mnemonicParsing="false" onAction="#updateCreateButtonAction" prefHeight="26.0" prefWidth="66.0" text="Edit" />
+      <Button fx:id="CLRBtn" layoutX="337.0" layoutY="341.0" mnemonicParsing="false" onAction="#handleClearButtonAction" prefHeight="26.0" prefWidth="66.0" text="Clear" />
       <Pane prefHeight="400.0" prefWidth="205.0" styleClass="CRUDPaneBG" stylesheets="@../CSS/AdminCSS.css" />
       <Text layoutX="259.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Coupon Details" wrappingWidth="195.99997558593736">
          <font>
             <Font size="20.0" />
          </font>
       </Text>
-      <Button fx:id="AGBtn" layoutX="413.0" layoutY="309.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Auto-Generate Code">
+      <Button fx:id="AGBtn" layoutX="412.0" layoutY="341.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Auto-Generate Code">
          <font>
             <Font name="Arial" size="8.0" />
          </font>
       </Button>
       <TextField fx:id="DateCreate" editable="false" layoutX="259.0" layoutY="258.0" prefHeight="26.0" prefWidth="114.0" />
+      <Text layoutX="265.0" layoutY="318.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Limitiation :" wrappingWidth="66.0" />
+      <TextField fx:id="Limit" layoutX="340.0" layoutY="301.0" prefHeight="25.0" prefWidth="162.0" />
    </children>
 </AnchorPane>
