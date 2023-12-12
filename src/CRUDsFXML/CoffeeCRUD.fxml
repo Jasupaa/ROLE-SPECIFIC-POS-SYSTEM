@@ -11,7 +11,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.CoffeeCRUDController">
+<AnchorPane id="AnchorPane" prefHeight="453.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CRUDs.CoffeeCRUDController">
    <children>
       <TableView fx:id="coffeeTV" layoutX="39.0" layoutY="51.0" prefHeight="350.0" prefWidth="285.0">
         <columns>
@@ -23,9 +23,9 @@
         </columns>
       </TableView>
       <TextField fx:id="txtItemName" layoutX="609.0" layoutY="94.0" prefHeight="26.0" prefWidth="200.0" promptText="Eg. Classic Milktea" />
-      <TextField fx:id="txtSmallPrice" layoutX="720.0" layoutY="139.0" prefHeight="26.0" prefWidth="88.0" promptText="P 0.00" />
-      <TextField fx:id="txtMediumPrice" layoutX="721.0" layoutY="174.0" prefHeight="26.0" prefWidth="88.0" promptText="P 0.00" />
-      <TextField fx:id="txtLargePrice" layoutX="722.0" layoutY="209.0" prefHeight="26.0" prefWidth="88.0" promptText="P 0.00" />
+      <TextField fx:id="txtSmallPrice" layoutX="720.0" layoutY="139.0" prefHeight="26.0" prefWidth="88.0" promptText="₱ 0.00" />
+      <TextField fx:id="txtMediumPrice" layoutX="721.0" layoutY="174.0" prefHeight="26.0" prefWidth="88.0" promptText="₱ 0.00" />
+      <TextField fx:id="txtLargePrice" layoutX="722.0" layoutY="209.0" prefHeight="26.0" prefWidth="88.0" promptText="₱ 0.00" />
       <TextArea fx:id="txtType" layoutX="609.0" layoutY="256.0" prefHeight="90.0" prefWidth="200.0" promptText="Eg. Hot, Cold" />
       <Button fx:id="addBTN" layoutX="766.0" layoutY="375.0" mnemonicParsing="false" onAction="#handleAddButtonClick" text="Add" />
       <Label layoutX="533.0" layoutY="98.0" text="Item Name" />
