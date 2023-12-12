@@ -32,7 +32,7 @@
                </font>
             </Label>
             <TextField fx:id="LastNameTxtLbl" layoutX="232.0" layoutY="201.0" prefHeight="27.0" prefWidth="173.0" />
-            <Button fx:id="UpdateEmployeeButton" layoutX="255.0" layoutY="403.0" mnemonicParsing="false" onAction="#handleUpdateEmployeeButtonClick" prefHeight="25.0" prefWidth="150.0" styleClass="employeeButton" stylesheets="@../CSS/AdminCSS.css" text="Update" />
+            <Button fx:id="UpdateEmployeeButton" layoutX="255.0" layoutY="403.0" mnemonicParsing="false" onAction="#handleUpdateEmployeeButtonClick" prefHeight="25.0" prefWidth="150.0" styleClass="blackWhite" stylesheets="@../CSS/AdminCSS.css" text="Update" />
             <TextField fx:id="ContactTxtLbl" layoutX="40.0" layoutY="270.0" prefHeight="27.0" prefWidth="365.0" promptText="contact number must be 11 characters" />
             <TextField fx:id="emailTxtLbl" layoutX="40.0" layoutY="339.0" prefHeight="27.0" prefWidth="365.0" promptText="e-mail must end with/e.g. @example.com" />
             <Label layoutX="41.0" layoutY="314.0" prefHeight="15.0" prefWidth="95.0" text="E-mail">

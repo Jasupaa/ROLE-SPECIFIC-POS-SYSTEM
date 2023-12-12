@@ -82,6 +82,7 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Optional;
+import javafx.collections.transformation.FilteredList;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
@@ -279,6 +280,9 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private TableColumn<EmployeeData, String> empStatus;
+    
+    @FXML
+    private ComboBox<String> sortFilterEmp;
 
     @FXML
     private Button removeEmp;
@@ -387,6 +391,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
      private boolean isHistoryMode = false;
 
     private ObservableList<EmployeeData> employeeDataList;
+    private FilteredList<EmployeeData> filteredEmployeeData;
 
     public void disableEmployeeCell(EmployeeData employeeData) {
         int index = employeeDataList.indexOf(employeeData);
@@ -1063,6 +1068,16 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
     @Override
     public void initialize(URL url, ResourceBundle rb
     ) {
+        //set filter employee table
+        employeeDataList = fetchExistingDataFromDatabase();
+         
+        ObservableList<String> choices = FXCollections.observableArrayList("All","Active", "Inactive", "Terminated");
+        sortFilterEmp.setItems(choices);
+        filteredEmployeeData = new FilteredList<>(employeeDataList);
+        sortFilterEmp.setOnAction(event -> filterEmployeeTable(sortFilterEmp.getValue()));
+        setUpEmployeeTable();
+        filterEmployeeTable(sortFilterEmp.getValue());
+        //end of set filter employee table
 
         updateTotalDailySalesLabel();
         updateTotalDailyProductsSoldLabel();
@@ -1126,6 +1141,17 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
                 }
             }
         });
+    }
+    
+    //filter employee table depending on status
+   private void filterEmployeeTable(String selectedStatus) {
+    filteredEmployeeData.setPredicate(employee -> {
+        if (selectedStatus == null || selectedStatus.isEmpty() || selectedStatus.equals("All")) {
+            return true;
+        }
+        return employee.getEmpStatus().equalsIgnoreCase(selectedStatus);
+    });
+    employeeTable.setItems(filteredEmployeeData);
     }
 
     @FXML

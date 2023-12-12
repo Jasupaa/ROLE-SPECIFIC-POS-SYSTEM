@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="496.0" prefWidth="437.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AddEmployeeFXMLController">
+<AnchorPane id="AnchorPane" prefHeight="496.0" prefWidth="437.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 5;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AddEmployeeFXMLController">
    <children>
       <AnchorPane layoutX="6.0" prefHeight="496.0" prefWidth="459.0" style="-fx-background-color: 00000000;">
          <children>
@@ -31,7 +31,7 @@
                </font>
             </Label>
             <TextField fx:id="LastNameTxtLbl" layoutX="232.0" layoutY="170.0" prefHeight="27.0" prefWidth="173.0" />
-            <Button fx:id="AddEmployeeButton" layoutX="255.0" layoutY="411.0" mnemonicParsing="false" onAction="#addEmployeeAction" prefHeight="25.0" prefWidth="150.0" styleClass="employeeButton" stylesheets="@../CSS/AdminCSS.css" text="Add Employee" />
+            <Button fx:id="AddEmployeeButton" layoutX="255.0" layoutY="411.0" mnemonicParsing="false" onAction="#addEmployeeAction" prefHeight="25.0" prefWidth="150.0" styleClass="blackWhite" stylesheets="@../CSS/AdminCSS.css" text="Add Employee" />
             <TextField fx:id="ContactTxtLbl" layoutX="40.0" layoutY="237.0" prefHeight="27.0" prefWidth="365.0" promptText="contact number must be 11 characters" />
             <TextField fx:id="emailTxtLbl" layoutX="40.0" layoutY="297.0" prefHeight="27.0" prefWidth="365.0" promptText="e-mail must end with/e.g. @example.com" />
             <Label layoutX="41.0" layoutY="272.0" prefHeight="15.0" prefWidth="95.0" text="E-mail">
@@ -50,7 +50,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Button fx:id="generateRandomPinCode" layoutX="255.0" layoutY="359.0" mnemonicParsing="false" onAction="#generateRandomPinCodeAction" prefHeight="25.0" prefWidth="150.0" styleClass="employeeButton" stylesheets="@../CSS/AdminCSS.css" text="Generate Random" />
+            <Button fx:id="generateRandomPinCode" layoutX="255.0" layoutY="359.0" mnemonicParsing="false" onAction="#generateRandomPinCodeAction" prefHeight="25.0" prefWidth="150.0" styleClass="blackWhite" stylesheets="@../CSS/AdminCSS.css" text="Generate Random" />
             <ImageView fx:id="CloseButton" fitHeight="22.0" fitWidth="18.0" layoutX="32.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Pictures/icons8-log-out-96%20(1).png" />
