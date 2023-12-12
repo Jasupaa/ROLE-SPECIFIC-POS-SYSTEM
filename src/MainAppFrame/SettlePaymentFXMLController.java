@@ -243,51 +243,86 @@ public class SettlePaymentFXMLController implements Initializable {
 
     @FXML
     void printButton(ActionEvent event) throws SQLException {
-        // Load the CashierConfirmationFXML file invisibly
+        // Parse the values from UI elements
+        double cashAmount;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("CashierConfirmationFXML.fxml"));
-            Parent root = loader.load();
-            CashierConfirmationFXMLController controller = loader.getController();
-            controller.setupTableView(); // Make sure to call the setupTableView method
-
-            // Create a new stage for the CashierConfirmationFXML
-            Stage cashierConfirm = new Stage();
-            cashierConfirm.initStyle(StageStyle.TRANSPARENT);
-            cashierConfirm.setResizable(false);
-
-            // Set the scene fill to transparent
-            Scene cashierConfirmationScene = new Scene(root);
-            cashierConfirmationScene.setFill(Color.TRANSPARENT);
-
-            // Set the scene to the stage
-            cashierConfirm.setScene(cashierConfirmationScene);
-
-            // Hide the stage
-            cashierConfirm.hide();
-
-            String handlerName = getEmployeeName();
-            String dateTimeString = dateTime.getText().substring(1);
-            int customerID = existingCashierController.getCurrentCustomerID();
-            String orderType = ordertypeTxtField.getText();
-
-            double subtotal = Double.parseDouble(subTotal.getText().substring(1));
-            String discountText = appldDscLbl.getText().substring(1);
-            discountText = discountText.replaceAll("[^\\d.]", "");
-
-            double discountApplied = Double.parseDouble(discountText);
-            double totalAmount = Double.parseDouble(customTotalLabel.getText().substring(1));
-            double cashAmount = Double.parseDouble(cashTxtLbl.getText());
-            double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
-
-            // Use the controller passed as a parameter
-            controller.setOrderDetails(handlerName, dateTimeString, customerID, orderType, subtotal, discountApplied, totalAmount, cashAmount, changeAmount);
-
-            // Trigger the print job
-            triggerPrintJob(root, controller);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle exceptions accordingly
+            cashAmount = Double.parseDouble(cashTxtLbl.getText());
+        } catch (NumberFormatException e) {
+            // Handle the case when the user enters non-numeric or invalid input for cash
+            showInvalidCashAlert();
+            return;  // Return to exit the method
         }
+
+        double newTotalAmount = parseNewTotalAmount();
+
+        // Check if cashAmount is greater than or equal to newTotalAmount
+        if (cashAmount >= newTotalAmount) {
+            // Load the CashierConfirmationFXML file invisibly
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("CashierConfirmationFXML.fxml"));
+                Parent root = loader.load();
+                CashierConfirmationFXMLController controller = loader.getController();
+                controller.setupTableView(); // Make sure to call the setupTableView method
+
+                // Create a new stage for the CashierConfirmationFXML
+                Stage cashierConfirm = new Stage();
+                cashierConfirm.initStyle(StageStyle.TRANSPARENT);
+                cashierConfirm.setResizable(false);
+
+                // Set the scene fill to transparent
+                Scene cashierConfirmationScene = new Scene(root);
+                cashierConfirmationScene.setFill(Color.TRANSPARENT);
+
+                // Set the scene to the stage
+                cashierConfirm.setScene(cashierConfirmationScene);
+
+                // Hide the stage
+                cashierConfirm.hide();
+
+                String handlerName = getEmployeeName();
+                String dateTimeString = dateTime.getText().substring(1);
+                int customerID = existingCashierController.getCurrentCustomerID();
+                String orderType = ordertypeTxtField.getText();
+
+                double subtotal = Double.parseDouble(subTotal.getText().substring(1));
+                String discountText = appldDscLbl.getText().substring(1);
+                discountText = discountText.replaceAll("[^\\d.]", "");
+
+                double discountApplied = Double.parseDouble(discountText);
+                double totalAmount = Double.parseDouble(customTotalLabel.getText().substring(1));
+                double changeAmount = Double.parseDouble(changeTxtLbl.getText().substring(1));
+
+                // Use the controller passed as a parameter
+                controller.setOrderDetails(handlerName, dateTimeString, customerID, orderType, subtotal, discountApplied, totalAmount, cashAmount, changeAmount);
+
+                // Trigger the print job only if the cash amount is sufficient
+                triggerPrintJob(root, controller);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Handle exceptions accordingly
+            }
+        } else {
+            // Display an alert or take other actions if cash amount is insufficient
+            showInsufficientCashAlert();
+        }
+    }
+
+    private void showInvalidCashAlert() {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Invalid Input");
+        alert.setHeaderText(null);
+        alert.setContentText("Please enter a valid cash amount.");
+
+        alert.showAndWait();
+    }
+
+    private void showInsufficientCashAlert() {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Insufficient Cash");
+        alert.setHeaderText(null);
+        alert.setContentText("Insufficient cash amount!");
+
+        alert.showAndWait();
     }
 
     private void triggerPrintJob(Parent root, CashierConfirmationFXMLController controller) {
