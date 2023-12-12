@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AdminFXMLController">
+<AnchorPane fx:id="AdminPane" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="652.0" prefWidth="1136.0" styleClass="anchorPaneBG" stylesheets="@../CSS/AdminCSS.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainAppFrame.AdminFXMLController">
     <children>
         <Label layoutX="451.0" layoutY="77.0" text="DASHBOARD" textFill="#404040">
             <font>
@@ -39,7 +39,7 @@
         </ImageView>
         <AnchorPane layoutX="251.0" layoutY="148.0" prefHeight="450.0" prefWidth="830.0">
             <children>
-                <AnchorPane fx:id="home" layoutX="-218.0" layoutY="-5.0" onDragDetected="#SwitchForm" prefHeight="475.0" prefWidth="1058.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-218.0" AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-5.0">
+                <AnchorPane fx:id="home" layoutX="-218.0" layoutY="-5.0" onDragDetected="#SwitchForm" prefHeight="475.0" prefWidth="1058.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-218.0" AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-5.0">
                     <children>
                         <Pane layoutX="30.0" layoutY="26.0">
                             <children>
@@ -474,7 +474,7 @@
                   </ImageView>
                     </children>
                 </AnchorPane>
-                <AnchorPane fx:id="disCoup" layoutX="-200.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1030.0" style="-fx-background-color: #111315;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
+                <AnchorPane fx:id="disCoup" layoutX="-200.0" layoutY="-95.0" prefHeight="560.0" prefWidth="1030.0" style="-fx-background-color: #111315;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-95.0">
                     <children>
                         <TableView fx:id="discountTableView" layoutX="59.0" layoutY="112.0" prefHeight="394.0" prefWidth="906.0">
                             <columns>
@@ -503,6 +503,7 @@
                                 <Image url="@../Pictures/2.png" />
                             </image>
                         </ImageView>
+                  <Button fx:id="DiscHistory" layoutX="848.0" layoutY="517.0" mnemonicParsing="false" onAction="#handleDiscHistoryButton" prefHeight="28.0" prefWidth="117.0" styleClass="homeButton" stylesheets="@../../../RoleSpecific_POS_System-COPY/src/CSS/AdminCSS.css" text="History" textFill="WHITE" />
                     </children>
                 </AnchorPane>
             </children>

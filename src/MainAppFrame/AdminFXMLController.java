@@ -380,6 +380,11 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     @FXML
     private PieChart coffeePieChart;
+    
+      @FXML
+    private Button DiscHistory;
+    
+     private boolean isHistoryMode = false;
 
     private ObservableList<EmployeeData> employeeDataList;
 
@@ -495,7 +500,7 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
     ////////////////////////////////// ADD
     @FXML
-    private void openAddEmployeeDialog() {
+    private void openAddEmployeeDialog(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEmployee.fxml"));
             Parent root = loader.load();
@@ -1342,9 +1347,35 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
             System.out.println("Please select a discount to edit.");
         }
     }
+     @FXML
+    private void handleDiscHistoryButton(ActionEvent event) {
+           if (isHistoryMode) {
+            loadDataFromDatabase();
+            DiscHistory.setText("History");
+            setButtonsEnabled(true); 
+        } else {
+            loadDiscHistFromDatabase();
+            DiscHistory.setText("Back");
+            setButtonsEnabled(false);
+        }
+        isHistoryMode = !isHistoryMode;
+    }
+    
+    private void setButtonsEnabled(boolean enabled) {
+        AddCoup.setDisable(!enabled);
+        DelBtn.setDisable(!enabled);
+        EditBtn.setDisable(!enabled);
+    }
 
     private void loadDataFromDatabase() {
         List<Discount> discountList = fetchDiscountsFromDatabase();
+        discounts.clear();
+        discounts.addAll(discountList);
+        discountTableView.setItems(discounts);
+    }
+    
+     private void loadDiscHistFromDatabase() {
+        List<Discount> discountList = fetchDiscHistoryFromDatabase();
         discounts.clear();
         discounts.addAll(discountList);
         discountTableView.setItems(discounts);
@@ -1381,6 +1412,38 @@ public class AdminFXMLController implements Initializable, ControllerInterface {
 
         return discounts;
     }
+    private ObservableList<Discount> fetchDiscHistoryFromDatabase() {
+        ObservableList<Discount> discounts = FXCollections.observableArrayList();
+
+        String sql = "SELECT * FROM discount WHERE Date_valid < CURRENT_DATE or limit_usage <= 0";
+
+        try (Connection connection = database.getConnection(); // Assuming your database class is named 'database'
+                 PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String discCode = resultSet.getString("disc_code");
+                double discValue = resultSet.getDouble("disc_value");
+                String descCoup = resultSet.getString("Desc_coup");
+                java.sql.Date dateCreatedSql = resultSet.getDate("Date_created");
+                LocalDate dateCreated = (dateCreatedSql != null) ? dateCreatedSql.toLocalDate() : null;
+                int usageLim = resultSet.getInt("limit_usage");
+
+                // Convert java.sql.Date to LocalDate
+                java.sql.Date dateValidSql = resultSet.getDate("Date_valid");
+                LocalDate dateValid = (dateValidSql != null) ? dateValidSql.toLocalDate() : null;
+
+                Discount discount = new Discount(id, discCode, discValue, descCoup, dateCreated, dateValid, usageLim);
+                discounts.add(discount);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return discounts;
+    }
+    
 
     private double calculateTotalDailySales() {
         double totalSales = 0.0;
