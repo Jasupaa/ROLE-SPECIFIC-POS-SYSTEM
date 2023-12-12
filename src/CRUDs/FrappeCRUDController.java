@@ -253,7 +253,13 @@ public class FrappeCRUDController implements Initializable {
             preparedStatement.setString(2, smallPrice);
             preparedStatement.setString(3, mediumPrice);
             preparedStatement.setString(4, largePrice);
+             if (image != null) {
             preparedStatement.setBlob(5, image); // Use setBlob for InputStream
+        } else {  
+            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+            preparedStatement.setBlob(5, defaultImageStream);
+           
+        }
             preparedStatement.setString(6, status);
 
             preparedStatement.executeUpdate();

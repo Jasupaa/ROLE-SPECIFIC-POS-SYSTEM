@@ -269,7 +269,13 @@ public class MilkteaCRUDController implements Initializable {
             preparedStatement.setString(4, smallPrice);
             preparedStatement.setString(5, mediumPrice);
             preparedStatement.setString(6, largePrice);
+             if (image != null) {
             preparedStatement.setBlob(7, image); // Use setBlob for InputStream
+        } else {  
+            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+            preparedStatement.setBlob(7, defaultImageStream);
+           
+        }
              preparedStatement.setString(8, status);
 
             preparedStatement.executeUpdate();

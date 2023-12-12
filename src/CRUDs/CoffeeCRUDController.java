@@ -36,6 +36,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import ClassFiles.TxtUtils;
+import java.sql.Types;
 
 public class CoffeeCRUDController implements Initializable {
 
@@ -172,6 +173,7 @@ public class CoffeeCRUDController implements Initializable {
                 switch (buttonId) {
                     case "addBTN" -> {
                         if (!isProductAlreadyExists(connection, itemName)) {
+                           
                             insertCoffeeItem(connection, itemName, type, smallPrice, mediumPrice, largePrice, imageInputStream, status);
                             System.out.println("Data inserted.");
                             clearTextFields();
@@ -248,7 +250,7 @@ public class CoffeeCRUDController implements Initializable {
     gagamit tayo comma para ma-identify na iba't-ibang options siya
      */
     private void insertCoffeeItem(Connection connection, String itemName, String type, String smallPrice, String mediumPrice, String largePrice, InputStream image, String status) {
-        String sql = "INSERT INTO coffee_items (item_name, type, small_price, medium_price, large_price, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO coffee_items (item_name, type, small_price, medium_price, large_price, image, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, itemName);
@@ -256,7 +258,13 @@ public class CoffeeCRUDController implements Initializable {
             preparedStatement.setString(3, smallPrice);
             preparedStatement.setString(4, mediumPrice);
             preparedStatement.setString(5, largePrice);
+            if (image != null) {
             preparedStatement.setBlob(6, image); // Use setBlob for InputStream
+        } else {  
+            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+            preparedStatement.setBlob(6, defaultImageStream);
+           
+        }
             preparedStatement.setString(7, status);
 
             preparedStatement.executeUpdate();
@@ -271,10 +279,10 @@ public class CoffeeCRUDController implements Initializable {
 
         if (image != null) {
 
-            sql = "UPDATE coffee_items SET item_name=?, type=?, small_price=?, medium_price=?, large_price=?, image=?, status WHERE item_ID=?";
+            sql = "UPDATE coffee_items SET item_name=?, type=?, small_price=?, medium_price=?, large_price=?, image=?, status=? WHERE item_ID=?";
         } else {
 
-            sql = "UPDATE coffee_items SET item_name=?, type=?, small_price=?, medium_price=?, large_price=?, status WHERE item_ID=?";
+            sql = "UPDATE coffee_items SET item_name=?, type=?, small_price=?, medium_price=?, large_price=?, status=? WHERE item_ID=?";
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -286,11 +294,11 @@ public class CoffeeCRUDController implements Initializable {
             preparedStatement.setString(6, status);
 
             if (image != null) {
-                preparedStatement.setBlob(6, image); // Use setBlob for InputStream
-                preparedStatement.setString(7, status);
-                preparedStatement.setInt(8, itemID);
+                preparedStatement.setBlob(7, image); // Use setBlob for InputStream
+                preparedStatement.setString(8, status);
+                preparedStatement.setInt(9, itemID);
             } else {
-                preparedStatement.setString(6, status);
+             
                 preparedStatement.setInt(7, itemID);
             }
 

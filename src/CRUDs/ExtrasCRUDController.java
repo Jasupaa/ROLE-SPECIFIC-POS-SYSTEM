@@ -228,7 +228,13 @@ public class ExtrasCRUDController implements Initializable {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, price);
 
-            preparedStatement.setBlob(3, image); // Use setBlob for InputStream
+            if (image != null) {
+            preparedStatement.setBlob(3, image); 
+        } else {  
+            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+            preparedStatement.setBlob(3, defaultImageStream);
+           
+        }
             preparedStatement.setString(4, status);
 
             preparedStatement.executeUpdate();

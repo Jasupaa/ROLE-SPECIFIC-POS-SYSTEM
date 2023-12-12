@@ -267,7 +267,13 @@ public class FruitDrinkCRUDController implements Initializable {
             preparedStatement.setString(4, largePrice);
             preparedStatement.setString(5, fruitFlavor);
             preparedStatement.setString(6, sinkers);
-            preparedStatement.setBlob(7, image); // Use setBlob for InputStream
+           if (image != null) {
+            preparedStatement.setBlob(7, image); 
+        } else {  
+            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+            preparedStatement.setBlob(7, defaultImageStream);
+           
+        }
              preparedStatement.setString(8, status);
 
             preparedStatement.executeUpdate();

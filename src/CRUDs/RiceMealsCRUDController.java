@@ -230,7 +230,13 @@ public class RiceMealsCRUDController implements Initializable {
             preparedStatement.setString(1, itemName);
             preparedStatement.setString(2, price);
 
+        if (image != null) {
             preparedStatement.setBlob(3, image); // Use setBlob for InputStream
+        } else {  
+            InputStream defaultImageStream = getClass().getResourceAsStream("/Pictures/kapi.png");
+            preparedStatement.setBlob(3, defaultImageStream);
+           
+        }
             preparedStatement.setString(4, status);
 
             preparedStatement.executeUpdate();
