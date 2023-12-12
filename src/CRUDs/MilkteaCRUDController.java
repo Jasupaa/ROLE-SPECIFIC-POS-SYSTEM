@@ -38,6 +38,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
+import ClassFiles.TxtUtils;
 
 public class MilkteaCRUDController implements Initializable {
 
@@ -110,14 +111,14 @@ public class MilkteaCRUDController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         displayMilktea();
-        restrictLetter(txtLargePrice);
-        restrictLetter(txtMediumPrice);
-        restrictLetter(txtSmallPrice);
+        TxtUtils.restrictLetter(txtLargePrice);
+        TxtUtils.restrictLetter(txtMediumPrice);
+        TxtUtils.restrictLetter(txtSmallPrice);
        
-        limitCharacters(txtLargePrice, 4);
-        limitCharacters(txtMediumPrice,4);
-        limitCharacters(txtSmallPrice, 4);
-        limitCharacters(txtItemName,50);
+        TxtUtils.limitCharacters(txtLargePrice, 4);
+        TxtUtils.limitCharacters(txtMediumPrice,4);
+        TxtUtils.limitCharacters(txtSmallPrice, 4);
+        TxtUtils.limitCharacters(txtItemName,50);
         
         initializeStatusComboBox();
         statusComboBox.setValue("InStock");
@@ -413,22 +414,7 @@ public class MilkteaCRUDController implements Initializable {
         itemIV.setImage(null);
         iconIV.setVisible(true);
     }
-    public void restrictLetter(TextField textField) {
-        textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*\\.?\\d*")) {
-                textField.setText(oldValue);
-            }
-        });
-    }
-     public void limitCharacters(TextField textField, int maxLength) {
-    textField.textProperty().addListener((observable, oldValue, newValue) -> {
-        // Limit the length of the text
-        if (textField.getText().length() > maxLength) {
-            String limitedText = textField.getText().substring(0, maxLength);
-            textField.setText(limitedText);
-        }
-    });
-}
+    
 
 
     private void handleTableView() {

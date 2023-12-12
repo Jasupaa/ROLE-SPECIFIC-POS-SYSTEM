@@ -31,6 +31,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.DateCell;
+import ClassFiles.TxtUtils;
 
 /**
  * FXML Controller class
@@ -86,12 +87,12 @@ public class DiscountCRUDController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        restrictLetter(Limit);
-        restrictLetter(DisCount);
-        limitCharacters(disCript, 50);
-        limitCharacters(Limit, 3);
-        limitCharacters(DisCode, 12);
-        limitCharacters(DisCount, 2);
+        TxtUtils.restrictLetter(Limit);
+        TxtUtils.restrictLetter(DisCount);
+        TxtUtils.limitCharacters(disCript, 50);
+        TxtUtils.limitCharacters(Limit, 3);
+        TxtUtils.limitCharacters(DisCode, 12);
+        TxtUtils.limitCharacters(DisCount, 2);
         
          AGBtn.setOnAction(event -> generateAndSetCode());
         
@@ -130,27 +131,7 @@ public class DiscountCRUDController implements Initializable {
         }
     });
     }
-    
-      public void restrictLetter(TextField textField) {
-        textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*\\.?\\d*")) {
-                textField.setText(oldValue);
-            }
-        });
-    }
-    
-    
-      public void limitCharacters(TextField textField, int maxLength) {
-    textField.textProperty().addListener((observable, oldValue, newValue) -> {
-        // Limit the length of the text
-        if (textField.getText().length() > maxLength) {
-            String limitedText = textField.getText().substring(0, maxLength);
-            textField.setText(limitedText);
-        }
-    });
-}
 
-    
       @FXML
     private void handleCreateButtonAction(ActionEvent event) {
         // Get data from the UI controls

@@ -34,6 +34,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
+import ClassFiles.TxtUtils;
 
 public class ExtrasCRUDController implements Initializable {
 
@@ -89,9 +90,9 @@ public class ExtrasCRUDController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         displayExtras();
-        restrictLetter(txtPrice);
-        limitCharacters(txtPrice, 4);
-        limitCharacters(txtItemName,50);
+        TxtUtils.restrictLetter(txtPrice);
+        TxtUtils.limitCharacters(txtPrice, 4);
+        TxtUtils.limitCharacters(txtItemName,50);
         statusComboBox.setValue("InStock");
         initializeStatusComboBox();
 
@@ -386,22 +387,7 @@ public class ExtrasCRUDController implements Initializable {
 }
         }
     }
- public void restrictLetter(TextField textField) {
-        textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*\\.?\\d*")) {
-                textField.setText(oldValue);
-            }
-        });
-    }
-  public void limitCharacters(TextField textField, int maxLength) {
-    textField.textProperty().addListener((observable, oldValue, newValue) -> {
-        // Limit the length of the text
-        if (textField.getText().length() > maxLength) {
-            String limitedText = textField.getText().substring(0, maxLength);
-            textField.setText(limitedText);
-        }
-    });
-}
+ 
 
      
     private boolean isProductAlreadyExists(Connection connection, String itemName) {

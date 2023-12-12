@@ -54,6 +54,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
+import ClassFiles.TxtUtils;
 
 /**
  * FXML Controller class
@@ -368,6 +369,7 @@ public class SettlePaymentFXMLController implements Initializable {
             showPrintErrorAlert();
         }
     }
+    
 
     private void showPrintErrorAlert() {
         Alert alert = new Alert(AlertType.ERROR);
@@ -593,9 +595,9 @@ public class SettlePaymentFXMLController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        restrictLetter(cashTxtLbl);
-        limitCharacters(cashTxtLbl, 4);
-        limitCharacters(discCodeTxtLbl, 12);
+        TxtUtils.restrictLetter(cashTxtLbl);
+        TxtUtils.limitCharacters(cashTxtLbl, 4);
+        TxtUtils.limitCharacters(discCodeTxtLbl, 12);
 
         try {
             setupTableView();
@@ -780,22 +782,7 @@ public class SettlePaymentFXMLController implements Initializable {
         receiptTV.setItems(fetchOrderDetails());
     }
 
-    public void restrictLetter(TextField textField) {
-        textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*\\.?\\d*")) {
-                textField.setText(oldValue);
-            }
-        });
-    }
-public void limitCharacters(TextField textField, int maxLength) {
-    textField.textProperty().addListener((observable, oldValue, newValue) -> {
-        // Limit the length of the text
-        if (textField.getText().length() > maxLength) {
-            String limitedText = textField.getText().substring(0, maxLength);
-            textField.setText(limitedText);
-        }
-    });
-}
+  
     private void updateDiscountUsage(String discountCode) {
         try (Connection conn = database.getConnection()) {
             if (conn != null) {
